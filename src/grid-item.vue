@@ -16,10 +16,10 @@ function onClick() {
   open();
 }
 function onRightClick(event) {
+  event.preventDefault();
   if (isOpen.value) {
     return;
   }
-  event.preventDefault();
   isFlag.value = !isFlag.value;
   emit('flag', isFlag.value);
 }
