@@ -3,3 +3,6 @@
 
 # repo
 node_modules
+
+# build
+dist
