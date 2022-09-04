@@ -35,6 +35,9 @@ html {
 .w-20 {
   width: 5rem;
 }
+.gap-2 {
+  gap: .5rem;
+}
 .text-right {
   text-align: right;
 }
@@ -52,6 +55,7 @@ html {
   background: #aaa;
   display: grid;
   font-family: Arial;
+  font-weight: bold;
   justify-content: center;
   grid-template-columns: repeat(var(--column), 2rem);
   grid-template-rows: repeat(var(--row), 2rem);
@@ -74,6 +78,27 @@ html {
 }
 .grid-item:not(.open):hover {
   background: #bbb;
+}
+.count-1 {
+  color: var(--blue)
+}
+.count-2 {
+  color: var(--green)
+}
+.count-3 {
+  color: var(--red)
+}
+.count-4 {
+  color: var(--navy)
+}
+.count-5 {
+  color: var(--orange)
+}
+.count-6 {
+  color: var(--olive)
+}
+.count-7 {
+  color: var(--purple)
 }
 
 .open {

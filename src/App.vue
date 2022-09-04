@@ -1,13 +1,38 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import JsConfetti from 'js-confetti';
 import GridItem from './grid-item.vue';
 
-let interval;
+let interval = null;
+const jsConfetti = new JsConfetti();
+const levels = {
+  Easy: {
+    row: 9,
+    column: 9,
+    bomb: 10,
+  },
+  Medium: {
+    row: 16,
+    column: 16,
+    bomb: 40,
+  },
+  Hard: {
+    row: 16,
+    column: 30,
+    bomb: 99,
+  },
+  Custom: {
+    row: 10,
+    column: 10,
+    bomb: 0,
+  },
+};
 const isStart = ref(false); // 是否出于游戏状态
 const isFailed = ref(null); // 失败了？
 const isSuccess = ref(null); // 成功了？
-const row = ref(10);
-const column = ref(10);
+const level = ref(localStorage.getItem('level') || 'Easy');
+const row = ref(levels[level.value].row);
+const column = ref(levels[level.value].column);
 const flagged = ref(0); // 标记的数量
 const opened = ref(0); // 点开的数量
 const timeCount = ref(0);
@@ -17,8 +42,12 @@ const total = computed(() => {
 });
 // 炸弹总数
 const bombNumber = computed(() => {
-  return Math.floor(total.value / 8);
+  return level.value === 'Custom' ? (total.value / 8 >> 0) : levels[level.value].bomb;
 });
+// 地图阵列
+const gridStyle = computed(() => {
+  return `--row:${row.value};--column:${column.value}`;
+})
 const grid = ref(null);
 const gridItems = ref();
 
@@ -28,6 +57,7 @@ onMounted(() => {
 
 function doStart(event) {
   clearInterval(interval);
+  interval = null;
   isFailed.value = isSuccess.value = null;
   flagged.value = timeCount.value = opened.value = 0;
   const bombs = [];
@@ -73,6 +103,11 @@ function doStop(success = false) {
   isFailed.value = !success;
   isSuccess.value = success;
   isStart.value = false;
+  if (success) {
+    jsConfetti.addConfetti({
+      confettiNumber: 500,
+    });
+  }
 }
 
 function onFlag(flag) {
@@ -80,7 +115,7 @@ function onFlag(flag) {
 }
 
 function onOpen(item, index) {
-  if (interval === undefined) {
+  if (interval === null) {
     interval = setInterval(() => {
       timeCount.value += 1;
     }, 1000);
@@ -122,6 +157,13 @@ function onOpenAll(item, index) {
   }
 }
 
+function onLevelChange(level) {
+  localStorage.setItem('level', level);
+  row.value = levels[level].row;
+  column.value = levels[level].column;
+  doStart(true);
+}
+
 function openGridItem(item, index) {
   if (item.count) {
     return;
@@ -142,6 +184,19 @@ function openGridItem(item, index) {
 
 <template>
   <h1>肉山小课堂：扫雷 Workshop</h1>
+  <div class="flex items-center mb-4 gap-2">
+    <label v-for="(item, key) in levels" :key="key" class="flex items-center">
+      <input
+        type="radio"
+        name="level"
+        v-model="level"
+        :value="key"
+        :disabled="key === 'Custom'"
+        @change="onLevelChange(key)"
+      />
+      <span>{{key}}</span>
+    </label>
+  </div>
   <div class="flex items-center justify-between mb-4">
     <span class="w-20">地雷：{{bombNumber - flagged}}</span>
     <button
@@ -154,7 +209,7 @@ function openGridItem(item, index) {
     </button>
     <span class="w-20 text-right">{{timeCount}}</span>
   </div>
-  <div v-if="grid" id="stage" :class="{'pointer-events-none': !isStart}">
+  <div v-if="grid" id="stage" :class="{'pointer-events-none': !isStart}" :style="gridStyle">
     <grid-item
       v-for="(item, index) in grid"
       ref="gridItems"

@@ -56,7 +56,7 @@ export default {
 <template>
 <div
   class="grid-item"
-  :class="[{open: isOpen}, 'mark-' + count]"
+  :class="[{open: isOpen}, 'count-' + count]"
   @click="onClick"
   @contextmenu="onRightClick"
   @dblclick="onDoubleClick"

@@ -3,10 +3,14 @@ lockfileVersion: 5.4
 specifiers:
   '@vitejs/plugin-vue': ^3.0.3
   '@vue/compiler-sfc': ^3.2.0
+  colors.css: ^3.0.0
+  js-confetti: ^0.10.2
   vite: ^3.0.9
   vue: ^3.2.0
 
 dependencies:
+  colors.css: 3.0.0
+  js-confetti: 0.10.2
   vue: 3.2.38
 
 devDependencies:
@@ -131,6 +135,11 @@ packages:
 
   /@vue/shared/3.2.38:
     resolution: {integrity: sha512-dTyhTIRmGXBjxJE+skC8tTWCGLCVc4wQgRRLt8+O9p5ewBAjoBwtCAkLPrtToSr1xltoe3st21Pv953aOZ7alg==}
+
+  /colors.css/3.0.0:
+    resolution: {integrity: sha512-mnoVd1viYkriMAuMWggN8v3lFvOjkJ2LcCNdh5ZbJs7SkxindeXmU8EV7nBGxdga03zwe00ut7uoFVCCu2mA/w==}
+    engines: {node: '>=0.10.22'}
+    dev: false
 
   /csstype/2.6.20:
     resolution: {integrity: sha512-/WwNkdXfckNgw6S5R125rrW8ez139lBHWouiBvX8dfMFtcn6V81REDqnH7+CRpRipfYlyU1CmOnOxrmGcFOjeA==}
@@ -371,6 +380,10 @@ packages:
     dependencies:
       has: 1.0.3
     dev: true
+
+  /js-confetti/0.10.2:
+    resolution: {integrity: sha512-/ppeGV3sOJ/DDH43ABbqe8V/9Fx5TUNkywPlXr9YK9OK6++olMtRP/yRdXftl49iTIAAdoNopkgAy3SLOgSE+A==}
+    dev: false
 
   /magic-string/0.25.9:
     resolution: {integrity: sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==}
