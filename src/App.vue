@@ -64,7 +64,7 @@ function doStart(event) {
   bombs.length = total.value;
   bombs.fill(0, 0, total.value);
   let bomb = bombNumber.value;
-  // TODO q1 除了这个算法，还能怎么实现
+  // TODO q1 除了这个算法，还能怎么实现？再写出两种方式，送一本书
   while (bomb) {
     const index = Math.random() * total.value >> 0;
     if (bombs[index]) {
@@ -107,6 +107,13 @@ function doStop(success = false) {
     jsConfetti.addConfetti({
       confettiNumber: 500,
     });
+    for (const gridItem of gridItems.value) {
+      gridItem.addFlag(true);
+    }
+  } else {
+    for (const gridItem of gridItems.value) {
+      gridItem.uncover();
+    }
   }
 }
 

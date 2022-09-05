@@ -10,6 +10,7 @@ const props = defineProps({
 const {count, isBomb} = toRefs(props);
 const isOpen = ref(false);
 const isFlag = ref(false);
+const isUncovered = ref(false);
 
 // TODO q3 这里有优化空间么？
 function onClick() {
@@ -17,11 +18,7 @@ function onClick() {
 }
 function onRightClick(event) {
   event.preventDefault();
-  if (isOpen.value) {
-    return;
-  }
-  isFlag.value = !isFlag.value;
-  emit('flag', isFlag.value);
+  addFlag();
 }
 function onDoubleClick() {
   if (isOpen.value) {
@@ -35,13 +32,26 @@ function open() {
   isOpen.value = true;
   emit('open');
 }
+function addFlag(skipFlagged = false) {
+  if (isOpen.value) {
+    return;
+  }
+  if (skipFlagged && isFlag.value) return;
+  isFlag.value = !isFlag.value;
+  emit('flag', isFlag.value);
+}
 function reset() {
-  isOpen.value = isFlag.value = false;
+  isOpen.value = isFlag.value = isUncovered.value = false;
+}
+function uncover() {
+  isUncovered.value = true;
 }
 
 defineExpose({
   open,
   reset,
+  addFlag,
+  uncover,
 
   isFlag,
 });
@@ -56,7 +66,10 @@ export default {
 <template>
 <div
   class="grid-item"
-  :class="[{open: isOpen}, 'count-' + count]"
+  :class="[
+    {open: isOpen, 'wrong-mark': !isBomb && isFlag && isUncovered},
+    'count-' + count
+  ]"
   @click="onClick"
   @contextmenu="onRightClick"
   @dblclick="onDoubleClick"
@@ -66,5 +79,6 @@ export default {
     <template v-if="isBomb">💥</template>
     <template v-else>{{count ? count : ''}}</template>
   </template>
+  <template v-else-if="isUncovered && isBomb">💣</template>
 </div>
 </template>

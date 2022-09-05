@@ -79,6 +79,20 @@ html {
 .grid-item:not(.open):hover {
   background: #bbb;
 }
+.wrong-mark {
+  position: relative;
+}
+.wrong-mark::before {
+  content: "❌";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .count-1 {
   color: var(--blue)
 }
