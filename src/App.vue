@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import JsConfetti from 'js-confetti';
+import {version} from '../package.json';
 import GridItem from './grid-item.vue';
 
 let interval = null;
@@ -190,7 +191,10 @@ function openGridItem(item, index) {
 </script>
 
 <template>
-  <h1>肉山小课堂：扫雷 Workshop</h1>
+  <header class="flex items-center">
+    <h1 class="mr-4">肉山小课堂：扫雷 Workshop</h1>
+    <div class="text-xs text-gray">v{{version}}</div>
+  </header>
   <div class="flex items-center mb-4 gap-2">
     <label v-for="(item, key) in levels" :key="key" class="flex items-center">
       <input
@@ -204,19 +208,19 @@ function openGridItem(item, index) {
       <span>{{key}}</span>
     </label>
   </div>
-  <div class="flex items-center justify-between mb-4">
-    <span class="w-20">地雷：{{bombNumber - flagged}}</span>
+  <div class="flex items-center justify-center mb-4">
+    <span class="w-32">地雷：{{bombNumber - flagged}}</span>
     <button
-      type="button"
-      class="start-button"
-      @click="doStart">
+        type="button"
+        class="start-button"
+        @click="doStart">
       <template v-if="isSuccess">😊</template>
       <template v-else-if="isFailed">😭</template>
       <template v-else>🎮</template>
     </button>
-    <span class="w-20 text-right">{{timeCount}}</span>
+    <span class="w-32 text-right">{{timeCount}}</span>
   </div>
-  <div v-if="grid" id="stage" :class="{'pointer-events-none': !isStart}" :style="gridStyle">
+  <div v-if="grid" id="stage" :class="{'pointer-events-none': !isStart}" :style="gridStyle" @contextmenu.stop.prevent>
     <grid-item
       v-for="(item, index) in grid"
       ref="gridItems"
