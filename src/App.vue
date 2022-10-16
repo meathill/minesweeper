@@ -38,7 +38,7 @@ onMounted(() => {
 
 function doStart(event) {
   clearInterval(interval);
-  interval = null;
+  isRealStart.value = false;
   isFailed.value = isSuccess.value = null;
   flagged.value = timeCount.value = opened.value = 0;
   const bombs = [];

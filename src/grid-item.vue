@@ -11,19 +11,31 @@ const {count, isBomb} = toRefs(props);
 const isOpen = ref(false);
 const isFlag = ref(false);
 const isUncovered = ref(false);
+const mouseCount = ref(0);
 
-// TODO q3 这里有优化空间么？
 function onClick() {
+  mouseCount.value = 0;
   open();
 }
 function onRightClick(event) {
+  mouseCount.value = 0;
   event.preventDefault();
   addFlag();
 }
 function onDoubleClick() {
+  mouseCount.value = 0;
   if (isOpen.value) {
     emit('openAll');
   }
+}
+function onMouseDown(event) {
+  mouseCount.value += event.button;
+  if (mouseCount.value === 2) {
+    onDoubleClick();
+  }
+}
+function onMouseUp() {
+  mouseCount.value = 0;
 }
 function open() {
   if (isOpen.value || isFlag.value) {
@@ -73,6 +85,8 @@ export default {
   @click="onClick"
   @contextmenu="onRightClick"
   @dblclick="onDoubleClick"
+  @mousedown="onMouseDown"
+  @mouseup="onMouseUp"
 >
   <template v-if="isFlag">🚩</template>
   <template v-else-if="isOpen">
