@@ -63,6 +63,7 @@ function doStart(event) {
 }
 
 function doRealStart(clickedIndex) {
+  isRealStart.value = true;
   let bomb = bombNumber.value;
   while (bomb) {
     const index = Math.random() * total.value >> 0;
@@ -91,7 +92,8 @@ function doRealStart(clickedIndex) {
   interval = setInterval(() => {
     timeCount.value += 1;
   }, 1000);
-  isRealStart.value = true;
+  // 防止用户错误离开
+  addEventListener('beforeunload', onBeforeUnload);
 }
 
 function doStop(success = false) {
@@ -99,6 +101,7 @@ function doStop(success = false) {
   isFailed.value = !success;
   isSuccess.value = success;
   isStart.value = isRealStart.value = false;
+  removeEventListener('beforeunload', onBeforeUnload);
   if (success) {
     jsConfetti.addConfetti({
       confettiNumber: 500,
@@ -158,6 +161,7 @@ function onOpenAll(item, index) {
   if (count === item.count) {
     for (const gridItem of items) {
       gridItem.open();
+      if (isFailed.value) return;
     }
   }
 }
@@ -184,6 +188,11 @@ function openGridItem(item, index) {
       gridItem.open();
     }
   }
+}
+
+function onBeforeUnload(event) {
+  event.preventDefault();
+  event.returnValue = '';
 }
 </script>
 

@@ -1,25 +1,25 @@
 {
   "name": "meathill-mine-sweeper",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview"
   },
   "dependencies": {
-    "bootstrap-icons": "^1.9.1",
+    "bootstrap-icons": "^1.10.2",
     "colors.css": "^3.0.0",
     "js-confetti": "^0.11.0",
-    "vue": "^3.2.41"
+    "vue": "^3.2.45"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^3.1.2",
-    "@vue/compiler-sfc": "^3.2.41",
-    "autoprefixer": "^10.4.12",
-    "daisyui": "^2.31.0",
-    "postcss": "^8.4.18",
+    "@vitejs/plugin-vue": "^3.2.0",
+    "@vue/compiler-sfc": "^3.2.45",
+    "autoprefixer": "^10.4.13",
+    "daisyui": "^2.41.0",
+    "postcss": "^8.4.19",
     "stylus": "^0.59.0",
-    "tailwindcss": "^3.1.8",
-    "vite": "^3.1.8"
+    "tailwindcss": "^3.2.4",
+    "vite": "^3.2.4"
   }
 }
