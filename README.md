@@ -8,13 +8,29 @@
 [DEMO](https://minesweeper-mz.vercel.app/)
 
 
-课程安排（暂定）
+课程安排
 --------
 
-* 2022-09-18 15:00~17:00 使用 Vue3 + SFC playground 开发扫雷游戏
-* 2022-09-25 15:00~17:00 搭建本地开发环境，发布产品到线上
-* 2022-10-02 15:00~17:00 添加 PWA 功能
-* 2022-10-09 15:00~17:00 优化打开速度
+* [使用 Vue3 + SFC playground 开发扫雷游戏](https://www.bilibili.com/video/BV1SB4y1E7hX/)
+  1. Vue 组件开发游乐场，免环境学开发的神器
+  2. 什么是 MVVM 框架
+  3. Vue3 基础
+  4. 使用 display:grid 画地图
+  5. 生成地雷
+  6. 生成游戏地图
+* [Vue3 组件开发](https://www.bilibili.com/video/BV1JG4y1x7bS/)
+  1. 父子组件间传递数据的方式
+  2. `defineEmits` 和 `defineExpose` 的使用
+  3. 使用变量切换状态
+  4. 递归变更节点状态（最后拼错了导致翻车
+* [优化游戏](https://www.bilibili.com/video/BV1xT411P735/)
+  1. 添加胜利效果
+  2. 添加难度选择
+* [本地开发环境，使用 pinia](https://www.bilibili.com/video/BV1kP411P7ky/)
+  1. 梳理回顾代码
+  2. 修改布雷时机，让游戏更好玩
+  3. 将项目迁移到本地
+  4. 使用 pinia 存储记录
 
 
 环境配置
