@@ -79,7 +79,7 @@ export default {
 <div
   class="grid-item"
   :class="[
-    {open: isOpen, 'wrong-mark': !isBomb && isFlag && isUncovered},
+    {'open bg-base-200 dark:bg-base-100': isOpen, 'bg-base-300': !isOpen, 'wrong-mark': !isBomb && isFlag && isUncovered},
     'count-' + count
   ]"
   @click="onClick"

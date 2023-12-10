@@ -198,43 +198,46 @@ function onBeforeUnload(event) {
 
 <template>
   <header class="navbar bg-base-200">
-    <h1 class="btn btn-ghost normal-case text-xl">肉山小课堂：扫雷 Workshop</h1>
-    <div class="text-xs text-gray">v{{version}}</div>
-    <div class="ml-auto">
-      <div class="dropdown dropdown-end">
-        <label tabindex="0" class="btn btn-ghost">
-          {{level}}
-          <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-            <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"/>
-          </svg>
-        </label>
-        <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-200 rounded-box w-52">
-          <li v-for="(item, key) in Levels" :key="key">
-            <label class="flex items-center">
-              <input
-                hidden
-                type="radio"
-                name="level"
-                v-model="level"
-                :value="key"
-                :disabled="key === 'Custom'"
-                @change="onLevelChange(key)"
-              />
-              <span>
+    <div class="container mx-auto">
+      <h1 class="text-xl">肉山小课堂：扫雷 Workshop</h1>
+      <div class="text-xs text-gra ms-4">v{{version}}</div>
+      <div class="ml-auto">
+        <div class="dropdown dropdown-end">
+          <label tabindex="0" class="btn btn-ghost">
+            {{level}}
+            <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+              <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"/>
+            </svg>
+          </label>
+          <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-200 rounded-box w-52">
+            <li v-for="(item, key) in Levels" :key="key">
+              <label class="flex items-center">
+                <input
+                  hidden
+                  type="radio"
+                  name="level"
+                  v-model="level"
+                  :value="key"
+                  :disabled="key === 'Custom'"
+                  @change="onLevelChange(key)"
+                />
+                <span>
                 <i class="bi mr-2" :class="level === key ? 'bi-check-lg' : 'bi-blank'" /> {{key}}
               </span>
-            </label>
-          </li>
-        </ul>
+              </label>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </header>
   <div class="flex items-center justify-center my-4">
     <span class="w-32 countdown">地雷：<span :style="{'--value': bombNumber - flagged}"></span></span>
     <button
-        type="button"
-        class="btn btn-outline btn-primary start-button"
-        @click="doStart">
+      type="button"
+      class="btn btn-outline btn-primary start-button"
+      @click="doStart"
+    >
       <template v-if="isSuccess">😊</template>
       <template v-else-if="isFailed">😭</template>
       <template v-else>🎮</template>

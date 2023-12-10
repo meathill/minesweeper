@@ -1,7 +1,7 @@
-/** @type {import('tailwindcss').Config} */
-const daisyUi = require('daisyui');
+import daisyUi from 'daisyui';
 
-module.exports = {
+/** @type {import('tailwindcss').Config} */
+export default {
   content: [
     './index.html',
     './src/**/*.{vue,js,ts,jsx,tsx}',

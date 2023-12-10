@@ -13,7 +13,6 @@
 }
 
 #stage {
-  background: #aaa;
   display: grid;
   font-weight: bold;
   justify-content: center;
@@ -22,10 +21,9 @@
 }
 
 .grid-item {
-  background: #eee;
   border-width: 2px;
   border-style: solid;
-  border-color: white #ccc #ccc white;
+  border-color: #fff3 #3333 #3333 #fff3;
   cursor: pointer;
   width: 2rem;
   height: 2rem;
@@ -33,10 +31,14 @@
   justify-content: center;
   align-items: center;
   user-select: none;
+
+  @media (prefers-color-scheme: dark) {
+    border-color: #fff2 #3339 #3339 #fff2;
+  }
 }
 .grid-item:not(.open):hover {
+  cursor: pointer;
   border-color: transparent;
-  background: #bbb;
 }
 .wrong-mark {
   position: relative;
@@ -75,7 +77,5 @@
 }
 
 .open {
-  background: #fefefe;
-  border: 1px solid #ddd;
   cursor: unset;
 }
