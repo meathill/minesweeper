@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --column: 10;
+  --row: 10;
+}
+
+.start-button {
+  width: 4rem;
+  font-size: 1.25rem;
+}
+
+#stage {
+  display: grid;
+  font-weight: bold;
+  justify-content: center;
+  grid-template-columns: repeat(var(--column), 2rem);
+  grid-template-rows: repeat(var(--row), 2rem);
+}
+
+.grid-item {
+  border-width: 2px;
+  border-style: solid;
+  border-color: #fff3 #3333 #3333 #fff3;
+  cursor: pointer;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+
+  @media (prefers-color-scheme: dark) {
+    border-color: #fff2 #3339 #3339 #fff2;
+  }
+}
+.grid-item:not(.open):hover {
+  cursor: pointer;
+  border-color: transparent;
+}
+.wrong-mark {
+  position: relative;
+}
+.wrong-mark::before {
+  content: "❌";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.count-1 {
+  color: var(--blue)
+}
+.count-2 {
+  color: var(--green)
+}
+.count-3 {
+  color: var(--red)
+}
+.count-4 {
+  color: var(--navy)
+}
+.count-5 {
+  color: var(--orange)
+}
+.count-6 {
+  color: var(--olive)
+}
+.count-7 {
+  color: var(--purple)
+}
+
+.open {
+  cursor: unset;
+}
