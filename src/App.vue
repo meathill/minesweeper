@@ -252,15 +252,11 @@ function onBeforeUnload(event) {
       <template v-else-if="isFailed">😭</template>
       <template v-else>🎮</template>
     </button>
-<<<<<<< HEAD
     <span class="w-32 justify-end countdown">
       <span :style="{'--value': dayCount}"></span>:
       <span :style="{'--value': minCount}"></span>:
       <span :style="{'--value': timeCount}"></span>
     </span>
-=======
-    <span class="w-32 justify-end countdown"><span :style="{'--value': timeCount}"></span></span>
->>>>>>> c47096ae0f81fed9d3f65faa77bd7e86a39739f8
   </div>
   <div v-if="grid" id="stage" :class="{'pointer-events-none': !isStart}" :style="gridStyle" @contextmenu.stop.prevent>
     <grid-item
