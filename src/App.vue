@@ -238,7 +238,7 @@ function onBeforeUnload(event) {
           </label>
           <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-200 rounded-box w-52">
             <li v-for="(item, key) in Levels" :key="key">
-              <label class="flex items-center">
+              <label class="flex items-center tooltip" :data-tip="key === 'Easy' ? '时间限制：10分钟' : key === 'Medium' ? '时间限制：45分钟' : key === 'Hard' ? '时间限制：70分钟' : ''">
                 <input
                   hidden
                   type="radio"
