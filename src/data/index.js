@@ -3,6 +3,9 @@ export const Levels = {
     row: 9,
     column: 9,
     bomb: 10,
+    timeCountStyle:'ez',
+    // 超时时间
+    timeout: 99
   },
   Medium: {
     row: 16,

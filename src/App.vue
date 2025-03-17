@@ -17,6 +17,11 @@ const column = ref(Levels[level.value].column);
 const flagged = ref(0); // 标记的数量
 const opened = ref(0); // 点开的数量
 const timeCount = ref(0);
+// 时间计数样式(nil为默认样式，ez为简单样式)
+const timeCountStyle = computed(() => Levels[level.value].timeCountStyle || 'nil');
+// 超时时间 (如undefine则为60分钟)
+const timeout = computed(() => Levels[level.value].timeout || 60 * 60);
+
 // 格子总数
 const total = computed(() => {
   return row.value * column.value;
@@ -91,6 +96,10 @@ function doRealStart(clickedIndex) {
   });
   interval = setInterval(() => {
     timeCount.value += 1;
+    if(timeCount.value >= timeout.value) {
+      doStop();
+      alert('时间到！');
+    }
   }, 1000);
   // 防止用户错误离开
   addEventListener('beforeunload', onBeforeUnload);
@@ -242,7 +251,15 @@ function onBeforeUnload(event) {
       <template v-else-if="isFailed">😭</template>
       <template v-else>🎮</template>
     </button>
-    <span class="w-32 justify-end countdown"><span :style="{'--value': Math.floor(timeCount / 60)}"></span>:<span :style="{'--value': timeCount % 60}"></span></span>
+    <span class="w-32 justify-end countdown">
+    <template v-if="timeCountStyle === 'nil'">
+      
+      <span :style="{'--value': Math.floor(timeCount / 60)}"></span>:<span :style="{'--value': timeCount % 60}"></span>
+    </template>
+    <template v-else-if="timeCountStyle === 'ez'">
+      <span :style="{'--value': timeCount}"></span>
+    </template>
+    </span>
   </div>
   <div v-if="grid" id="stage" :class="{'pointer-events-none': !isStart}" :style="gridStyle" @contextmenu.stop.prevent>
     <grid-item
