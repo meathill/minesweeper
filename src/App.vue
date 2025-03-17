@@ -14,11 +14,21 @@ const isSuccess = ref(null); // 成功了？
 const level = ref(localStorage.getItem('level') || 'Easy');
 const row = ref(Levels[level.value].row);
 const column = ref(Levels[level.value].column);
+
+// 获取不同难度的超时限制（分钟）
+function getTimeoutLimit() {
+  switch(level.value) {
+    case 'Easy': return 10;
+    case 'Medium': return 45;
+    case 'Hard': return 70;
+    default: return 10;
+  }
+}
 const flagged = ref(0); // 标记的数量
 const opened = ref(0); // 点开的数量
 const timeCount = ref(0);
 const minCount = ref(0);
-const dayCount = ref(0);
+const hourCount = ref(0);
 // 格子总数
 const total = computed(() => {
   return row.value * column.value;
@@ -42,7 +52,7 @@ function doStart(event) {
   clearInterval(interval);
   isRealStart.value = false;
   isFailed.value = isSuccess.value = null;
-  flagged.value = timeCount.value = minCount.value = dayCount.value = opened.value = 0;
+  flagged.value = timeCount.value = minCount.value = hourCount.value = opened.value = 0;
   const bombs = [];
   bombs.length = total.value;
   bombs.fill(0, 0, total.value);
@@ -96,11 +106,18 @@ function doRealStart(clickedIndex) {
       timeCount.value = 0;
       minCount.value += 1;
       if (minCount.value == 60) {
-        dayCount.value += 1;
+        hourCount.value += 1;
         minCount.value = 0;
       }
-    }else
-    timeCount.value += 1;
+    } else {
+      timeCount.value += 1;
+    }
+
+    // 检查是否超时
+    const totalMinutes = hourCount.value * 60 + minCount.value;
+    if (totalMinutes >= getTimeoutLimit()) {
+      doStop(false);
+    }
   }, 1000);
   // 防止用户错误离开
   addEventListener('beforeunload', onBeforeUnload);
@@ -253,7 +270,7 @@ function onBeforeUnload(event) {
       <template v-else>🎮</template>
     </button>
     <span class="w-32 justify-end countdown">
-      <span :style="{'--value': dayCount}"></span>:
+      <span :style="{'--value': hourCount}"></span>:
       <span :style="{'--value': minCount}"></span>:
       <span :style="{'--value': timeCount}"></span>
     </span>
