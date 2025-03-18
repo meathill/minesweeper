@@ -26,9 +26,20 @@ function getTimeoutLimit() {
 }
 const flagged = ref(0); // 标记的数量
 const opened = ref(0); // 点开的数量
-const timeCount = ref(0);
-const minCount = ref(0);
-const hourCount = ref(0);
+const totalSeconds = ref(0);
+
+// 分钟取模 到100就会变成0
+const formattedTime = computed(() => {
+  const seconds = totalSeconds.value % 60;
+  const minutes = Math.floor(totalSeconds.value / 60) % 100;
+  return {
+    minutes,
+    seconds
+  };
+});
+// 更新变量
+const timeCount = computed(() => formattedTime.value.seconds);
+const minCount = computed(() => formattedTime.value.minutes);
 // 格子总数
 const total = computed(() => {
   return row.value * column.value;
@@ -52,7 +63,7 @@ function doStart(event) {
   clearInterval(interval);
   isRealStart.value = false;
   isFailed.value = isSuccess.value = null;
-  flagged.value = timeCount.value = minCount.value = hourCount.value = opened.value = 0;
+  flagged.value = totalSeconds.value = opened.value = 0;
   const bombs = [];
   bombs.length = total.value;
   bombs.fill(0, 0, total.value);
@@ -102,20 +113,10 @@ function doRealStart(clickedIndex) {
     };
   });
   interval = setInterval(() => {
-    if (timeCount.value == 59) {
-      timeCount.value = 0;
-      minCount.value += 1;
-      if (minCount.value == 60) {
-        hourCount.value += 1;
-        minCount.value = 0;
-      }
-    } else {
-      timeCount.value += 1;
-    }
-
-    // 检查是否超时
-    const totalMinutes = hourCount.value * 60 + minCount.value;
-    if (totalMinutes >= getTimeoutLimit()) {
+    totalSeconds.value += 1;
+    
+    // 超时就结束
+    if (minCount.value >= getTimeoutLimit()) {
       doStop(false);
     }
   }, 1000);
@@ -270,9 +271,11 @@ function onBeforeUnload(event) {
       <template v-else>🎮</template>
     </button>
     <span class="w-32 justify-end countdown">
-      <span :style="{'--value': hourCount}"></span>:
-      <span :style="{'--value': minCount}"></span>:
-      <span :style="{'--value': timeCount}"></span>
+    <!--  如果分钟是0就不会显示出来 -->
+      <template v-if="formattedTime.minutes > 0">
+        <span :style="{'--value': formattedTime.minutes}"></span>:
+      </template>
+      <span :style="{'--value': formattedTime.seconds}"></span>
     </span>
   </div>
   <div v-if="grid" id="stage" :class="{'pointer-events-none': !isStart}" :style="gridStyle" @contextmenu.stop.prevent>
