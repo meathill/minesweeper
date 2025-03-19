@@ -14,9 +14,24 @@ const isSuccess = ref(null); // 成功了？
 const level = ref(localStorage.getItem('level') || 'Easy');
 const row = ref(Levels[level.value].row);
 const column = ref(Levels[level.value].column);
+
+// 已取消时间限制，计时器会在99:59时停止
 const flagged = ref(0); // 标记的数量
 const opened = ref(0); // 点开的数量
-const timeCount = ref(0);
+const totalSeconds = ref(0);
+
+// 分钟最大为99，秒数最大为59
+const formattedTime = computed(() => {
+  const seconds = Math.min(totalSeconds.value % 60, 59);
+  const minutes = Math.min(Math.floor(totalSeconds.value / 60), 99);
+  return {
+    minutes,
+    seconds
+  };
+});
+// 更新变量
+const timeCount = computed(() => formattedTime.value.seconds);
+const minCount = computed(() => formattedTime.value.minutes);
 // 格子总数
 const total = computed(() => {
   return row.value * column.value;
@@ -40,7 +55,7 @@ function doStart(event) {
   clearInterval(interval);
   isRealStart.value = false;
   isFailed.value = isSuccess.value = null;
-  flagged.value = timeCount.value = opened.value = 0;
+  flagged.value = totalSeconds.value = opened.value = 0;
   const bombs = [];
   bombs.length = total.value;
   bombs.fill(0, 0, total.value);
@@ -90,7 +105,12 @@ function doRealStart(clickedIndex) {
     };
   });
   interval = setInterval(() => {
-    timeCount.value += 1;
+    // 当分钟达到99且秒数达到59时停止计时
+    if (minCount.value >= 99 && timeCount.value >= 59) {
+      clearInterval(interval);
+      return;
+    }
+    totalSeconds.value += 1;
   }, 1000);
   // 防止用户错误离开
   addEventListener('beforeunload', onBeforeUnload);
@@ -242,7 +262,13 @@ function onBeforeUnload(event) {
       <template v-else-if="isFailed">😭</template>
       <template v-else>🎮</template>
     </button>
-    <span class="w-32 justify-end countdown"><span :style="{'--value': timeCount}"></span></span>
+    <span class="w-32 justify-end countdown">
+    <!--  如果分钟是0就不会显示出来 -->
+      <template v-if="formattedTime.minutes > 0">
+        <span :style="{'--value': formattedTime.minutes}"></span>:
+      </template>
+      <span :style="{'--value': formattedTime.seconds}"></span>
+    </span>
   </div>
   <div v-if="grid" id="stage" :class="{'pointer-events-none': !isStart}" :style="gridStyle" @contextmenu.stop.prevent>
     <grid-item
