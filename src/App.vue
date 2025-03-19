@@ -15,23 +15,15 @@ const level = ref(localStorage.getItem('level') || 'Easy');
 const row = ref(Levels[level.value].row);
 const column = ref(Levels[level.value].column);
 
-// 获取不同难度的超时限制（分钟）
-function getTimeoutLimit() {
-  switch(level.value) {
-    case 'Easy': return 10;
-    case 'Medium': return 45;
-    case 'Hard': return 70;
-    default: return 10;
-  }
-}
+// 已取消时间限制，计时器会在99:59时停止
 const flagged = ref(0); // 标记的数量
 const opened = ref(0); // 点开的数量
 const totalSeconds = ref(0);
 
-// 分钟取模 到100就会变成0
+// 分钟最大为99，秒数最大为59
 const formattedTime = computed(() => {
-  const seconds = totalSeconds.value % 60;
-  const minutes = Math.floor(totalSeconds.value / 60) % 100;
+  const seconds = Math.min(totalSeconds.value % 60, 59);
+  const minutes = Math.min(Math.floor(totalSeconds.value / 60), 99);
   return {
     minutes,
     seconds
@@ -113,12 +105,12 @@ function doRealStart(clickedIndex) {
     };
   });
   interval = setInterval(() => {
-    totalSeconds.value += 1;
-    
-    // 超时就结束
-    if (minCount.value >= getTimeoutLimit()) {
-      doStop(false);
+    // 当分钟达到99且秒数达到59时停止计时
+    if (minCount.value >= 99 && timeCount.value >= 59) {
+      clearInterval(interval);
+      return;
     }
+    totalSeconds.value += 1;
   }, 1000);
   // 防止用户错误离开
   addEventListener('beforeunload', onBeforeUnload);
@@ -239,7 +231,7 @@ function onBeforeUnload(event) {
           </label>
           <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-200 rounded-box w-52">
             <li v-for="(item, key) in Levels" :key="key">
-              <label class="flex items-center tooltip" :data-tip="key === 'Easy' ? '时间限制：10分钟' : key === 'Medium' ? '时间限制：45分钟' : key === 'Hard' ? '时间限制：70分钟' : ''">
+              <label class="flex items-center">
                 <input
                   hidden
                   type="radio"
