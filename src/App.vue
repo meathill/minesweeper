@@ -244,13 +244,13 @@ function onBeforeUnload(event) {
       <template v-else>🎮</template>
     </button>
     <span class="w-32 justify-end countdown">
-      <template v-if="timeCount <= 99">
+      <template v-if="timeCount <= 59">
         <span :style="{ '--value': timeCount }"></span>
       </template>
       <template v-else-if="timeCount >= 99 * 60 + 59">
         <span style="--value:99"></span>
         :
-        <span style="--value:59"></span>
+        <span :style="{ '--value': timeCount % 60 }"></span>
       </template>
       <template v-else>
         <span :style="{ '--value': Math.floor(timeCount / 60) }"></span>
