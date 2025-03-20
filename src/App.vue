@@ -17,10 +17,6 @@ const column = ref(Levels[level.value].column);
 const flagged = ref(0); // 标记的数量
 const opened = ref(0); // 点开的数量
 const timeCount = ref(0);
-// 时间计数样式(nil为默认样式，ez为简单样式)
-const timeCountStyle = computed(() => Levels[level.value].timeCountStyle || 'nil');
-// 超时时间 (如undefine则为60分钟)
-const timeout = computed(() => Levels[level.value].timeout || 60 * 60);
 
 // 格子总数
 const total = computed(() => {
@@ -96,10 +92,6 @@ function doRealStart(clickedIndex) {
   });
   interval = setInterval(() => {
     timeCount.value += 1;
-    if(timeCount.value >= timeout.value) {
-      doStop();
-      alert('时间到！');
-    }
   }, 1000);
   // 防止用户错误离开
   addEventListener('beforeunload', onBeforeUnload);
