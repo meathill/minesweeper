@@ -17,6 +17,7 @@ const column = ref(Levels[level.value].column);
 const flagged = ref(0); // 标记的数量
 const opened = ref(0); // 点开的数量
 const timeCount = ref(0);
+
 // 格子总数
 const total = computed(() => {
   return row.value * column.value;
@@ -223,7 +224,7 @@ function onBeforeUnload(event) {
                 />
                 <span>
                 <i class="bi mr-2" :class="level === key ? 'bi-check-lg' : 'bi-blank'" /> {{key}}
-              </span>
+                </span>
               </label>
             </li>
           </ul>
@@ -242,7 +243,21 @@ function onBeforeUnload(event) {
       <template v-else-if="isFailed">😭</template>
       <template v-else>🎮</template>
     </button>
-    <span class="w-32 justify-end countdown"><span :style="{'--value': timeCount}"></span></span>
+    <span class="w-32 justify-end countdown">
+      <template v-if="timeCount <= 59">
+        <span :style="{ '--value': timeCount }"></span>
+      </template>
+      <template v-else-if="timeCount >= 99 * 60 + 59">
+        <span style="--value:99"></span>
+        :
+        <span :style="{ '--value': timeCount % 60 }"></span>
+      </template>
+      <template v-else>
+        <span :style="{ '--value': Math.floor(timeCount / 60) }"></span>
+        :
+        <span :style="{ '--value': timeCount % 60 }"></span>
+      </template>
+    </span>
   </div>
   <div v-if="grid" id="stage" :class="{'pointer-events-none': !isStart}" :style="gridStyle" @contextmenu.stop.prevent>
     <grid-item
