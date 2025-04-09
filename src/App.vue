@@ -3,7 +3,9 @@ import {ref, computed, onMounted, nextTick} from 'vue';
 import JsConfetti from 'js-confetti';
 import {version} from '../package.json';
 import GridItem from './grid-item.vue';
+import OperationChart from './operation-chart.vue';
 import {Levels} from './data';
+import { useOperationRecordsStore } from './store/operationRecords';
 
 let interval = null;
 const jsConfetti = new JsConfetti();
@@ -17,6 +19,7 @@ const column = ref(Levels[level.value].column);
 const flagged = ref(0); // 标记的数量
 const opened = ref(0); // 点开的数量
 const timeCount = ref(0);
+const operationStore = useOperationRecordsStore()
 
 // 格子总数
 const total = computed(() => {
@@ -61,6 +64,8 @@ function doStart(event) {
       gridItem.reset();
     }
   }
+  // 刷新记录每分钟操作
+  operationStore.onFreshOperateRecords()
 }
 
 function doRealStart(clickedIndex) {
@@ -115,6 +120,7 @@ function doStop(success = false) {
       gridItem.uncover();
     }
   }
+  operationStore.onStopOperateRecords()
 }
 
 function onFlag(flag) {
@@ -124,6 +130,8 @@ function onFlag(flag) {
 async function onOpen(item, index) {
   if (!isRealStart.value) {
     doRealStart(index);
+    // 开始记录每分钟操作
+    operationStore.onUpdateOperateRecords('')
     await nextTick();
     onOpen(grid.value[index], index);
     return;
@@ -268,8 +276,11 @@ function onBeforeUnload(event) {
       :is-bomb="item.isBomb"
       :flagable="flagged < bombNumber"
       @flag="onFlag"
-      @open="onOpen(item, index)"
+      @open="onOpen(item, index, true)"
       @open-all="onOpenAll(item, index)"
     />
+  </div>
+  <div v-if="operationStore.isShowChart" class="flex items-center justify-center my-4">
+    <operation-chart />
   </div>
 </template>

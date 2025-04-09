@@ -1,5 +1,6 @@
 <script setup>
 import {ref, toRefs} from 'vue';
+import { useOperationRecordsStore } from './store/operationRecords';
 
 const emit = defineEmits(['flag', 'open', 'openAll']);
 const props = defineProps({
@@ -12,15 +13,18 @@ const isOpen = ref(false);
 const isFlag = ref(false);
 const isUncovered = ref(false);
 const mouseCount = ref(0);
+const isUserTriggered = ref(false); // 是否为用户主动触发
+const operationStore = useOperationRecordsStore()
 
 function onClick() {
   mouseCount.value = 0;
-  open();
+  open(true);
 }
 function onRightClick(event) {
   mouseCount.value = 0;
   event.preventDefault();
   addFlag();
+  operationStore.onUpdateOperateRecords('flag')
 }
 function onDoubleClick() {
   mouseCount.value = 0;
@@ -37,11 +41,17 @@ function onMouseDown(event) {
 function onMouseUp() {
   mouseCount.value = 0;
 }
-function open() {
+function open(isUserAction = false) {
   if (isOpen.value || isFlag.value) {
     return;
   }
   isOpen.value = true;
+
+  if (isUserAction && !isUserTriggered.value && !props.isBomb){
+    isUserTriggered.value = true;
+    operationStore.onUpdateOperateRecords(count.value === 0 ? 'openBlank' : 'open');
+  }
+
   emit('open');
 }
 function addFlag(skipFlagged = false) {
