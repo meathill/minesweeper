@@ -7,6 +7,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "chart.js": "^4.4.8",
     "colors.css": "^3.0.0",
     "js-confetti": "^0.12.0",
     "vue": "^3.3.11"

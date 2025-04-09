@@ -5,7 +5,10 @@ import {version} from '../package.json';
 import GridItem from './grid-item.vue';
 import {Levels} from './data';
 
+import { recordAction, renderChart,calculateRPM,userActions,showChart,rpm } from './data/rpm';
+
 let interval = null;
+let chartInstance = null;
 const jsConfetti = new JsConfetti();
 const isStart = ref(false); // 是否出于游戏状态
 const isRealStart = ref(false); // 是否真正开始游戏
@@ -61,6 +64,13 @@ function doStart(event) {
       gridItem.reset();
     }
   }
+  userActions.value = [];
+  rpm.value = [];
+  showChart.value = false;
+  if(chartInstance) {
+    chartInstance.destroy();
+    chartInstance = null;
+  }
 }
 
 function doRealStart(clickedIndex) {
@@ -115,13 +125,20 @@ function doStop(success = false) {
       gridItem.uncover();
     }
   }
+  calculateRPM();
+  showChart.value = true;
+  nextTick(() => {
+    renderChart(chartInstance);
+  });
 }
 
 function onFlag(flag) {
+  recordAction('flag');
   flagged.value += flag ? 1 : -1;
 }
 
 async function onOpen(item, index) {
+  recordAction('open');
   if (!isRealStart.value) {
     doRealStart(index);
     await nextTick();
@@ -141,6 +158,7 @@ async function onOpen(item, index) {
 }
 
 function onOpenAll(item, index) {
+  recordAction('openAll');
   if (item.count === 0) {
     return;
   }
@@ -271,5 +289,8 @@ function onBeforeUnload(event) {
       @open="onOpen(item, index)"
       @open-all="onOpenAll(item, index)"
     />
+  </div>
+  <div v-if="showChart" class="rpm-chart-container mt-8 mx-auto" style="max-width: 800px;height: 400px;">
+    <canvas id="rpmChart"></canvas>
   </div>
 </template>
