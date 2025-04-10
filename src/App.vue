@@ -1,10 +1,13 @@
 <script setup>
-import {ref, computed, onMounted, nextTick} from 'vue';
+import {ref, computed, onMounted, nextTick, defineAsyncComponent} from 'vue';
 import JsConfetti from 'js-confetti';
 import {version} from '../package.json';
 import GridItem from './grid-item.vue';
 import {Levels} from './data';
-import RpmChart from './components/rpm-chart.vue';
+
+const RpmChart = defineAsyncComponent(() => 
+  import('./components/rpm-chart.vue')
+)
 
 let interval = null;
 
@@ -287,5 +290,9 @@ function onBeforeUnload(event) {
       @open-all="onOpenAll(item, index)"
     />
   </div>
-  <RpmChart ref="rpmChartRef"/>
+  <Suspense>
+    <template #default>
+      <RpmChart ref="rpmChartRef" />
+    </template>
+  </Suspense>
 </template>
