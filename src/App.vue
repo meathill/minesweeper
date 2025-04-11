@@ -1,11 +1,14 @@
 <script setup>
-import {ref, computed, onMounted, nextTick} from 'vue';
+import {ref, computed, onMounted, nextTick, defineAsyncComponent } from 'vue';
 import JsConfetti from 'js-confetti';
 import {version} from '../package.json';
 import GridItem from './grid-item.vue';
-import OperationChart from './operation-chart.vue';
 import {Levels} from './data';
 import { useOperationRecordsStore } from './store/operationRecords';
+
+const OperationChart = defineAsyncComponent(() => import('./operation-chart.vue') )
+const operationStore = useOperationRecordsStore()
+
 
 let interval = null;
 const jsConfetti = new JsConfetti();
@@ -19,7 +22,6 @@ const column = ref(Levels[level.value].column);
 const flagged = ref(0); // 标记的数量
 const opened = ref(0); // 点开的数量
 const timeCount = ref(0);
-const operationStore = useOperationRecordsStore()
 
 // 格子总数
 const total = computed(() => {
@@ -281,6 +283,13 @@ function onBeforeUnload(event) {
     />
   </div>
   <div v-if="operationStore.isShowChart" class="flex items-center justify-center my-4">
-    <operation-chart />
+    <Suspense>
+      <template #default>
+        <operation-chart />
+      </template>
+      <template #fallback>
+        <div class="loading loading-spinner loading-lg"></div>
+      </template>
+    </Suspense>
   </div>
 </template>
