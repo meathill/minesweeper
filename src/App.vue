@@ -1,13 +1,11 @@
 <script setup>
-import {ref, computed, onMounted, nextTick, defineAsyncComponent} from 'vue';
+import {ref, computed, onMounted, nextTick} from 'vue';
 import JsConfetti from 'js-confetti';
 import {version} from '../package.json';
 import GridItem from './grid-item.vue';
 import {Levels} from './data';
-
-const RpmChart = defineAsyncComponent(() => 
-  import('./components/rpm-chart.vue')
-)
+import {recordAction, actionType} from './components/rpm-chart.vue';
+import RpmChart from './components/rpm-chart.vue';
 
 let interval = null;
 
@@ -37,7 +35,8 @@ const gridStyle = computed(() => {
 })
 const grid = ref(null);
 const gridItems = ref();
-const rpmChartRef = ref(null);
+
+const userActions = ref([]);
 
 onMounted(() => {
   doStart();
@@ -67,10 +66,7 @@ function doStart(event) {
       gridItem.reset();
     }
   }
-
-  if (rpmChartRef.value) {
-    rpmChartRef.value.init()
-  }
+  userActions.value = [];
 }
 
 function doRealStart(clickedIndex) {
@@ -125,18 +121,16 @@ function doStop(success = false) {
       gridItem.uncover();
     }
   }
-  
-  rpmChartRef.value.calculateRPM();
 
 }
 
 function onFlag(flag) {
-  rpmChartRef.value.recordAction('flag');
+  recordAction(userActions, actionType.FLAG);
   flagged.value += flag ? 1 : -1;
 }
 
 function onOpen(item, index){
-  rpmChartRef.value.recordAction('open');
+  recordAction(userActions, actionType.OPEN);
   openGrid(item, index);
 }
 async function openGrid(item, index) {
@@ -290,9 +284,9 @@ function onBeforeUnload(event) {
       @open-all="onOpenAll(item, index)"
     />
   </div>
-  <Suspense>
-    <template #default>
-      <RpmChart ref="rpmChartRef" />
-    </template>
-  </Suspense>
+
+  <RpmChart v-if="isFailed || isSuccess" 
+  :userActions="userActions"
+  :titleText="'游戏操纵频率'" :labelText ="'每分钟操作数'" :xText="'时间'" :yText="'次数'" />
+
 </template>

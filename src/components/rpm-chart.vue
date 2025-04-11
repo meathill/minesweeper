@@ -6,24 +6,30 @@
 
 
 <script setup>
-import { ref } from 'vue';
+import { ref, toRefs, onMounted, onBeforeUnmount } from 'vue';
 import { Chart } from 'chart.js/auto';
 
-const userActions = ref([]);
+const props = defineProps({
+  titleText: String,
+  labelText: String,
+  xText: String,
+  yText: String,
+  userActions: Array
+});
+const {titleText, labelText, xText, yText, userActions} = toRefs(props);
+
 const rpm = ref([]);
 
 let chartInstance = ref(null);
 
-async function init(){
-  userActions.value = [];
-  rpm.value = [];
-}
-function recordAction(actionType) {
-  userActions.value.push({
-    type: actionType,
-    timestamp: Date.now()
-  });
-}
+onMounted(() => {
+  calculateRPM();
+  createChart();
+});
+
+onBeforeUnmount(() => {
+  destroyChart();
+});
 
 function calculateRPM() {
   if (userActions.value.length === 0) {
@@ -48,17 +54,6 @@ function calculateRPM() {
     data: actionsPerMinute
   };
 
-  renderChart();
-
-}
-
-function renderChart() {
-  if (!rpm.value.labels) {
-    return;
-  }
-  destroyChar();
-  createChart();
- 
 }
 
 function createChart(){
@@ -68,7 +63,7 @@ function createChart(){
     data: {
       labels: rpm.value.labels,
       datasets: [{
-        label: '曲线：每分钟操作数',
+        label: labelText.value,
         data: rpm.value.data,
       }]
     },
@@ -78,7 +73,7 @@ function createChart(){
       plugins: {
         title: {
           display: true,
-          text: '游戏操作频率(RPM)'
+          text: titleText.value
         },
         tooltip: {
           mode: 'index',
@@ -90,7 +85,7 @@ function createChart(){
           beginAtZero: true,
           title: {
             display: true,
-            text: '操作次数'
+            text: yText.value
           },
           ticks: {
             stepSize: 1
@@ -99,7 +94,7 @@ function createChart(){
         x: {
           title: {
             display: true,
-            text: '时间'
+            text: xText.value
           }
         }
       }
@@ -107,17 +102,24 @@ function createChart(){
   });
 }
 
-function destroyChar(){
+function destroyChart(){
   if(chartInstance.value){
     chartInstance.value.destroy();
     chartInstance.value=null;
   }
 }
 
-defineExpose({
-  init,
-  recordAction,
-  calculateRPM
-});
 </script>
 
+<script>
+export function recordAction(actions, actionType) {
+  actions.value.push({
+    type: actionType,
+    timestamp: Date.now()
+  });
+}
+export const actionType = Object.freeze({
+  OPEN: 'open',
+  FLAG: 'flag'
+})
+</script>
