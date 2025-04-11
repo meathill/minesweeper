@@ -129,15 +129,15 @@ function onFlag(flag) {
   flagged.value += flag ? 1 : -1;
 }
 
-function onOpen(item, index){
+function onClick(){
   recordAction(userActions, actionType.OPEN);
-  openGrid(item, index);
 }
-async function openGrid(item, index) {
+
+async function onOpen(item, index) {
   if (!isRealStart.value) {
     doRealStart(index);
     await nextTick();
-    openGrid(grid.value[index], index);
+    onOpen(grid.value[index], index);
     return;
   }
 
@@ -280,7 +280,8 @@ function onBeforeUnload(event) {
       :is-bomb="item.isBomb"
       :flagable="flagged < bombNumber"
       @flag="onFlag"
-      @onOpen="onOpen(item, index)"
+      @click="onClick"
+      @open="onOpen(item, index)"
       @open-all="onOpenAll(item, index)"
     />
   </div>
