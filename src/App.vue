@@ -1,11 +1,11 @@
 <script setup>
-import {ref, computed, onMounted, nextTick} from 'vue';
+import {ref, computed, onMounted, nextTick, defineAsyncComponent} from 'vue';
 import JsConfetti from 'js-confetti';
 import {version} from '../package.json';
 import GridItem from './grid-item.vue';
-import {Levels} from './data';
-import {recordAction, actionType} from './components/rpm-chart.vue';
-import RpmChart from './components/rpm-chart.vue';
+import {Levels,ActionType} from './data';
+
+const RpmChart = defineAsyncComponent(() => import('./components/rpm-chart.vue'));
 
 let interval = null;
 
@@ -20,6 +20,7 @@ const column = ref(Levels[level.value].column);
 const flagged = ref(0); // 标记的数量
 const opened = ref(0); // 点开的数量
 const timeCount = ref(0);
+const openedGridIndexs = ref([]);
 
 // 格子总数
 const total = computed(() => {
@@ -41,6 +42,17 @@ const userActions = ref([]);
 onMounted(() => {
   doStart();
 });
+
+function recordAction(actions, actionType, index) {
+  //如果点击的格子已经开过（无论是手动还是自动打开），则不记录
+  if(actionType === ActionType.OPEN && openedGridIndexs.value.includes(index)){
+    return;
+  }
+  actions.value.push({
+    type: actionType,
+    timestamp: Date.now()
+  });
+}
 
 function doStart(event) {
   clearInterval(interval);
@@ -67,6 +79,7 @@ function doStart(event) {
     }
   }
   userActions.value = [];
+  openedGridIndexs.value = [];
 }
 
 function doRealStart(clickedIndex) {
@@ -124,13 +137,14 @@ function doStop(success = false) {
 
 }
 
-function onFlag(flag) {
-  recordAction(userActions, actionType.FLAG);
+function onFlag(flag, index) {
+  recordAction(userActions, ActionType.FLAG, index);
   flagged.value += flag ? 1 : -1;
 }
 
-function onClick(){
-  recordAction(userActions, actionType.OPEN);
+function onClick(index){
+  recordAction(userActions, ActionType.OPEN, index);
+  openedGridIndexs.value.push(index);
 }
 
 async function onOpen(item, index) {
@@ -199,6 +213,7 @@ function openGridItem(item, index) {
       }
       const gridItem = gridItems.value[i * column.value + j];
       gridItem.open();
+      openedGridIndexs.value.push(i * column.value + j);
     }
   }
 }
@@ -279,15 +294,17 @@ function onBeforeUnload(event) {
       :count="item.count"
       :is-bomb="item.isBomb"
       :flagable="flagged < bombNumber"
-      @flag="onFlag"
-      @click="onClick"
+      @flag="onFlag(index)"
+      @click="onClick(index)"
       @open="onOpen(item, index)"
       @open-all="onOpenAll(item, index)"
     />
   </div>
 
-  <RpmChart v-if="isFailed || isSuccess" 
-  :userActions="userActions"
-  :titleText="'游戏操纵频率'" :labelText ="'每分钟操作数'" :xText="'时间'" :yText="'次数'" />
+  <div class="flex justify-center">
+    <RpmChart v-if="isFailed || isSuccess" 
+    :userActions="userActions"
+    :titleText="'游戏操纵频率'"/>
+  </div>
 
 </template>

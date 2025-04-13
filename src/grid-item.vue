@@ -14,9 +14,9 @@ const isUncovered = ref(false);
 const mouseCount = ref(0);
 
 function onClick() {
+  emit('click');
   mouseCount.value = 0;
   open();
-  emit('click');
 }
 function onRightClick(event) {
   mouseCount.value = 0;
