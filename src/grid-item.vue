@@ -1,7 +1,7 @@
 <script setup>
 import {ref, toRefs} from 'vue';
 
-const emit = defineEmits(['flag', 'open', 'openAll']);
+const emit = defineEmits(['flag', 'open', 'openAll', 'click']);
 const props = defineProps({
   count: Number,
   isBomb: Boolean,
@@ -14,6 +14,7 @@ const isUncovered = ref(false);
 const mouseCount = ref(0);
 
 function onClick() {
+  emit('click');
   mouseCount.value = 0;
   open();
 }
@@ -42,8 +43,9 @@ function open() {
     return;
   }
   isOpen.value = true;
-  emit('open');
+  emit('open')
 }
+
 function addFlag(skipFlagged = false) {
   if (isOpen.value) {
     return;

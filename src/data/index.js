@@ -15,3 +15,7 @@ export const Levels = {
     bomb: 99,
   },
 };
+export const ActionType = Object.freeze({
+  OPEN: 'open',
+  FLAG: 'flag'
+})
