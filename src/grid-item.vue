@@ -29,6 +29,7 @@ function onRightClick(event) {
 function onDoubleClick() {
   mouseCount.value = 0;
   if (isOpen.value) {
+    operationStore.onUpdateOperateRecords('doubleClick')
     emit('openAll');
   }
 }

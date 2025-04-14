@@ -32,14 +32,11 @@ ChartJS.register(
 const operationStore = useOperationRecordsStore();
 const { startTimeStamp, operationEvents } = operationStore.operationRecords;
 
-const ticksPerMinute = 0.1; //  在横坐标上一个刻度代表0.1min
+const isMoreThanOneHundredSec = ref(false);
+const secPerInterval = ref(6)
 const operationEventsData = ref([]);
 
-onMounted(() => {
-  operationEventsData.value = transferEventsToData(operationEvents);
-});
-
-const chartOptions = ref({
+const chartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
   scales: {
@@ -47,11 +44,11 @@ const chartOptions = ref({
       type: "linear",
       title: {
         display: true,
-        text: "时间（分钟）",
+        text: isMoreThanOneHundredSec.value ? "时间（分钟）" : "时间（秒）",
       },
       min: 0,
       ticks: {
-        stepSize: ticksPerMinute,
+        stepSize: isMoreThanOneHundredSec.value ? (secPerInterval.value / 60) : secPerInterval.value
       },
     },
     y: {
@@ -79,15 +76,15 @@ const chartOptions = ref({
     duration: 250, // 动画时长（毫秒）
     easing: "ease-out",
   },
-});
+}));
 
 const chartData = computed(() => ({
-  labels: operationEventsData.value.map((item) => item.minute.toString()),
+  labels: operationEventsData.value.map((item) => item.interval.toString()),
   datasets: [
     {
-      label: "点击操作",
-      borderColor: "#36A2EB",
-      data: operationEventsData.value.map((item) => item.open),
+      label: "点击安全区操作",
+      borderColor: "#4bc0c0",
+      data: operationEventsData.value.map((item) => item.openSave),
       pointRadius: 5,
       tension: 0.1,
     },
@@ -99,28 +96,53 @@ const chartData = computed(() => ({
       tension: 0.1,
     },
     {
-      label: "空白点开",
-      borderColor: "#4BC0C0",
-      data: operationEventsData.value.map((item) => item.openBlank),
+      label: "快速展开操作",
+      borderColor: "#FF9F40",
+      data: operationEventsData.value.map((item) => item.doubleClick),
       pointRadius: 5,
       tension: 0.1,
     },
   ],
 }));
 
+onMounted(() => {
+  operationEventsData.value = transferEventsToData(operationEvents);
+});
+
 function transferEventsToData(events) {
+  // 先判断是否超过100秒
+  const maxTimestamp = Math.max(...events.map((event) => event.clickTimestamp));
+  const totalSeconds = (maxTimestamp - startTimeStamp) / 1000;
+  const _isMoreThanOneHundredSec = totalSeconds > 100;
+  isMoreThanOneHundredSec.value = totalSeconds > 100;
+  
   const groupedData = {};
-  groupedData[0] = { minute: 0, open: 0, flag: 0, openBlank: 0 };
+  groupedData[0] = { interval: 0, open: 0, openBlank: 0, openSave:0 ,flag: 0, doubleClick: 0 };
+
   events.forEach((event) => {
-    const timeSinceStart = (event.clickTimestamp - startTimeStamp) / 1000;
-    const tickNumber = Math.ceil(timeSinceStart / (ticksPerMinute * 60));
-    const minute = tickNumber * ticksPerMinute;
-    if (!groupedData[minute]) {
-      groupedData[minute] = { minute: minute, open: 0, flag: 0, openBlank: 0 };
+    // 超过100秒，据开始过去了多少分钟
+    // 小于100秒，据开始过去了多少秒
+    const timeSinceStart = _isMoreThanOneHundredSec
+      ? (event.clickTimestamp - startTimeStamp) / 1000 / 60
+      : (event.clickTimestamp - startTimeStamp) / 1000; 
+    // 超过100秒，所属的区间块index（分钟） = 据开始过去了多少分钟 / 每个区间多少分钟(每个区间多少秒/60)
+    // 小于100秒，所属的区间块index（秒） = 据开始过去了多少秒 / 每个区间多少秒
+    const IntervalIndex =  _isMoreThanOneHundredSec
+      ? Math.ceil(timeSinceStart / (secPerInterval.value / 60))
+      : Math.ceil(timeSinceStart / secPerInterval.value) 
+    // 超过100秒，当前区间的值(分钟) = 所属的区间块index（分钟）* 每个区间多少分钟
+    // 小于100秒，当前区间的值(秒) = 所属的区间块index（秒）* 每个区间多少秒
+    const interval = _isMoreThanOneHundredSec
+      ? IntervalIndex * (secPerInterval.value / 60)
+      : IntervalIndex * secPerInterval.value
+
+    if (!groupedData[interval]) {
+      groupedData[interval] = { interval: interval, open: 0,  openBlank: 0, openSave:0 , flag: 0,doubleClick: 0 };
     }
-    groupedData[minute][event.type] += 1;
+    groupedData[interval][event.type] += 1;
   });
-  return Object.values(groupedData).sort((a, b) => a.minute - b.minute); // 按照时间刻度排序
+
+  return Object.values(groupedData).sort((a, b) => a.interval - b.interval); // 按照时间刻度排序
 }
 </script>
 

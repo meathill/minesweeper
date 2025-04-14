@@ -3,7 +3,6 @@ import { ref, reactive } from "vue";
 
 export const useOperationRecordsStore = defineStore("operationRecords", () => {
   const isShowChart = ref(false);
-
   const operationRecords = reactive({
     startTimeStamp: 0,
     operationEvents: [],
@@ -19,11 +18,9 @@ export const useOperationRecordsStore = defineStore("operationRecords", () => {
           clickTimestamp: Date.now(),
           type: "open",
         });
-        break;
-      case "flag":
         operationRecords.operationEvents.push({
           clickTimestamp: Date.now(),
-          type: "flag",
+          type: "openSave",
         });
         break;
       case "openBlank":
@@ -31,7 +28,23 @@ export const useOperationRecordsStore = defineStore("operationRecords", () => {
           clickTimestamp: Date.now(),
           type: "openBlank",
         });
+        operationRecords.operationEvents.push({
+          clickTimestamp: Date.now(),
+          type: "openSave",
+        });
         break;
+      case "flag":
+        operationRecords.operationEvents.push({
+          clickTimestamp: Date.now(),
+          type: "flag",
+        });
+        break;
+
+      case "doubleClick":
+        operationRecords.operationEvents.push({
+          clickTimestamp: Date.now(),
+          type: "doubleClick",
+        });
       default:
         break;
     }
