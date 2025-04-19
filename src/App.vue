@@ -1,9 +1,14 @@
 <script setup>
-import {ref, computed, onMounted, nextTick} from 'vue';
+import {ref, computed, onMounted, nextTick, defineAsyncComponent } from 'vue';
 import JsConfetti from 'js-confetti';
 import {version} from '../package.json';
 import GridItem from './grid-item.vue';
 import {Levels} from './data';
+import { useOperationRecordsStore } from './store/operationRecords';
+
+const OperationChart = defineAsyncComponent(() => import('./operation-chart.vue') )
+const operationStore = useOperationRecordsStore()
+
 
 let interval = null;
 const jsConfetti = new JsConfetti();
@@ -61,6 +66,8 @@ function doStart(event) {
       gridItem.reset();
     }
   }
+  // 刷新记录每分钟操作
+  operationStore.onFreshOperateRecords()
 }
 
 function doRealStart(clickedIndex) {
@@ -115,6 +122,7 @@ function doStop(success = false) {
       gridItem.uncover();
     }
   }
+  operationStore.onStopOperateRecords()
 }
 
 function onFlag(flag) {
@@ -124,6 +132,8 @@ function onFlag(flag) {
 async function onOpen(item, index) {
   if (!isRealStart.value) {
     doRealStart(index);
+    // 开始记录每分钟操作
+    operationStore.onUpdateOperateRecords('')
     await nextTick();
     onOpen(grid.value[index], index);
     return;
@@ -268,8 +278,18 @@ function onBeforeUnload(event) {
       :is-bomb="item.isBomb"
       :flagable="flagged < bombNumber"
       @flag="onFlag"
-      @open="onOpen(item, index)"
+      @open="onOpen(item, index, true)"
       @open-all="onOpenAll(item, index)"
     />
+  </div>
+  <div v-if="operationStore.isShowChart" class="flex items-center justify-center my-4">
+    <Suspense>
+      <template #default>
+        <operation-chart />
+      </template>
+      <template #fallback>
+        <div class="loading loading-spinner loading-lg"></div>
+      </template>
+    </Suspense>
   </div>
 </template>

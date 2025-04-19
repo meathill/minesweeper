@@ -1,5 +1,6 @@
 <script setup>
 import {ref, toRefs} from 'vue';
+import { useOperationRecordsStore } from './store/operationRecords';
 
 const emit = defineEmits(['flag', 'open', 'openAll']);
 const props = defineProps({
@@ -12,19 +13,22 @@ const isOpen = ref(false);
 const isFlag = ref(false);
 const isUncovered = ref(false);
 const mouseCount = ref(0);
+const operationStore = useOperationRecordsStore()
 
 function onClick() {
   mouseCount.value = 0;
-  open();
+  open(true);
 }
 function onRightClick(event) {
   mouseCount.value = 0;
   event.preventDefault();
   addFlag();
+  operationStore.onUpdateOperateRecords('flag')
 }
 function onDoubleClick() {
   mouseCount.value = 0;
   if (isOpen.value) {
+    operationStore.onUpdateOperateRecords('doubleClick')
     emit('openAll');
   }
 }
@@ -37,11 +41,17 @@ function onMouseDown(event) {
 function onMouseUp() {
   mouseCount.value = 0;
 }
-function open() {
+function open(isUserAction = false) {
   if (isOpen.value || isFlag.value) {
     return;
   }
   isOpen.value = true;
+
+  if (isUserAction && !props.isBomb){
+    operationStore.onUpdateOperateRecords(count.value === 0 ? 'openBlank' : 'open');
+  }
+  operationStore.onUpdateOperateRecords('openSave');
+
   emit('open');
 }
 function addFlag(skipFlagged = false) {
