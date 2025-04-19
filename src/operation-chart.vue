@@ -56,7 +56,7 @@ const chartOptions = computed(() => ({
         display: true,
         text: "RPM（操作次数/分钟）",
       },
-      min: -1,
+      min: 0,
       ticks: {
         stepSize: 1,
         beginAtZero: true,
@@ -82,23 +82,16 @@ const chartData = computed(() => ({
   labels: operationEventsData.value.map((item) => item.interval.toString()),
   datasets: [
     {
-      label: "点击安全区操作",
+      label: "打开安全区",
       borderColor: "#4bc0c0",
       data: operationEventsData.value.map((item) => item.openSave),
       pointRadius: 5,
       tension: 0.1,
     },
     {
-      label: "插旗操作",
+      label: "插旗",
       borderColor: "#FF6B6B",
       data: operationEventsData.value.map((item) => item.flag),
-      pointRadius: 5,
-      tension: 0.1,
-    },
-    {
-      label: "快速展开操作",
-      borderColor: "#FF9F40",
-      data: operationEventsData.value.map((item) => item.doubleClick),
       pointRadius: 5,
       tension: 0.1,
     },

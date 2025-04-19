@@ -13,7 +13,6 @@ const isOpen = ref(false);
 const isFlag = ref(false);
 const isUncovered = ref(false);
 const mouseCount = ref(0);
-const isUserTriggered = ref(false); // 是否为用户主动触发
 const operationStore = useOperationRecordsStore()
 
 function onClick() {
@@ -48,10 +47,10 @@ function open(isUserAction = false) {
   }
   isOpen.value = true;
 
-  if (isUserAction && !isUserTriggered.value && !props.isBomb){
-    isUserTriggered.value = true;
+  if (isUserAction && !props.isBomb){
     operationStore.onUpdateOperateRecords(count.value === 0 ? 'openBlank' : 'open');
   }
+  operationStore.onUpdateOperateRecords('openSave');
 
   emit('open');
 }

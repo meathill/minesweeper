@@ -18,16 +18,14 @@ export const useOperationRecordsStore = defineStore("operationRecords", () => {
           clickTimestamp: Date.now(),
           type: "open",
         });
-        operationRecords.operationEvents.push({
-          clickTimestamp: Date.now(),
-          type: "openSave",
-        });
         break;
       case "openBlank":
         operationRecords.operationEvents.push({
           clickTimestamp: Date.now(),
           type: "openBlank",
         });
+        break
+      case "openSave":
         operationRecords.operationEvents.push({
           clickTimestamp: Date.now(),
           type: "openSave",
@@ -39,12 +37,12 @@ export const useOperationRecordsStore = defineStore("operationRecords", () => {
           type: "flag",
         });
         break;
-
       case "doubleClick":
         operationRecords.operationEvents.push({
           clickTimestamp: Date.now(),
           type: "doubleClick",
         });
+        break;
       default:
         break;
     }
