@@ -81,3 +81,22 @@
 .open {
   cursor: unset;
 }
+
+.grid-item.open {
+  animation: reveal 0.18s ease-out backwards;
+}
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .grid-item.open {
+    animation: none;
+  }
+}

@@ -13,6 +13,7 @@ const isOpen = ref(false);
 const isFlag = ref(false);
 const isUncovered = ref(false);
 const mouseCount = ref(0);
+const revealDelay = ref(0);
 const operationStore = useOperationRecordsStore()
 
 function onClick() {
@@ -41,10 +42,11 @@ function onMouseDown(event) {
 function onMouseUp() {
   mouseCount.value = 0;
 }
-function open(isUserAction = false) {
+function open(isUserAction = false, delayMs = 0) {
   if (isOpen.value || isFlag.value) {
     return;
   }
+  revealDelay.value = delayMs;
   isOpen.value = true;
 
   if (isUserAction && !props.isBomb){
@@ -52,7 +54,7 @@ function open(isUserAction = false) {
   }
   operationStore.onUpdateOperateRecords('openSave');
 
-  emit('open');
+  emit('open', delayMs);
 }
 function addFlag(skipFlagged = false) {
   if (isOpen.value) {
@@ -92,6 +94,7 @@ export default {
     {'open bg-base-200 dark:bg-base-100': isOpen, 'bg-base-300': !isOpen, 'wrong-mark': !isBomb && isFlag && isUncovered},
     'count-' + count
   ]"
+  :style="{ animationDelay: revealDelay + 'ms' }"
   @click="onClick"
   @contextmenu="onRightClick"
   @dblclick="onDoubleClick"

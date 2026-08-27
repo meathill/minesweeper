@@ -129,7 +129,9 @@ function onFlag(flag) {
   flagged.value += flag ? 1 : -1;
 }
 
-async function onOpen(item, index) {
+const REVEAL_STEP_MS = 25; // 批量展开时每层涟漪的延迟
+
+async function onOpen(item, index, delayMs = 0) {
   if (!isRealStart.value) {
     doRealStart(index);
     // 开始记录每分钟操作
@@ -147,7 +149,7 @@ async function onOpen(item, index) {
     return doStop(true);
   }
   // 如果点开的节点为 0，则点开附近的节点
-  openGridItem(item, index);
+  openGridItem(item, index, delayMs);
 }
 
 function onOpenAll(item, index) {
@@ -184,7 +186,7 @@ function onLevelChange(level) {
   doStart(true);
 }
 
-function openGridItem(item, index) {
+function openGridItem(item, index, delayMs = 0) {
   if (item.count) {
     return;
   }
@@ -196,7 +198,7 @@ function openGridItem(item, index) {
         continue;
       }
       const gridItem = gridItems.value[i * column.value + j];
-      gridItem.open();
+      gridItem.open(false, delayMs + REVEAL_STEP_MS);
     }
   }
 }
@@ -278,7 +280,7 @@ function onBeforeUnload(event) {
       :is-bomb="item.isBomb"
       :flagable="flagged < bombNumber"
       @flag="onFlag"
-      @open="onOpen(item, index, true)"
+      @open="onOpen(item, index, $event)"
       @open-all="onOpenAll(item, index)"
     />
   </div>
