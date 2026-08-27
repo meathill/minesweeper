@@ -5,7 +5,7 @@
 
 来源：[免费线上讲习班：使用 vue3 开发扫雷游戏](https://blog.meathill.com/share/free-online-workshop-develop-minesweeper-with-vue3.html)
 
-[DEMO](https://minesweeper-mz.vercel.app/)
+[DEMO](https://minesweeper.meathill.com/)
 
 
 课程安排
