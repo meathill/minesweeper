@@ -220,7 +220,7 @@ function onBeforeUnload(event) {
               <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"/>
             </svg>
           </label>
-          <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-200 rounded-box w-52">
+          <ul tabindex="0" class="mt-3 p-2 shadow menu menu-sm dropdown-content bg-base-200 rounded-box w-52">
             <li v-for="(item, key) in Levels" :key="key">
               <label class="flex items-center">
                 <input
