@@ -1,6 +1,7 @@
 # IDE
 .idea
 .DS_Store
+.zcode/
 
 # repo
 node_modules
