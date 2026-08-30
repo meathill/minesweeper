@@ -373,41 +373,39 @@ function onBeforeUnload(event) {
       </div>
     </div>
   </header>
-  <div class="bg-slate-800 text-white">
-    <div class="container mx-auto flex items-center justify-between gap-2 px-2 py-2">
-      <!-- 左红框预留：前进后退 -->
-      <div class="w-[140px] sm:w-[220px] h-8 border-2 border-red-500 rounded flex items-center justify-center shrink-0">
-        <span class="text-xs opacity-30 hidden sm:inline">前进 / 后退（预留）</span>
+  <div class="bg-slate-800 text-white mt-3">
+    <div class="mx-auto flex items-center py-2 px-2" :style="{ width: `min(calc(100% - 16px), calc(var(--column) * 2rem))` }">
+      <div class="flex-1 flex justify-center">
+        <div class="flex items-center gap-3 sm:gap-6">
+          <span class="w-24 sm:w-32 text-sm">地雷：{{ bombNumber - flagged }}</span>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline bg-white text-slate-800 border-slate-300 start-button"
+            @click="doStart"
+          >
+            <template v-if="isSuccess">😊</template>
+            <template v-else-if="isFailed">😭</template>
+            <template v-else>🎮</template>
+          </button>
+          <span class="w-24 sm:w-32 text-right text-sm flex justify-end items-center gap-1">
+            <template v-if="timeCount <= 59">
+              <span class="countdown"><span :style="{ '--value': timeCount }"></span></span>
+            </template>
+            <template v-else-if="timeCount >= 99 * 60 + 59">
+              <span class="countdown" style="--value:99"></span>
+              :
+              <span class="countdown" :style="{ '--value': timeCount % 60 }"></span>
+            </template>
+            <template v-else>
+              <span class="countdown" :style="{ '--value': Math.floor(timeCount / 60) }"></span>
+              :
+              <span class="countdown" :style="{ '--value': timeCount % 60 }"></span>
+            </template>
+          </span>
+        </div>
       </div>
-      <div class="flex items-center gap-3 sm:gap-6">
-        <span class="w-24 sm:w-32 text-sm">地雷：{{ bombNumber - flagged }}</span>
-        <button
-          type="button"
-          class="btn btn-sm btn-outline bg-white text-slate-800 border-slate-300 start-button"
-          @click="doStart"
-        >
-          <template v-if="isSuccess">😊</template>
-          <template v-else-if="isFailed">😭</template>
-          <template v-else>🎮</template>
-        </button>
-        <span class="w-24 sm:w-32 text-right text-sm flex justify-end items-center gap-1">
-          <template v-if="timeCount <= 59">
-            <span class="countdown"><span :style="{ '--value': timeCount }"></span></span>
-          </template>
-          <template v-else-if="timeCount >= 99 * 60 + 59">
-            <span class="countdown" style="--value:99"></span>
-            :
-            <span class="countdown" :style="{ '--value': timeCount % 60 }"></span>
-          </template>
-          <template v-else>
-            <span class="countdown" :style="{ '--value': Math.floor(timeCount / 60) }"></span>
-            :
-            <span class="countdown" :style="{ '--value': timeCount % 60 }"></span>
-          </template>
-        </span>
-      </div>
-      <!-- 右红框：提示 + 学习模式 dropdown -->
-      <div class="w-[140px] sm:w-[260px] h-8 flex items-center justify-end gap-1 sm:gap-2 shrink-0">
+      <!-- 右侧：提示 + 学习模式（对齐高级难度游戏区右缘） -->
+      <div class="flex items-center gap-1 sm:gap-2 shrink-0 ml-2">
         <button class="btn btn-xs sm:btn-sm btn-warning" @click="handleHint" :disabled="!isRealStart || !probabilities.size">提示</button>
         <div class="dropdown dropdown-end">
           <label tabindex="0" class="btn btn-xs sm:btn-sm btn-primary">学习模式</label>

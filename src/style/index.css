@@ -10,6 +10,21 @@
   --row: 10;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --meathill-cream: #1a1410;
+    --meathill-paper: #231b14;
+    --meathill-paper-deep: #31251b;
+    --meathill-fluff: #3a2b1d;
+    --meathill-ink: #f3e9d5;
+    --meathill-ink-soft: #d8cbb6;
+    --meathill-mute: #ad9b83;
+    --meathill-rule: #493a2d;
+    --meathill-rule-strong: #6a5642;
+    --meathill-yellow-deep: #e6b240;
+  }
+}
+
 .navbar {
   position: sticky;
   top: 0;
