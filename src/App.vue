@@ -277,7 +277,7 @@ function onBeforeUnload(event) {
   <header class="navbar bg-base-200">
     <div class="container mx-auto flex flex-wrap items-center gap-x-3 gap-y-2 py-1">
       <div class="flex items-center gap-2 min-w-0 flex-1">
-        <h1 class="text-lg sm:text-xl font-bold truncate">肉山小课堂：扫雷 Workshop</h1>
+        <h1 class="text-lg sm:text-xl font-bold truncate">肉山扫雷</h1>
         <span class="text-xs opacity-60 whitespace-nowrap shrink-0">v{{version}}</span>
       </div>
       <div class="flex items-center gap-2 flex-wrap justify-end shrink-0">

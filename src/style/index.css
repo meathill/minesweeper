@@ -40,6 +40,27 @@
     border-color: #fff2 #3339 #3339 #fff2;
   }
 }
+/* 未翻开：加深，与已翻开形成更强对比（覆盖 bg-base-300） */
+.grid-item:not(.open) {
+  background-color: #9aa8bd !important;
+  border-color: #cbd5e1 #64748b #64748b #cbd5e1 !important;
+  @media (prefers-color-scheme: dark) {
+    background-color: #5a6577 !important;
+    border-color: #7a8597 #2f3642 #2f3642 #7a8597 !important;
+  }
+}
+/* 已翻开：去立体边框，更平 */
+.grid-item.open {
+  border-width: 1px !important;
+  border-color: #e2e8f0 !important;
+  border-style: solid !important;
+  box-shadow: none !important;
+  background-color: #f8fafc !important;
+  @media (prefers-color-scheme: dark) {
+    border-color: #334155 !important;
+    background-color: #1e293b !important;
+  }
+}
 .prob-overlay {
   position: absolute;
   inset: 0;
