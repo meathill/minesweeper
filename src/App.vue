@@ -1,5 +1,6 @@
 <script setup>
-import {ref, computed, onMounted, nextTick, defineAsyncComponent } from 'vue';
+import {ref, computed, onMounted, nextTick, defineAsyncComponent, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import JsConfetti from 'js-confetti';
 import {version} from '../package.json';
 import GridItem from './grid-item.vue';
@@ -9,10 +10,50 @@ import {Levels} from './data';
 import { useOperationRecordsStore } from './store/operationRecords';
 import { useLearningStore } from './store/learningStore';
 import { computeProbabilities, getBestProbs, scoreForAction } from './solver/probability.js';
+import { setLocale } from './i18n.js';
 
+const { t, tm, locale } = useI18n()
 const OperationChart = defineAsyncComponent(() => import('./operation-chart.vue') )
 const operationStore = useOperationRecordsStore()
 const learningStore = useLearningStore()
+
+// locale -> URL + SEO sync
+function toggleLocale() {
+  const next = locale.value === 'en' ? 'zh' : 'en'
+  setLocale(next)
+  const target = next === 'en' ? '/en/' : '/'
+  if (location.pathname !== target) {
+    history.pushState(null, '', target)
+  }
+  updateSeoMeta(next)
+}
+function updateSeoMeta(loc) {
+  const isEn = loc === 'en'
+  document.title = isEn ? t('meta.title') : '肉山扫雷 - 边玩边学的扫雷 | 概率热力图·决策效率'
+  const desc = t('meta.description')
+  document.querySelector('meta[name="description"]')?.setAttribute('content', desc)
+  document.querySelector('meta[property="og:title"]')?.setAttribute('content', t('meta.ogTitle'))
+  document.querySelector('meta[property="og:description"]')?.setAttribute('content', t('meta.ogDescription'))
+  document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', t('meta.ogTitle'))
+  document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', t('meta.twitterDescription'))
+  document.documentElement.lang = isEn ? 'en' : 'zh-CN'
+  // hreflang
+  let linkEn = document.querySelector('link[hreflang="en"]')
+  let linkZh = document.querySelector('link[hreflang="zh"]')
+  if (!linkEn) { linkEn = document.createElement('link'); linkEn.rel='alternate'; linkEn.hreflang='en'; document.head.appendChild(linkEn) }
+  if (!linkZh) { linkZh = document.createElement('link'); linkZh.rel='alternate'; linkZh.hreflang='zh'; document.head.appendChild(linkZh) }
+  linkEn.href = 'https://minesweeper.meathill.com/en/'
+  linkZh.href = 'https://minesweeper.meathill.com/'
+  let linkX = document.querySelector('link[hreflang="x-default"]')
+  if (!linkX) { linkX = document.createElement('link'); linkX.rel='alternate'; linkX.hreflang='x-default'; document.head.appendChild(linkX) }
+  linkX.href = 'https://minesweeper.meathill.com/'
+}
+// init SEO on mount (in case locale is en on /en/)
+watch(locale, (v) => updateSeoMeta(v))
+const seoHowToPlay = computed(() => tm('seo.howToPlay'))
+const seoChartBullets = computed(() => tm('seo.chartBullets'))
+const seoProgressSteps = computed(() => tm('seo.progressSteps'))
+const faqItems = computed(() => tm('faq.items'))
 
 
 let interval = null;
@@ -118,6 +159,7 @@ function getProbability(index) {
 
 onMounted(() => {
   doStart();
+  updateSeoMeta(locale.value);
 });
 
 function doStart(event) {
@@ -339,14 +381,15 @@ function onBeforeUnload(event) {
       <div class="flex items-center gap-2 min-w-0 flex-1">
         <a class="brand-studio" href="https://meathill.com">Meathill Studio</a>
         <span aria-hidden="true" class="brand-divider"></span>
-        <h1 class="text-lg sm:text-xl font-bold truncate">肉山扫雷</h1>
+        <h1 class="text-lg sm:text-xl font-bold truncate">{{ t('header.title') }}</h1>
         <span class="text-xs opacity-60 whitespace-nowrap shrink-0">v{{version}}</span>
       </div>
       <div class="flex items-center gap-2 flex-wrap justify-end shrink-0">
+        <button class="btn btn-ghost btn-xs" @click="toggleLocale" :title="locale === 'en' ? '切换到中文' : 'Switch to English'">{{ locale === 'en' ? '中文' : 'EN' }}</button>
         <BrandSiteSwitcher />
         <div class="dropdown dropdown-end">
           <label tabindex="0" class="btn btn-ghost btn-sm px-2">
-            {{level}}
+            {{ t(`header.levels.${level}`) }}
             <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
               <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"/>
             </svg>
@@ -364,7 +407,7 @@ function onBeforeUnload(event) {
                   @change="onLevelChange(key)"
                 />
                 <span>
-                <i class="bi mr-2" :class="level === key ? 'bi-check-lg' : 'bi-blank'" /> {{key}}
+                <i class="bi mr-2" :class="level === key ? 'bi-check-lg' : 'bi-blank'" /> {{ t(`header.levels.${key}`) }}
                 </span>
               </label>
             </li>
@@ -377,7 +420,7 @@ function onBeforeUnload(event) {
     <div class="mx-auto flex items-center py-2 px-2" :style="{ width: `min(calc(100% - 16px), calc(var(--column) * 2rem))` }">
       <div class="flex-1 flex justify-center">
         <div class="flex items-center gap-3 sm:gap-6">
-          <span class="w-24 sm:w-32 text-sm">地雷：{{ bombNumber - flagged }}</span>
+          <span class="w-24 sm:w-32 text-sm">{{ t('toolbar.mines', { count: bombNumber - flagged }) }}</span>
           <button
             type="button"
             class="btn btn-sm btn-outline bg-white text-slate-800 border-slate-300 start-button"
@@ -406,29 +449,29 @@ function onBeforeUnload(event) {
       </div>
       <!-- 右侧：提示 + 学习模式（对齐高级难度游戏区右缘） -->
       <div class="flex items-center gap-1 sm:gap-2 shrink-0 ml-2">
-        <button class="btn btn-xs sm:btn-sm btn-warning" @click="handleHint" :disabled="!isRealStart || !probabilities.size">提示</button>
+        <button class="btn btn-xs sm:btn-sm btn-warning" @click="handleHint" :disabled="!isRealStart || !probabilities.size">{{ t('toolbar.hint') }}</button>
         <div class="dropdown dropdown-end">
-          <label tabindex="0" class="btn btn-xs sm:btn-sm btn-primary">学习模式</label>
+          <label tabindex="0" class="btn btn-xs sm:btn-sm btn-primary">{{ t('toolbar.learningMode') }}</label>
           <div tabindex="0" class="dropdown-content mt-3 p-3 shadow menu bg-base-100 text-base-content rounded-box w-56">
             <label class="flex items-center gap-2 text-sm cursor-pointer">
               <input type="checkbox" class="toggle toggle-sm toggle-primary" v-model="learningStore.showProbability" />
-              <span>开启热力图</span>
+              <span>{{ t('toolbar.learningDropdown.enableHeatmap') }}</span>
             </label>
             <div v-if="learningStore.showProbability" class="mt-3 flex flex-col gap-2">
               <div class="flex items-center gap-1 text-xs">
                 <span class="w-12 h-2 rounded" style="background: linear-gradient(90deg, rgba(34,197,94,0.75), rgba(234,179,8,0.75), rgba(239,68,68,0.75))"></span>
-                <span>0%→100%</span>
+                <span>{{ t('toolbar.learningDropdown.gradient') }}</span>
               </div>
               <label class="flex items-center gap-2 text-sm cursor-pointer">
                 <input type="checkbox" class="checkbox checkbox-xs" v-model="learningStore.showPercent" />
-                显示 %
+                {{ t('toolbar.learningDropdown.showPercent') }}
               </label>
               <label class="flex items-center gap-2 text-sm cursor-pointer">
                 <input type="checkbox" class="checkbox checkbox-xs" v-model="learningStore.showFraction" />
-                显示分数
+                {{ t('toolbar.learningDropdown.showFraction') }}
               </label>
             </div>
-            <p v-else class="text-xs opacity-60 mt-2">开启后实时显示每格地雷概率</p>
+            <p v-else class="text-xs opacity-60 mt-2">{{ t('toolbar.learningDropdown.disabledHint') }}</p>
           </div>
         </div>
       </div>
@@ -465,79 +508,42 @@ function onBeforeUnload(event) {
   </div>
 
   <section class="container mx-auto max-w-3xl px-4 py-10 mt-6 border-t border-base-300">
-    <h2 class="text-2xl font-bold mb-3">什么是肉山扫雷？</h2>
-    <p class="text-sm leading-7 opacity-80 mb-6">
-      肉山扫雷是经典扫雷的现代复刻，<strong>边玩边学</strong>是它的核心：既保留 9×9/16×16/16×30 三档难度与右键插旗的原味规则，又加入<strong>学习模式</strong>——实时计算每个未翻开格子的地雷概率，用 75% 绿-黄-红热力图直接盖在格子上，并用<strong>决策效率 0-10 分</strong>量化你每一步与“当时最优解”的差距。免右键、双击批量打开，触摸板与手机也能流畅游玩。
-    </p>
+    <h2 class="text-2xl font-bold mb-3">{{ t('seo.whatIsTitle') }}</h2>
+    <p class="text-sm leading-7 opacity-80 mb-6" v-html="t('seo.whatIsDesc')"></p>
 
-    <h2 class="text-xl font-bold mt-8 mb-3">怎么玩</h2>
+    <h2 class="text-xl font-bold mt-8 mb-3">{{ t('seo.howToPlayTitle') }}</h2>
     <ul class="list-disc ps-5 text-sm leading-7 opacity-80 mb-6">
-      <li><strong>左键翻开</strong>：首次点击必不中雷；数字表示周围 8 格内的雷数。</li>
-      <li><strong>右键/长按插旗</strong>：标记你认为有雷的格子；顶部会实时显示剩余地雷数。</li>
-      <li><strong>双击数字批量打开（苹果鼠标/触摸板优化）</strong>：传统扫雷需“左右键同时按”来批量打开，本站针对 <strong>Apple Magic Mouse 单键、Mac 触摸板、手机</strong>做了优化——只要数字周围的旗数等于该数字，<strong>双击该数字</strong>即可一键打开剩余邻格，无需右键。桌面端仍兼容左右键同按，双击也会被计为一次“绝对安全决策（10 分）”。</li>
-      <li>翻开所有非雷格子即胜利；点中雷则一键揭晓全盘。</li>
+      <li v-for="(item, idx) in seoHowToPlay" :key="idx" v-html="item"></li>
     </ul>
 
-    <h2 class="text-xl font-bold mt-8 mb-3">什么是学习模式</h2>
-    <h3 class="font-semibold mt-4 mb-2">概率热力图：看见每一格的风险</h3>
-    <p class="text-sm leading-7 opacity-80 mb-4">
-      开启学习模式后，求解器会在后台基于<strong>已翻开数字 + 已插旗</strong>构建约束（<code>周围雷数 - 已标旗 = 剩余雷数</code>），对“前沿格”（与数字相邻的未开格）做分量拆分与回溯枚举，孤立格按 <code>剩余雷数/孤立格数</code> 均摊。每格得到 <code>P(是雷) 0-1</code>，用 <span class="inline-block w-3 h-3 rounded align-middle" style="background:#22c55e"></span> 绿（0%）→ <span class="inline-block w-3 h-3 rounded align-middle" style="background:#eab308"></span> 黄（50%）→ <span class="inline-block w-3 h-3 rounded align-middle" style="background:#ef4444"></span> 红（100%）75% 透明度叠在未开格上。 header 的复选框可独立开关 <code>%</code> 与 <code>分数</code> 文本，只看颜色也能训练直觉。
-    </p>
-    <h3 class="font-semibold mt-4 mb-2">决策效率：你的每一步打几分</h3>
-    <p class="text-sm leading-7 opacity-80 mb-4">
-      没有绝对的 10 分，只有<strong>相对当前盘面的最优</strong>。翻开时以当时 <code>pMin（全场最低雷概率）</code> 为分母：<code>得分 = (1-p_选中)/(1-pMin)×10</code>；插旗时以 <code>pMax</code> 为分母：<code>得分 = p_选中/pMax×10</code>。选中当时最安全/最该标的格子即 <strong>10 分</strong>，选 50% 而场上有 0% 可选则只有约 5 分。双击批量打开视为“已判定安全”，固定 <strong>10 分</strong>。分数与热力图共用同一求解器，关闭学习模式也会在后台计分，不影响复盘。
-    </p>
+    <h2 class="text-xl font-bold mt-8 mb-3">{{ t('seo.learningTitle') }}</h2>
+    <h3 class="font-semibold mt-4 mb-2">{{ t('seo.heatmapTitle') }}</h3>
+    <p class="text-sm leading-7 opacity-80 mb-4" v-html="t('seo.heatmapDesc')"></p>
+    <h3 class="font-semibold mt-4 mb-2">{{ t('seo.efficiencyTitle') }}</h3>
+    <p class="text-sm leading-7 opacity-80 mb-4" v-html="t('seo.efficiencyDesc')"></p>
 
-    <h2 class="text-xl font-bold mt-8 mb-3">如何读懂复盘图表</h2>
-    <p class="text-sm leading-7 opacity-80 mb-2">
-      胜利或失败后自动弹出三线图，X 轴为<strong>时间（分:秒 / 时:分:秒）</strong>，按 6 秒分桶聚合：
-    </p>
+    <h2 class="text-xl font-bold mt-8 mb-3">{{ t('seo.chartTitle') }}</h2>
+    <p class="text-sm leading-7 opacity-80 mb-2" v-html="t('seo.chartDesc')"></p>
     <ul class="list-disc ps-5 text-sm leading-7 opacity-80 mb-6">
-      <li><strong class="text-[#4bc0c0]">打开安全区（青绿）</strong>：RPM（操作次数/分钟）左轴，反映手速与连开效率。</li>
-      <li><strong class="text-[#FF6B6B]">插旗（红）</strong>：同左轴，看你何时密集标雷。</li>
-      <li><strong class="text-[#f59e0b]">决策效率（橙，右轴 0-10）</strong>：每 6 秒内所有计分操作的均值，10 为当时最优，持续走低说明开始“盲猜”。</li>
+      <li v-for="(item, idx) in seoChartBullets" :key="idx" v-html="item"></li>
     </ul>
-    <p class="text-sm leading-7 opacity-80 mb-6">结合热力图复盘：橙线低谷对应的时间点，回看当时哪一步没选最绿格，就知道下次该怎么选。</p>
+    <p class="text-sm leading-7 opacity-80 mb-6">{{ t('seo.chartHint') }}</p>
 
-    <h2 class="text-xl font-bold mt-8 mb-3">从新手到高手</h2>
+    <h2 class="text-xl font-bold mt-8 mb-3">{{ t('seo.progressTitle') }}</h2>
     <ol class="list-decimal ps-5 text-sm leading-7 opacity-80 mb-6">
-      <li>先开学习模式看颜色，建立“绿=可点、红=须标”的直觉；</li>
-      <li>关掉 %/分数，只用颜色做决策，再对照复盘看分数是否仍 10；</li>
-      <li>最后关闭学习模式，靠逻辑与记忆挑战 Hard 16×30，目标 RPM 稳定、橙线维持 9 以上。</li>
+      <li v-for="(item, idx) in seoProgressSteps" :key="idx" v-html="item"></li>
     </ol>
 
-    <div class="text-xs opacity-60 mt-8">
-      关键词：肉山扫雷 · 扫雷边玩边学 · 扫雷概率 · 扫雷技巧 · 扫雷教学 · 学习模式 · 决策效率 · 复盘 · 苹果鼠标扫雷 · 触摸板扫雷
-    </div>
+    <div class="text-xs opacity-60 mt-8">{{ t('seo.keywords') }}</div>
   </section>
 
   <!-- GEO 友好：高密度问答，供生成式引擎直接引用 -->
   <section id="geo-faq" class="container mx-auto max-w-3xl px-4 py-8 mt-2">
-    <h2 class="text-xl font-bold mb-4">常见问题（GEO 友好）</h2>
+    <h2 class="text-xl font-bold mb-4">{{ t('faq.title') }}</h2>
     <div class="space-y-4 text-sm leading-7">
-      <div class="bg-base-100 border border-base-300 rounded-box p-4">
-        <h3 class="font-semibold">肉山扫雷是什么？</h3>
-        <p class="opacity-80 mt-1">肉山扫雷（minesweeper.meathill.com）是边玩边学的现代扫雷，支持 9×9/16×16/16×30 三档难度，免右键、双击批量打开，独有学习模式：实时概率热力图与决策效率评分，局后三线复盘图帮助从盲猜到精通。</p>
-      </div>
-      <div class="bg-base-100 border border-base-300 rounded-box p-4">
-        <h3 class="font-semibold">学习模式的概率是怎么算的？</h3>
-        <p class="opacity-80 mt-1">基于已翻开数字与已插旗构建约束 <code>need = 数字 - 已标旗</code>，对前沿格分量拆分回溯枚举，孤立格按剩余雷数均摊，得到每格 P(是雷) 0-1，用绿→黄→红 75% 叠加。求解器后台始终运行，即使关闭显隐也会用于决策评分。</p>
-      </div>
-      <div class="bg-base-100 border border-base-300 rounded-box p-4">
-        <h3 class="font-semibold">决策效率 0-10 分是什么意思？</h3>
-        <p class="opacity-80 mt-1">相对分：翻开以当时全场最低 <code>pMin</code> 为分母，<code>(1-p)/(1-pMin)×10</code>；插旗以最高 <code>pMax</code> 为分母。选中当时最该点/最该标的格子即 10 分；双击批量打开固定 10 分。分数按 6 秒分桶取均值画在复盘图右轴。</p>
-      </div>
-      <div class="bg-base-100 border border-base-300 rounded-box p-4">
-        <h3 class="font-semibold">苹果鼠标/触摸板怎么玩？</h3>
-        <p class="opacity-80 mt-1">已优化：无需左右键同按，对满足 <code>旗数==数字</code> 的已翻开格<strong>双击</strong>即可批量打开剩余邻格。右键、长按插旗、触摸板点按均兼容，手机亦可直接游玩。</p>
-      </div>
-      <div class="bg-base-100 border border-base-300 rounded-box p-4">
-        <h3 class="font-semibold">复盘图怎么看？</h3>
-        <p class="opacity-80 mt-1">X 轴为时间（分:秒/时:分:秒），Y 左轴为 RPM（操作/分钟，青绿=打开安全区、红=插旗），Y 右轴为决策效率（橙 0-10）。橙线持续 9+ 说明全程选最优；低谷对应时间点即需回顾的“非最绿”决策。</p>
-      </div>
-      <div class="bg-base-100 border border-base-300 rounded-box p-4">
-        <h3 class="font-semibold">适合谁？</h3>
-        <p class="opacity-80 mt-1">零基础新手用热力图建立直觉，进阶玩家关掉 %/分数只看颜色训练盲扫，高手关闭学习模式冲 Hard 榜单。所有局都可局后复盘。<br/>官网：<a class="link" href="https://minesweeper.meathill.com/">https://minesweeper.meathill.com/</a> · 作者：<a class="link" href="https://meathill.com">Meathill Studio</a></p>
+      <div v-for="(item, idx) in faqItems" :key="idx" class="bg-base-100 border border-base-300 rounded-box p-4">
+        <h3 class="font-semibold">{{ item.q }}</h3>
+        <p class="opacity-80 mt-1" v-html="item.a"></p>
       </div>
     </div>
   </section>

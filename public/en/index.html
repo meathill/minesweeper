@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meathill Minesweeper - Learn While Playing | Heatmap & Efficiency</title>
+    <meta name="description" content="Modern learn-while-playing Minesweeper: no right-click, double-click chording (Apple/trackpad optimized), live mine probability heatmap and 0-10 efficiency scoring. Easy/Medium/Hard + replay." />
+    <meta name="keywords" content="Meathill Minesweeper, minesweeper learn, mine probability, minesweeper tips, no right-click, trackpad, Apple mouse, Learn Mode, decision efficiency" />
+    <meta name="theme-color" content="#f2f2f2" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="canonical" href="https://minesweeper.meathill.com/en/" />
+    <link rel="alternate" hreflang="zh" href="https://minesweeper.meathill.com/" />
+    <link rel="alternate" hreflang="en" href="https://minesweeper.meathill.com/en/" />
+    <link rel="alternate" hreflang="x-default" href="https://minesweeper.meathill.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Meathill Minesweeper - Learn While Playing" />
+    <meta property="og:description" content="Learn Mode shows 75% green-yellow-red heatmap per cell and tracks RPM + efficiency — no right-click, double-click to chord (Apple/trackpad optimized)." />
+    <meta property="og:url" content="https://minesweeper.meathill.com/en/" />
+    <meta property="og:image" content="https://minesweeper.meathill.com/favicon.png" />
+    <meta property="og:site_name" content="Meathill Minesweeper" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="zh_CN" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Meathill Minesweeper - Learn While Playing" />
+    <meta name="twitter:description" content="See every cell's probability, score every decision — Minesweeper you can actually learn from." />
+    <meta name="twitter:image" content="https://minesweeper.meathill.com/favicon.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://meathill.com/#organization",
+            "name": "Meathill Studio",
+            "legalName": "Meathill LLC",
+            "url": "https://meathill.com"
+          },
+          {
+            "@type": "WebApplication",
+            "name": "Meathill Minesweeper",
+            "alternateName": "Meathill Minesweeper Workshop",
+            "url": "https://minesweeper.meathill.com/en/",
+            "description": "Modern learn-while-playing Minesweeper: live probability heatmap and efficiency scoring, no right-click, double-click chording (Apple/trackpad optimized), multiple difficulties and replay.",
+            "applicationCategory": "GameApplication",
+            "operatingSystem": "Any",
+            "inLanguage": "en",
+            "publisher": { "@id": "https://meathill.com/#organization" },
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "What is Meathill Minesweeper?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Meathill Minesweeper (minesweeper.meathill.com) is a learn-while-playing Minesweeper with 9×9/16×16/16×30 boards, no right-click required, double-click chording, and Learn Mode: live probability heatmap + efficiency scoring with post-game replay."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How is the probability computed?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Constraints need = number - flags on frontier cells, split into components and enumerated exactly, isolated cells share remaining mines evenly, yielding P(mine) 0-1 as green→yellow→red 75% overlay."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What does efficiency mean?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Relative: open (1-p)/(1-pMin)*10, flag p/pMax*10, chording always 10, averaged per 6s bucket on the replay chart's right axis."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How to chord on Apple / trackpad?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Optimized: double-click any opened number where flags == number to open the rest. Right-click, long-press, and trackpad all work, plus mobile."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+    <script type="module" src="/src/main.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9946806099979342" crossorigin="anonymous"></script>
+  </body>
+</html>

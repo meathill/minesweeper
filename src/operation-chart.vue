@@ -6,8 +6,10 @@
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
+import { useI18n } from 'vue-i18n';
 import { useOperationRecordsStore } from "./store/operationRecords.js";
 import { Line } from "vue-chartjs";
+const { t } = useI18n()
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -45,7 +47,7 @@ const chartOptions = computed(() => ({
       type: "linear",
       title: {
         display: true,
-        text: "时间",
+        text: t('chart.time'),
       },
       min: 0,
       ticks: {
@@ -69,7 +71,7 @@ const chartOptions = computed(() => ({
       position: 'left',
       title: {
         display: true,
-        text: "RPM（操作次数/分钟）",
+        text: t('chart.rpm'),
       },
       min: 0,
       ticks: {
@@ -83,7 +85,7 @@ const chartOptions = computed(() => ({
       min: 0,
       max: 10,
       grid: { drawOnChartArea: false },
-      title: { display: true, text: "决策效率 0-10" },
+      title: { display: true, text: t('chart.efficiencyAxis') },
       ticks: { stepSize: 1 },
     },
   },
@@ -93,7 +95,7 @@ const chartOptions = computed(() => ({
     },
     title: {
       display: true,
-      text: "⭐玩家操作结算 & 决策效率",
+      text: t('chart.title'),
     },
     tooltip: {
       callbacks: {
@@ -115,7 +117,7 @@ const chartData = computed(() => ({
   labels: operationEventsData.value.map((item) => item.interval.toString()),
   datasets: [
     {
-      label: "打开安全区",
+      label: t('chart.openSafe'),
       borderColor: "#4bc0c0",
       backgroundColor: "rgba(75,192,192,0.15)",
       yAxisID: 'y',
@@ -124,7 +126,7 @@ const chartData = computed(() => ({
       tension: 0.1,
     },
     {
-      label: "插旗",
+      label: t('chart.flag'),
       borderColor: "#FF6B6B",
       backgroundColor: "rgba(255,107,107,0.15)",
       yAxisID: 'y',
@@ -133,7 +135,7 @@ const chartData = computed(() => ({
       tension: 0.1,
     },
     {
-      label: "决策效率",
+      label: t('chart.efficiency'),
       borderColor: "#f59e0b",
       backgroundColor: "rgba(245,158,11,0.15)",
       yAxisID: 'y1',

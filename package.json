@@ -14,7 +14,8 @@
     "js-confetti": "^0.13.1",
     "pinia": "^4.0.3",
     "vue": "^3.5.42",
-    "vue-chartjs": "^5.3.4"
+    "vue-chartjs": "^5.3.4",
+    "vue-i18n": "9"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",

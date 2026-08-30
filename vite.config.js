@@ -8,4 +8,6 @@ export default defineConfig({
     tailwindcss(),
     vue(),
   ],
+  // ensure /en/ serves same SPA in dev and preview
+  appType: 'spa',
 })

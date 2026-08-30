@@ -1,0 +1,113 @@
+{
+  "brand": {
+    "studio": "Meathill Studio"
+  },
+  "header": {
+    "title": "Meathill Minesweeper",
+    "level": "Level",
+    "levels": {
+      "Easy": "Easy",
+      "Medium": "Medium",
+      "Hard": "Hard",
+      "Custom": "Custom"
+    }
+  },
+  "toolbar": {
+    "mines": "Mines: {count}",
+    "hint": "Hint",
+    "learningMode": "Learn Mode",
+    "learningDropdown": {
+      "enableHeatmap": "Heatmap",
+      "showPercent": "Show %",
+      "showFraction": "Show fraction",
+      "gradient": "0%→100%",
+      "disabledHint": "Show mine probability in real time"
+    }
+  },
+  "game": {
+    "flag": "🚩",
+    "bomb": "💥",
+    "revealedBomb": "💣"
+  },
+  "chart": {
+    "title": "⭐ Performance & Decision Efficiency",
+    "openSafe": "Open safe",
+    "flag": "Flag",
+    "efficiency": "Efficiency",
+    "rpm": "RPM (ops/min)",
+    "efficiencyAxis": "Efficiency 0-10",
+    "time": "Time",
+    "timeMinutes": "Time (min)",
+    "timeSeconds": "Time (sec)"
+  },
+  "seo": {
+    "whatIsTitle": "What is Meathill Minesweeper?",
+    "whatIsDesc": "A modern, <strong>learn-while-playing</strong> Minesweeper. Classic 9×9 / 16×16 / 16×30 boards and flagging, plus a <strong>Learn Mode</strong> that computes the mine probability for every unopened cell in real time, overlays a 75% green-yellow-red heatmap, and scores each move 0-10 against the optimal choice. No right-click required — double-click to chord, perfect for trackpads and phones.",
+    "howToPlayTitle": "How to play",
+    "howToPlay": [
+      "<strong>Left-click</strong> to open. First click never hits a mine; numbers show mines in the 8 neighbors.",
+      "<strong>Right-click / long-press</strong> to flag. The header shows mines remaining.",
+      "<strong>Double-click to chord (Apple / trackpad optimized)</strong>: classic chording needs left+right together. Here, if flags around a number equal the number, <strong>double-click the number</strong> to open the rest — no right-click needed. Desktop left+right still works, and chording counts as a perfect 10.",
+      "Open all non-mine cells to win; hit a mine and the board reveals."
+    ],
+    "learningTitle": "What is Learn Mode?",
+    "heatmapTitle": "Probability heatmap: see the risk",
+    "heatmapDesc": "With Learn Mode on, a solver builds constraints <code>need = number - flags</code> from opened numbers, splits frontier cells into components and enumerates, while isolated cells share the remaining mines evenly. Each cell gets <code>P(mine) 0-1</code>, shown as <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#22c55e\"></span> green (0%) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#eab308\"></span> yellow (50%) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#ef4444\"></span> red (100%) at 75% opacity. Toggle <code>%</code> and <code>fraction</code> independently — color alone trains intuition.",
+    "efficiencyTitle": "Decision efficiency: how good was that move?",
+    "efficiencyDesc": "No absolute 10 — only <strong>relative to the board</strong>. Open: <code>score=(1-p)/(1-pMin)*10</code> where pMin is the current safest cell; Flag: <code>score=p/pMax*10</code>. Picking the safest/riskiest at that moment is <strong>10</strong>; picking 50% when 0% exists is ~5. Chording is always <strong>10</strong>. Scores share the solver, so closing the heatmap still records for the post-game chart.",
+    "chartTitle": "How to read the replay chart",
+    "chartDesc": "After win/lose a 3-line chart appears, X is <strong>time (m:s / h:mm:ss)</strong> bucketed every 6s:",
+    "chartBullets": [
+      "<strong class=\"text-[#4bc0c0]\">Open safe (teal)</strong>: RPM left axis — raw speed and flood-fill efficiency.",
+      "<strong class=\"text-[#FF6B6B]\">Flag (red)</strong>: same axis, when you were flagging.",
+      "<strong class=\"text-[#f59e0b]\">Efficiency (orange, right 0-10)</strong>: mean score per 6s bucket; 10 is optimal, dipping means guessing."
+    ],
+    "chartHint": "Dip in orange? Check which step didn't pick the greenest cell — that's your next improvement.",
+    "progressTitle": "From novice to expert",
+    "progressSteps": [
+      "Start with heatmap on, learn green=open, red=flag intuition;",
+      "Turn off %/fraction, decide by color alone, still aim for 10;",
+      "Turn Learn Mode off and challenge Hard 16×30 — keep RPM steady and orange ≥9."
+    ],
+    "keywords": "Keywords: Meathill Minesweeper · learn while playing · mine probability · minesweeper tips · tutorial · no right-click · trackpad · Learn Mode · decision efficiency"
+  },
+  "faq": {
+    "title": "FAQ (GEO-friendly)",
+    "items": [
+      {
+        "q": "What is Meathill Minesweeper?",
+        "a": "Meathill Minesweeper (minesweeper.meathill.com) is a learn-while-playing Minesweeper with 9×9/16×16/16×30 boards, no right-click required, double-click chording, and Learn Mode: live probability heatmap + efficiency scoring with post-game replay."
+      },
+      {
+        "q": "How is the probability computed?",
+        "a": "Constraints need = number - flags on frontier cells, split into components and enumerated exactly, isolated cells share remaining mines evenly, yielding P(mine) 0-1 as green→yellow→red 75% overlay. Solver always runs for scoring."
+      },
+      {
+        "q": "What does 0-10 efficiency mean?",
+        "a": "Relative: open (1-p)/(1-pMin)*10, flag p/pMax*10, chording always 10. Picking the current best is 10. Averaged per 6s bucket on the replay chart's right axis."
+      },
+      {
+        "q": "How to chord on Apple / trackpad?",
+        "a": "Optimized: no left+right needed — double-click any opened number where flags == number to open the rest. Right-click, long-press, and trackpad all work, plus mobile."
+      },
+      {
+        "q": "How to read the replay chart?",
+        "a": "X=time (m:s / h:mm:ss), left Y=RPM (teal=open safe, red=flag), right Y=efficiency 0-10 (orange). Sustained 9+ means optimal; valleys point to non-greenest moves to review."
+      },
+      {
+        "q": "Who is it for?",
+        "a": "Beginners use heatmap for intuition, intermediates use color only, experts turn Learn Mode off for Hard. Every game is reviewable.<br/>Site: <a class=\"link\" href=\"https://minesweeper.meathill.com/\">https://minesweeper.meathill.com/</a> · Studio: <a class=\"link\" href=\"https://meathill.com\">Meathill Studio</a>"
+      }
+    ]
+  },
+  "footer": {
+    "rights": "Learn while playing."
+  },
+  "meta": {
+    "title": "Meathill Minesweeper - Learn While Playing | Heatmap & Efficiency",
+    "description": "Modern learn-while-playing Minesweeper: no right-click, double-click chording (Apple/trackpad optimized), live mine probability heatmap and 0-10 efficiency scoring. Easy/Medium/Hard + replay.",
+    "ogTitle": "Meathill Minesweeper - Learn While Playing",
+    "ogDescription": "Learn Mode shows 75% green-yellow-red heatmap per cell and tracks RPM + efficiency — no right-click, double-click to chord (Apple/trackpad optimized).",
+    "twitterDescription": "See every cell's probability, score every decision — Minesweeper you can actually learn from."
+  }
+}

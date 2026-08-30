@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    { "source": "/en", "destination": "/index.html" },
+    { "source": "/en/:path*", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [{ "key": "X-Content-Type-Options", "value": "nosniff" }]
+    }
+  ]
+}
