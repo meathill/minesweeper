@@ -195,14 +195,34 @@ function doStart(event) {
 
 function doRealStart(clickedIndex) {
   isRealStart.value = true;
-  let bomb = bombNumber.value;
-  while (bomb) {
-    const index = Math.random() * total.value >> 0;
-    if (grid.value[index].isBomb || index === clickedIndex) {
-      continue;
+  // 首次点击必为空白（count === 0）：将点击格及其 8 邻域设为禁雷区
+  // 若禁雷后剩余格子不足以放下所有雷（极高密度导致不存在任何空白），则退化为仅保证点击格本身不是雷
+  const cx = clickedIndex % column.value;
+  const cy = (clickedIndex / column.value) >> 0;
+  const forbidden = new Set();
+  for (let dy = -1; dy <= 1; dy++) {
+    for (let dx = -1; dx <= 1; dx++) {
+      const nx = cx + dx;
+      const ny = cy + dy;
+      if (nx < 0 || nx >= column.value || ny < 0 || ny >= row.value) continue;
+      forbidden.add(ny * column.value + nx);
     }
-    grid.value[index].isBomb = true;
-    bomb--;
+  }
+  const canGuaranteeBlank = total.value - forbidden.size >= bombNumber.value;
+  const excludeSet = canGuaranteeBlank ? forbidden : new Set([clickedIndex]);
+
+  const candidates = [];
+  for (let i = 0; i < total.value; i++) {
+    if (!excludeSet.has(i)) candidates.push(i);
+  }
+  // Fisher-Yates 洗牌后取前 bombNumber 个
+  for (let i = candidates.length - 1; i > 0; i--) {
+    const j = (Math.random() * (i + 1)) >> 0;
+    [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
+  }
+  const placeCount = Math.min(bombNumber.value, candidates.length);
+  for (let i = 0; i < placeCount; i++) {
+    grid.value[candidates[i]].isBomb = true;
   }
   grid.value = grid.value.map((item, index) => {
     const x = index % column.value;
