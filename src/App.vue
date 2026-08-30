@@ -297,31 +297,10 @@ function onBeforeUnload(event) {
           <input type="checkbox" class="toggle toggle-xs toggle-primary" v-model="learningStore.showProbability" />
           <span class="whitespace-nowrap">学习模式</span>
         </label>
-        <template v-if="learningStore.showProbability">
-          <div class="join hidden sm:flex">
-            <button class="btn btn-xs join-item" :class="learningStore.probDisplay==='percent'?'btn-primary':''" @click="learningStore.probDisplay='percent'">%</button>
-            <button class="btn btn-xs join-item" :class="learningStore.probDisplay==='fraction'?'btn-primary':''" @click="learningStore.probDisplay='fraction'">分数</button>
-          </div>
-          <!-- 移动端把 %/分数 收进下拉，避免挤占 -->
-          <div class="dropdown dropdown-end sm:hidden">
-            <label tabindex="0" class="btn btn-xs btn-ghost px-1">⚙️</label>
-            <div tabindex="0" class="dropdown-content mt-2 p-2 shadow bg-base-100 rounded-box w-36">
-              <div class="join w-full">
-                <button class="btn btn-xs join-item flex-1" :class="learningStore.probDisplay==='percent'?'btn-primary':''" @click="learningStore.probDisplay='percent'">%</button>
-                <button class="btn btn-xs join-item flex-1" :class="learningStore.probDisplay==='fraction'?'btn-primary':''" @click="learningStore.probDisplay='fraction'">分数</button>
-              </div>
-              <div class="mt-2 flex items-center gap-1 text-xs">
-                <span class="w-10 h-2 rounded shrink-0" style="background: linear-gradient(90deg, rgba(34,197,94,0.75), rgba(234,179,8,0.75), rgba(239,68,68,0.75))"></span>
-                0%→100%
-              </div>
-            </div>
-          </div>
-          <span v-if="isRealStart && isApproximate" class="badge badge-warning badge-xs sm:badge-sm whitespace-nowrap" title="局面复杂，概率为采样/近似值">≈ 近似</span>
-          <span class="hidden lg:inline-flex items-center gap-1 text-xs whitespace-nowrap">
-            <span class="w-12 h-2 rounded" style="background: linear-gradient(90deg, rgba(34,197,94,0.75), rgba(234,179,8,0.75), rgba(239,68,68,0.75))"></span>
-            0%→100%
-          </span>
-        </template>
+        <span v-if="learningStore.showProbability" class="hidden sm:inline-flex items-center gap-1 text-xs whitespace-nowrap">
+          <span class="w-12 h-2 rounded" style="background: linear-gradient(90deg, rgba(34,197,94,0.75), rgba(234,179,8,0.75), rgba(239,68,68,0.75))"></span>
+          0%→100%
+        </span>
         <div class="dropdown dropdown-end">
           <label tabindex="0" class="btn btn-ghost btn-sm px-2">
             {{level}}
