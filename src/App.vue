@@ -41,13 +41,11 @@ const gridStyle = computed(() => {
 const grid = ref(null);
 const gridItems = ref();
 
-// 学习模式：概率计算（玩家视角，不使用 isBomb）
+// 概率计算（玩家视角，不使用 isBomb）——始终计算用于评分，显隐仅由 showProbability 控制
 const probResult = computed(() => {
-  if (!learningStore.showProbability || !isRealStart.value || !grid.value) return { map: new Map(), isApproximate: false }
-  // 显式依赖 flagged/opened 以触发对 plain object 的变更
+  if (!isRealStart.value || !grid.value) return { map: new Map(), isApproximate: false }
   const _flagDep = flagged.value
   const _openDep = opened.value
-  // 同时访问 grid 内容以在 proxy 场景下也能跟踪
   grid.value.forEach(c => c.isOpen + c.isFlag)
   void _flagDep; void _openDep
   return computeProbabilities(grid.value, row.value, column.value, bombNumber.value)
@@ -158,13 +156,16 @@ function doStop(success = false) {
 }
 
 function onFlag(index, flag) {
-  // 在状态变更前快照效率（玩家视角的“决策时”概率）
-  if (isRealStart.value && learningStore.showProbability) {
+  // 在状态变更前快照效率（评分始终记录，显隐不影响）
+  if (isRealStart.value) {
     const prob = probabilities.value.get(index)
     const { pMax } = bestProbs.value
     if (prob != null && pMax != null) {
       const score = scoreForAction(prob, pMax, 'flag')
       if (score != null) operationStore.onRecordEfficiency({ index, prob, pBest: pMax, score, action: 'flag' })
+    } else if (prob == null && pMax == null) {
+      // 孤立或首步旗标，无约束时视为最优
+      operationStore.onRecordEfficiency({ index, prob: prob ?? 0, pBest: 0, score: 1, action: 'flag' })
     }
   }
   flagged.value += flag ? 1 : -1;
@@ -185,12 +186,20 @@ async function onOpen(item, index, delayMs = 0) {
 
   // 仅玩家主动点开（delayMs===0 且未通过递归展开）时计分；递归展开的空白连开不计分
   const isUserAction = delayMs === 0
-  if (isUserAction && learningStore.showProbability) {
-    const prob = probabilities.value.get(index)
-    const { pMin } = bestProbs.value
-    if (prob != null && pMin != null) {
-      const score = scoreForAction(prob, pMin, 'open')
-      if (score != null) operationStore.onRecordEfficiency({ index, prob, pBest: pMin, score, action: 'open' })
+  if (isUserAction) {
+    // 首步必定安全（规避地雷），或孤立无约束时直接满分
+    if (opened.value === 0 && flagged.value === 0) {
+      operationStore.onRecordEfficiency({ index, prob: 0, pBest: 0, score: 1, action: 'open' })
+    } else {
+      const prob = probabilities.value.get(index)
+      const { pMin } = bestProbs.value
+      if (prob != null && pMin != null) {
+        const score = scoreForAction(prob, pMin, 'open')
+        if (score != null) operationStore.onRecordEfficiency({ index, prob, pBest: pMin, score, action: 'open' })
+      } else {
+        // 无约束或概率缺失时视为最优（与当前最低一致）
+        operationStore.onRecordEfficiency({ index, prob: prob ?? 0, pBest: pMin ?? 0, score: 1, action: 'open' })
+      }
     }
   }
 
@@ -230,8 +239,8 @@ function onOpenAll(item, index) {
     }
   }
   if (count === item.count) {
-    // 双击批量打开视为绝对安全决策，固定满分 10（即使求解器认为有风险，按玩家“flag==count”视角视为最优）
-    if (learningStore.showProbability && targetIndices.length) {
+    // 双击批量打开视为绝对安全决策，固定满分 10（评分始终记录）
+    if (targetIndices.length) {
       const pMin = bestProbs.value.pMin
       const avgProb = targetIndices.reduce((a, ti) => a + (probabilities.value.get(ti) ?? 0), 0) / targetIndices.length
       operationStore.onRecordEfficiency({ index, prob: avgProb, pBest: pMin ?? 0, score: 1, action: 'chord' })
