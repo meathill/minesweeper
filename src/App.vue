@@ -287,29 +287,45 @@ function onBeforeUnload(event) {
 
 <template>
   <header class="navbar bg-base-200">
-    <div class="container mx-auto">
-      <h1 class="text-xl">肉山小课堂：扫雷 Workshop</h1>
-      <div class="text-xs text-gra ms-4">v{{version}}</div>
-      <div class="ml-auto flex items-center gap-2">
-        <label class="flex items-center gap-1 text-xs cursor-pointer select-none">
+    <div class="container mx-auto flex flex-wrap items-center gap-x-3 gap-y-2 py-1">
+      <div class="flex items-center gap-2 min-w-0 flex-1">
+        <h1 class="text-lg sm:text-xl font-bold truncate">肉山小课堂：扫雷 Workshop</h1>
+        <span class="text-xs opacity-60 whitespace-nowrap shrink-0">v{{version}}</span>
+      </div>
+      <div class="flex items-center gap-2 flex-wrap justify-end shrink-0">
+        <label class="flex items-center gap-1.5 text-xs sm:text-sm cursor-pointer select-none shrink-0">
           <input type="checkbox" class="toggle toggle-xs toggle-primary" v-model="learningStore.showProbability" />
-          学习模式
+          <span class="whitespace-nowrap">学习模式</span>
         </label>
         <template v-if="learningStore.showProbability">
-          <div class="join">
+          <div class="join hidden sm:flex">
             <button class="btn btn-xs join-item" :class="learningStore.probDisplay==='percent'?'btn-primary':''" @click="learningStore.probDisplay='percent'">%</button>
             <button class="btn btn-xs join-item" :class="learningStore.probDisplay==='fraction'?'btn-primary':''" @click="learningStore.probDisplay='fraction'">分数</button>
           </div>
-          <span v-if="isRealStart && isApproximate" class="badge badge-warning badge-sm" title="局面复杂，概率为采样/近似值">≈ 近似</span>
-          <span class="hidden sm:inline-flex items-center gap-1 text-xs">
+          <!-- 移动端把 %/分数 收进下拉，避免挤占 -->
+          <div class="dropdown dropdown-end sm:hidden">
+            <label tabindex="0" class="btn btn-xs btn-ghost px-1">⚙️</label>
+            <div tabindex="0" class="dropdown-content mt-2 p-2 shadow bg-base-100 rounded-box w-36">
+              <div class="join w-full">
+                <button class="btn btn-xs join-item flex-1" :class="learningStore.probDisplay==='percent'?'btn-primary':''" @click="learningStore.probDisplay='percent'">%</button>
+                <button class="btn btn-xs join-item flex-1" :class="learningStore.probDisplay==='fraction'?'btn-primary':''" @click="learningStore.probDisplay='fraction'">分数</button>
+              </div>
+              <div class="mt-2 flex items-center gap-1 text-xs">
+                <span class="w-10 h-2 rounded shrink-0" style="background: linear-gradient(90deg, rgba(34,197,94,0.75), rgba(234,179,8,0.75), rgba(239,68,68,0.75))"></span>
+                0%→100%
+              </div>
+            </div>
+          </div>
+          <span v-if="isRealStart && isApproximate" class="badge badge-warning badge-xs sm:badge-sm whitespace-nowrap" title="局面复杂，概率为采样/近似值">≈ 近似</span>
+          <span class="hidden lg:inline-flex items-center gap-1 text-xs whitespace-nowrap">
             <span class="w-12 h-2 rounded" style="background: linear-gradient(90deg, rgba(34,197,94,0.75), rgba(234,179,8,0.75), rgba(239,68,68,0.75))"></span>
             0%→100%
           </span>
         </template>
         <div class="dropdown dropdown-end">
-          <label tabindex="0" class="btn btn-ghost">
+          <label tabindex="0" class="btn btn-ghost btn-sm px-2">
             {{level}}
-            <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+            <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
               <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"/>
             </svg>
           </label>
