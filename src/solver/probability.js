@@ -263,7 +263,7 @@ export function computeProbabilities(grid, row, column, bombNumber) {
       const clamped = Math.max(0, Math.min(1, p))
       for (const v of isolated) result.set(v, clamped)
     }
-    return { map: result, isApproximate }
+    return { map: result, isApproximate, frontierSet }
   }
 
   const components = splitComponents(constraints)
@@ -326,7 +326,7 @@ export function computeProbabilities(grid, row, column, bombNumber) {
     }
   }
 
-  return { map: result, isApproximate }
+  return { map: result, isApproximate, frontierSet }
 }
 
 export function getBestProbs(map) {

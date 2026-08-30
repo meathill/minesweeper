@@ -97,42 +97,45 @@ const probabilities = computed(() => probResult.value.map)
 const isApproximate = computed(() => probResult.value.isApproximate)
 const bestProbs = computed(() => getBestProbs(probabilities.value))
 
-// 提示：最低概率格
+// 提示：最低概率格（优先有推断的前沿格）
 const hintIndex = ref(null)
 const hintFlashKey = ref(0)
 function handleHint() {
   if (!isRealStart.value || !grid.value) return
-  const candidates = []
+  const frontierSet = probResult.value.frontierSet || new Set()
+  // 先在未确定 0<p<1 中找最优，优先前沿
+  let candidates = []
   let minP = Infinity
   for (const [idx, p] of probabilities.value) {
     const cell = grid.value[idx]
     if (!cell || cell.isOpen || cell.isFlag) continue
-    if (p <= 0 || p >= 1) continue // 仅未确定的格子
+    if (p <= 0 || p >= 1) continue
     if (p < minP - 1e-9) {
       minP = p
-      candidates.length = 0
-      candidates.push(idx)
+      candidates = [idx]
     } else if (Math.abs(p - minP) < 1e-9) {
       candidates.push(idx)
     }
   }
-  // 若没有 0<p<1 的格子（例如全 0/1），则退化为取最低 p 的未开格
+  // 若没有 0<p<1，则在所有未开格中找最低（包括 0% 安全格）
   if (candidates.length === 0) {
-    let minAny = Infinity
+    minP = Infinity
     for (const [idx, p] of probabilities.value) {
       const cell = grid.value[idx]
       if (!cell || cell.isOpen || cell.isFlag) continue
-      if (p < minAny) {
-        minAny = p
-        candidates.length = 0
-        candidates.push(idx)
-      } else if (Math.abs(p - minAny) < 1e-9) {
+      if (p < minP - 1e-9) {
+        minP = p
+        candidates = [idx]
+      } else if (Math.abs(p - minP) < 1e-9) {
         candidates.push(idx)
       }
     }
   }
   if (candidates.length === 0) return
-  const pick = candidates[Math.floor(Math.random() * candidates.length)]
+  // 在并列最低中，优先有推断条件的前沿格
+  const frontierCandidates = candidates.filter(idx => frontierSet.has(idx))
+  const finalCandidates = frontierCandidates.length ? frontierCandidates : candidates
+  const pick = finalCandidates[Math.floor(Math.random() * finalCandidates.length)]
   hintIndex.value = pick
   hintFlashKey.value++
 }
