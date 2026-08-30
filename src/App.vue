@@ -5,9 +5,12 @@ import {version} from '../package.json';
 import GridItem from './grid-item.vue';
 import {Levels} from './data';
 import { useOperationRecordsStore } from './store/operationRecords';
+import { useLearningStore } from './store/learningStore';
+import { computeProbabilities, getBestProbs, scoreForAction } from './solver/probability.js';
 
 const OperationChart = defineAsyncComponent(() => import('./operation-chart.vue') )
 const operationStore = useOperationRecordsStore()
+const learningStore = useLearningStore()
 
 
 let interval = null;
@@ -37,6 +40,35 @@ const gridStyle = computed(() => {
 })
 const grid = ref(null);
 const gridItems = ref();
+
+// 学习模式：概率计算（玩家视角，不使用 isBomb）
+const probResult = computed(() => {
+  if (!learningStore.showProbability || !isRealStart.value || !grid.value) return { map: new Map(), isApproximate: false }
+  // 显式依赖 flagged/opened 以触发对 plain object 的变更
+  const _flagDep = flagged.value
+  const _openDep = opened.value
+  // 同时访问 grid 内容以在 proxy 场景下也能跟踪
+  grid.value.forEach(c => c.isOpen + c.isFlag)
+  void _flagDep; void _openDep
+  return computeProbabilities(grid.value, row.value, column.value, bombNumber.value)
+})
+const probabilities = computed(() => probResult.value.map)
+const isApproximate = computed(() => probResult.value.isApproximate)
+const bestProbs = computed(() => getBestProbs(probabilities.value))
+
+function recordEfficiency(index, action) {
+  const prob = probabilities.value.get(index)
+  if (prob == null) return
+  const { pMin, pMax } = bestProbs.value
+  const pBest = action === 'flag' ? pMax : pMin
+  if (pBest == null) return
+  const score = scoreForAction(prob, pBest, action)
+  if (score == null) return
+  operationStore.onRecordEfficiency({ index, prob, pBest, score, action })
+}
+function getProbability(index) {
+  return probabilities.value.get(index) ?? null
+}
 
 onMounted(() => {
   doStart();
@@ -125,8 +157,18 @@ function doStop(success = false) {
   operationStore.onStopOperateRecords()
 }
 
-function onFlag(flag) {
+function onFlag(index, flag) {
+  // 在状态变更前快照效率（玩家视角的“决策时”概率）
+  if (isRealStart.value && learningStore.showProbability) {
+    const prob = probabilities.value.get(index)
+    const { pMax } = bestProbs.value
+    if (prob != null && pMax != null) {
+      const score = scoreForAction(prob, pMax, 'flag')
+      if (score != null) operationStore.onRecordEfficiency({ index, prob, pBest: pMax, score, action: 'flag' })
+    }
+  }
   flagged.value += flag ? 1 : -1;
+  if (grid.value && grid.value[index]) grid.value[index].isFlag = flag
 }
 
 const REVEAL_STEP_MS = 25; // 批量展开时每层涟漪的延迟
@@ -141,9 +183,22 @@ async function onOpen(item, index, delayMs = 0) {
     return;
   }
 
+  // 仅玩家主动点开（delayMs===0 且未通过递归展开）时计分；递归展开的空白连开不计分
+  const isUserAction = delayMs === 0
+  if (isUserAction && learningStore.showProbability) {
+    const prob = probabilities.value.get(index)
+    const { pMin } = bestProbs.value
+    if (prob != null && pMin != null) {
+      const score = scoreForAction(prob, pMin, 'open')
+      if (score != null) operationStore.onRecordEfficiency({ index, prob, pBest: pMin, score, action: 'open' })
+    }
+  }
+
   if (item.isBomb) {
     return doStop();
   }
+  // 同步到 grid 供概率计算使用
+  if (grid.value[index] && !grid.value[index].isOpen) grid.value[index].isOpen = true
   opened.value += 1;
   if (opened.value >= total.value - bombNumber.value) {
     return doStop(true);
@@ -160,18 +215,39 @@ function onOpenAll(item, index) {
   const y = index / column.value >> 0;
   let count = 0;
   const items = [];
+  const targetIndices = [];
   for (let i = Math.max(0, y - 1); i < Math.min(y + 2, row.value); i++) {
     for (let j = Math.max(0, x - 1); j < Math.min(x + 2, column.value); j++) {
       if (i === y && j === x) continue;
-      const gridItem = gridItems.value[i * column.value + j];
+      const idx = i * column.value + j
+      const gridItem = gridItems.value[idx];
       if (gridItem.isFlag) {
         count++;
       } else {
         items.push(gridItem);
+        targetIndices.push(idx);
       }
     }
   }
   if (count === item.count) {
+    // chord 效率：对所有将被点开的格取平均分
+    if (learningStore.showProbability && targetIndices.length) {
+      const { pMin } = bestProbs.value
+      if (pMin != null) {
+        let sum = 0, cnt = 0
+        for (const ti of targetIndices) {
+          const prob = probabilities.value.get(ti)
+          if (prob == null) continue
+          const sc = scoreForAction(prob, pMin, 'open')
+          if (sc != null) { sum += sc; cnt++ }
+        }
+        if (cnt) {
+          const avgScore = sum / cnt
+          const avgProb = targetIndices.reduce((a, ti) => a + (probabilities.value.get(ti) ?? 0), 0) / targetIndices.length
+          operationStore.onRecordEfficiency({ index, prob: avgProb, pBest: pMin, score: avgScore, action: 'chord' })
+        }
+      }
+    }
     for (const gridItem of items) {
       gridItem.open();
       if (isFailed.value) return;
@@ -214,7 +290,22 @@ function onBeforeUnload(event) {
     <div class="container mx-auto">
       <h1 class="text-xl">肉山小课堂：扫雷 Workshop</h1>
       <div class="text-xs text-gra ms-4">v{{version}}</div>
-      <div class="ml-auto">
+      <div class="ml-auto flex items-center gap-2">
+        <label class="flex items-center gap-1 text-xs cursor-pointer select-none">
+          <input type="checkbox" class="toggle toggle-xs toggle-primary" v-model="learningStore.showProbability" />
+          学习模式
+        </label>
+        <template v-if="learningStore.showProbability">
+          <div class="join">
+            <button class="btn btn-xs join-item" :class="learningStore.probDisplay==='percent'?'btn-primary':''" @click="learningStore.probDisplay='percent'">%</button>
+            <button class="btn btn-xs join-item" :class="learningStore.probDisplay==='fraction'?'btn-primary':''" @click="learningStore.probDisplay='fraction'">分数</button>
+          </div>
+          <span v-if="isRealStart && isApproximate" class="badge badge-warning badge-sm" title="局面复杂，概率为采样/近似值">≈ 近似</span>
+          <span class="hidden sm:inline-flex items-center gap-1 text-xs">
+            <span class="w-12 h-2 rounded" style="background: linear-gradient(90deg, rgba(34,197,94,0.75), rgba(234,179,8,0.75), rgba(239,68,68,0.75))"></span>
+            0%→100%
+          </span>
+        </template>
         <div class="dropdown dropdown-end">
           <label tabindex="0" class="btn btn-ghost">
             {{level}}
@@ -279,7 +370,11 @@ function onBeforeUnload(event) {
       :count="item.count"
       :is-bomb="item.isBomb"
       :flagable="flagged < bombNumber"
-      @flag="onFlag"
+      :probability="getProbability(index)"
+      :show-probability="learningStore.showProbability && isRealStart"
+      :prob-display="learningStore.probDisplay"
+      :is-approximate="isApproximate"
+      @flag="onFlag(index, $event)"
       @open="onOpen(item, index, $event)"
       @open-all="onOpenAll(item, index)"
     />

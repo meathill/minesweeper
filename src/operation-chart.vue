@@ -39,6 +39,7 @@ const operationEventsData = ref([]);
 const chartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
+  interaction: { mode: 'index', intersect: false },
   scales: {
     x: {
       type: "linear",
@@ -52,6 +53,8 @@ const chartOptions = computed(() => ({
       },
     },
     y: {
+      type: 'linear',
+      position: 'left',
       title: {
         display: true,
         text: "RPM（操作次数/分钟）",
@@ -62,6 +65,15 @@ const chartOptions = computed(() => ({
         beginAtZero: true,
       },
     },
+    y1: {
+      type: 'linear',
+      position: 'right',
+      min: 0,
+      max: 10,
+      grid: { drawOnChartArea: false },
+      title: { display: true, text: "决策效率 0-10" },
+      ticks: { stepSize: 1 },
+    },
   },
   plugins: {
     legend: {
@@ -69,8 +81,17 @@ const chartOptions = computed(() => ({
     },
     title: {
       display: true,
-      text: "⭐玩家操作结算",
+      text: "⭐玩家操作结算 & 决策效率",
     },
+    tooltip: {
+      callbacks: {
+        label: (ctx) => {
+          const v = ctx.parsed.y
+          if (ctx.dataset.yAxisID === 'y1') return `${ctx.dataset.label}: ${v?.toFixed ? v.toFixed(1) : v} /10`
+          return `${ctx.dataset.label}: ${v}`
+        }
+      }
+    }
   },
   animation: {
     duration: 250, // 动画时长（毫秒）
@@ -84,6 +105,8 @@ const chartData = computed(() => ({
     {
       label: "打开安全区",
       borderColor: "#4bc0c0",
+      backgroundColor: "rgba(75,192,192,0.15)",
+      yAxisID: 'y',
       data: operationEventsData.value.map((item) => item.openSave),
       pointRadius: 5,
       tension: 0.1,
@@ -91,49 +114,74 @@ const chartData = computed(() => ({
     {
       label: "插旗",
       borderColor: "#FF6B6B",
+      backgroundColor: "rgba(255,107,107,0.15)",
+      yAxisID: 'y',
       data: operationEventsData.value.map((item) => item.flag),
       pointRadius: 5,
       tension: 0.1,
+    },
+    {
+      label: "决策效率",
+      borderColor: "#f59e0b",
+      backgroundColor: "rgba(245,158,11,0.15)",
+      yAxisID: 'y1',
+      data: operationEventsData.value.map((item) => item.efficiencyAvg ?? null),
+      spanGaps: true,
+      pointRadius: 5,
+      tension: 0.2,
+      borderWidth: 2,
     },
   ],
 }));
 
 onMounted(() => {
-  operationEventsData.value = transferEventsToData(operationEvents);
+  operationEventsData.value = transferEventsToData(operationEvents, operationStore.efficiencyEvents);
 });
 
-function transferEventsToData(events) {
-  // 先判断是否超过100秒
-  const maxTimestamp = Math.max(...events.map((event) => event.clickTimestamp));
+function transferEventsToData(events, efficiencyEvents = []) {
+  // 先判断是否超过100秒（取两类事件的最大时间）
+  const allTimestamps = [...events.map(e => e.clickTimestamp), ...efficiencyEvents.map(e => e.clickTimestamp)]
+  const maxTimestamp = allTimestamps.length ? Math.max(...allTimestamps) : Date.now()
   const totalSeconds = (maxTimestamp - startTimeStamp) / 1000;
   const _isMoreThanOneHundredSec = totalSeconds > 100;
   isMoreThanOneHundredSec.value = totalSeconds > 100;
   
   const groupedData = {};
-  groupedData[0] = { interval: 0, open: 0, openBlank: 0, openSave:0 ,flag: 0, doubleClick: 0 };
+  groupedData[0] = { interval: 0, open: 0, openBlank: 0, openSave:0 ,flag: 0, doubleClick: 0, efficiencySum: 0, efficiencyCount: 0, efficiencyAvg: null };
 
-  events.forEach((event) => {
-    // 超过100秒，据开始过去了多少分钟
-    // 小于100秒，据开始过去了多少秒
+  function getIntervalFor(ts) {
     const timeSinceStart = _isMoreThanOneHundredSec
-      ? (event.clickTimestamp - startTimeStamp) / 1000 / 60
-      : (event.clickTimestamp - startTimeStamp) / 1000; 
-    // 超过100秒，所属的区间块index（分钟） = 据开始过去了多少分钟 / 每个区间多少分钟(每个区间多少秒/60)
-    // 小于100秒，所属的区间块index（秒） = 据开始过去了多少秒 / 每个区间多少秒
+      ? (ts - startTimeStamp) / 1000 / 60
+      : (ts - startTimeStamp) / 1000;
     const IntervalIndex =  _isMoreThanOneHundredSec
       ? Math.ceil(timeSinceStart / (secPerInterval.value / 60))
-      : Math.ceil(timeSinceStart / secPerInterval.value) 
-    // 超过100秒，当前区间的值(分钟) = 所属的区间块index（分钟）* 每个区间多少分钟
-    // 小于100秒，当前区间的值(秒) = 所属的区间块index（秒）* 每个区间多少秒
-    const interval = _isMoreThanOneHundredSec
+      : Math.ceil(timeSinceStart / secPerInterval.value)
+    return _isMoreThanOneHundredSec
       ? IntervalIndex * (secPerInterval.value / 60)
       : IntervalIndex * secPerInterval.value
+  }
 
+  events.forEach((event) => {
+    const interval = getIntervalFor(event.clickTimestamp)
     if (!groupedData[interval]) {
-      groupedData[interval] = { interval: interval, open: 0,  openBlank: 0, openSave:0 , flag: 0,doubleClick: 0 };
+      groupedData[interval] = { interval, open: 0, openBlank: 0, openSave:0 , flag: 0,doubleClick: 0, efficiencySum: 0, efficiencyCount: 0, efficiencyAvg: null };
     }
-    groupedData[interval][event.type] += 1;
+    groupedData[interval][event.type] = (groupedData[interval][event.type] || 0) + 1;
   });
+
+  efficiencyEvents.forEach(ev => {
+    const interval = getIntervalFor(ev.clickTimestamp)
+    if (!groupedData[interval]) {
+      groupedData[interval] = { interval, open: 0, openBlank: 0, openSave:0 , flag: 0,doubleClick: 0, efficiencySum: 0, efficiencyCount: 0, efficiencyAvg: null };
+    }
+    groupedData[interval].efficiencySum += ev.score10
+    groupedData[interval].efficiencyCount += 1
+  })
+
+  for (const k of Object.keys(groupedData)) {
+    const g = groupedData[k]
+    if (g.efficiencyCount) g.efficiencyAvg = +(g.efficiencySum / g.efficiencyCount).toFixed(1)
+  }
 
   return Object.values(groupedData).sort((a, b) => a.interval - b.interval); // 按照时间刻度排序
 }

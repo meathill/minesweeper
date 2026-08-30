@@ -33,10 +33,33 @@
   justify-content: center;
   align-items: center;
   user-select: none;
+  position: relative;
+  overflow: hidden;
 
   @media (prefers-color-scheme: dark) {
     border-color: #fff2 #3339 #3339 #fff2;
   }
+}
+.prob-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: #111;
+  text-shadow: 0 0 2px #fff, 0 0 4px #fff;
+  pointer-events: none;
+  line-height: 1;
+}
+.prob-text {
+  letter-spacing: -0.02em;
+}
+.prob-approx {
+  font-size: 0.55rem;
+  opacity: 0.9;
 }
 .grid-item:not(.open):hover {
   cursor: pointer;
