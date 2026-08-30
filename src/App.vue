@@ -410,4 +410,55 @@ function onBeforeUnload(event) {
       </template>
     </Suspense>
   </div>
+
+  <section class="container mx-auto max-w-3xl px-4 py-10 mt-6 border-t border-base-300">
+    <h2 class="text-2xl font-bold mb-3">什么是肉山扫雷？</h2>
+    <p class="text-sm leading-7 opacity-80 mb-6">
+      肉山扫雷是经典扫雷的现代复刻，<strong>边玩边学</strong>是它的核心：既保留 9×9/16×16/16×30 三档难度与右键插旗的原味规则，又加入<strong>学习模式</strong>——实时计算每个未翻开格子的地雷概率，用 75% 绿-黄-红热力图直接盖在格子上，并用<strong>决策效率 0-10 分</strong>量化你每一步与“当时最优解”的差距。免右键、双击批量打开，触摸板与手机也能流畅游玩。
+    </p>
+
+    <h2 class="text-xl font-bold mt-8 mb-3">怎么玩</h2>
+    <ul class="list-disc ps-5 text-sm leading-7 opacity-80 mb-6">
+      <li><strong>左键翻开</strong>：首次点击必不中雷；数字表示周围 8 格内的雷数。</li>
+      <li><strong>右键/长按插旗</strong>：标记你认为有雷的格子；顶部会实时显示剩余地雷数。</li>
+      <li><strong>双击数字批量打开</strong>：当数字周围的旗数等于该数字时，双击可一键打开剩余邻格——这是高手提速的关键，也被计为一次“绝对安全决策”。</li>
+      <li>翻开所有非雷格子即胜利；点中雷则一键揭晓全盘。</li>
+    </ul>
+
+    <h2 class="text-xl font-bold mt-8 mb-3">什么是学习模式</h2>
+    <h3 class="font-semibold mt-4 mb-2">概率热力图：看见每一格的风险</h3>
+    <p class="text-sm leading-7 opacity-80 mb-4">
+      开启学习模式后，求解器会在后台基于<strong>已翻开数字 + 已插旗</strong>构建约束（<code>周围雷数 - 已标旗 = 剩余雷数</code>），对“前沿格”（与数字相邻的未开格）做分量拆分与回溯枚举，孤立格按 <code>剩余雷数/孤立格数</code> 均摊。每格得到 <code>P(是雷) 0-1</code>，用 <span class="inline-block w-3 h-3 rounded align-middle" style="background:#22c55e"></span> 绿（0%）→ <span class="inline-block w-3 h-3 rounded align-middle" style="background:#eab308"></span> 黄（50%）→ <span class="inline-block w-3 h-3 rounded align-middle" style="background:#ef4444"></span> 红（100%）75% 透明度叠在未开格上。 header 的复选框可独立开关 <code>%</code> 与 <code>分数</code> 文本，只看颜色也能训练直觉。
+    </p>
+    <h3 class="font-semibold mt-4 mb-2">决策效率：你的每一步打几分</h3>
+    <p class="text-sm leading-7 opacity-80 mb-4">
+      没有绝对的 10 分，只有<strong>相对当前盘面的最优</strong>。翻开时以当时 <code>pMin（全场最低雷概率）</code> 为分母：<code>得分 = (1-p_选中)/(1-pMin)×10</code>；插旗时以 <code>pMax</code> 为分母：<code>得分 = p_选中/pMax×10</code>。选中当时最安全/最该标的格子即 <strong>10 分</strong>，选 50% 而场上有 0% 可选则只有约 5 分。双击批量打开视为“已判定安全”，固定 <strong>10 分</strong>。分数与热力图共用同一求解器，关闭学习模式也会在后台计分，不影响复盘。
+    </p>
+
+    <h2 class="text-xl font-bold mt-8 mb-3">如何读懂复盘图表</h2>
+    <p class="text-sm leading-7 opacity-80 mb-2">
+      胜利或失败后自动弹出三线图，X 轴为<strong>时间（分:秒 / 时:分:秒）</strong>，按 6 秒分桶聚合：
+    </p>
+    <ul class="list-disc ps-5 text-sm leading-7 opacity-80 mb-6">
+      <li><strong class="text-[#4bc0c0]">打开安全区（青绿）</strong>：RPM（操作次数/分钟）左轴，反映手速与连开效率。</li>
+      <li><strong class="text-[#FF6B6B]">插旗（红）</strong>：同左轴，看你何时密集标雷。</li>
+      <li><strong class="text-[#f59e0b]">决策效率（橙，右轴 0-10）</strong>：每 6 秒内所有计分操作的均值，10 为当时最优，持续走低说明开始“盲猜”。</li>
+    </ul>
+    <p class="text-sm leading-7 opacity-80 mb-6">结合热力图复盘：橙线低谷对应的时间点，回看当时哪一步没选最绿格，就知道下次该怎么选。</p>
+
+    <h2 class="text-xl font-bold mt-8 mb-3">从新手到高手</h2>
+    <ol class="list-decimal ps-5 text-sm leading-7 opacity-80 mb-6">
+      <li>先开学习模式看颜色，建立“绿=可点、红=须标”的直觉；</li>
+      <li>关掉 %/分数，只用颜色做决策，再对照复盘看分数是否仍 10；</li>
+      <li>最后关闭学习模式，靠逻辑与记忆挑战 Hard 16×30，目标 RPM 稳定、橙线维持 9 以上。</li>
+    </ol>
+
+    <div class="text-xs opacity-60 mt-8">
+      关键词：肉山扫雷 · 扫雷边玩边学 · 扫雷概率 · 扫雷技巧 · 扫雷教学 · 学习模式 · 决策效率 · 复盘
+    </div>
+  </section>
+
+  <footer class="text-center text-xs opacity-60 py-6">
+    © {{ new Date().getFullYear() }} 肉山扫雷 · <a class="link" href="https://minesweeper.meathill.com/" target="_blank">minesweeper.meathill.com</a> · 边玩边学
+  </footer>
 </template>
