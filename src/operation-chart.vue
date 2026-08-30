@@ -45,11 +45,23 @@ const chartOptions = computed(() => ({
       type: "linear",
       title: {
         display: true,
-        text: isMoreThanOneHundredSec.value ? "时间（分钟）" : "时间（秒）",
+        text: "时间",
       },
       min: 0,
       ticks: {
-        stepSize: isMoreThanOneHundredSec.value ? (secPerInterval.value / 60) : secPerInterval.value
+        stepSize: isMoreThanOneHundredSec.value ? (secPerInterval.value / 60) : secPerInterval.value,
+        callback(value) {
+          const isMin = isMoreThanOneHundredSec.value
+          const totalSec = isMin ? value * 60 : value
+          const m = Math.floor(totalSec / 60)
+          const s = Math.round(totalSec % 60)
+          if (m >= 60) {
+            const h = Math.floor(m / 60)
+            const mm = m % 60
+            return `${h}:${String(mm).padStart(2,'0')}:${String(s).padStart(2,'0')}`
+          }
+          return `${m}:${String(s).padStart(2,'0')}`
+        },
       },
     },
     y: {

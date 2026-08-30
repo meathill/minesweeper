@@ -230,23 +230,11 @@ function onOpenAll(item, index) {
     }
   }
   if (count === item.count) {
-    // chord 效率：对所有将被点开的格取平均分
+    // 双击批量打开视为绝对安全决策，固定满分 10（即使求解器认为有风险，按玩家“flag==count”视角视为最优）
     if (learningStore.showProbability && targetIndices.length) {
-      const { pMin } = bestProbs.value
-      if (pMin != null) {
-        let sum = 0, cnt = 0
-        for (const ti of targetIndices) {
-          const prob = probabilities.value.get(ti)
-          if (prob == null) continue
-          const sc = scoreForAction(prob, pMin, 'open')
-          if (sc != null) { sum += sc; cnt++ }
-        }
-        if (cnt) {
-          const avgScore = sum / cnt
-          const avgProb = targetIndices.reduce((a, ti) => a + (probabilities.value.get(ti) ?? 0), 0) / targetIndices.length
-          operationStore.onRecordEfficiency({ index, prob: avgProb, pBest: pMin, score: avgScore, action: 'chord' })
-        }
-      }
+      const pMin = bestProbs.value.pMin
+      const avgProb = targetIndices.reduce((a, ti) => a + (probabilities.value.get(ti) ?? 0), 0) / targetIndices.length
+      operationStore.onRecordEfficiency({ index, prob: avgProb, pBest: pMin ?? 0, score: 1, action: 'chord' })
     }
     for (const gridItem of items) {
       gridItem.open();
