@@ -1,5 +1,5 @@
 <script setup>
-import {ref, toRefs, computed} from 'vue';
+import {ref, toRefs, computed, watch} from 'vue';
 import { useOperationRecordsStore } from './store/operationRecords';
 
 const emit = defineEmits(['flag', 'open', 'openAll']);
@@ -11,6 +11,8 @@ const props = defineProps({
   showProbability: Boolean,
   showPercent: Boolean,
   showFraction: Boolean,
+  isHint: Boolean,
+  hintFlashKey: Number,
 });
 const {count, isBomb} = toRefs(props);
 const isOpen = ref(false);
@@ -19,6 +21,8 @@ const isUncovered = ref(false);
 const mouseCount = ref(0);
 const revealDelay = ref(0);
 const operationStore = useOperationRecordsStore()
+const isHintFlashing = ref(false)
+let flashTimer = null
 
 const probOverlayVisible = computed(() => {
   return props.showProbability && !isOpen.value && !isFlag.value && !isUncovered.value && props.probability != null
@@ -55,6 +59,28 @@ function probColor(p) {
 const probStyle = computed(() => {
   if (props.probability == null) return {}
   return { background: probColor(props.probability) }
+})
+
+const hintVisible = computed(() => {
+  return props.isHint && !isOpen.value && !isFlag.value
+})
+
+// 监听 hint 触发闪动 3 次
+watch(() => [props.isHint, props.hintFlashKey], ([isHint, key]) => {
+  if (isHint && key != null) {
+    isHintFlashing.value = false
+    // 强制重绘以重启动画
+    requestAnimationFrame(() => {
+      isHintFlashing.value = true
+      clearTimeout(flashTimer)
+      flashTimer = setTimeout(() => {
+        isHintFlashing.value = false
+      }, 1800)
+    })
+  } else if (!isHint) {
+    isHintFlashing.value = false
+    clearTimeout(flashTimer)
+  }
 })
 
 function onClick() {
@@ -155,5 +181,6 @@ export default {
       <span v-if="showFraction" class="prob-text">{{probFraction}}</span>
     </template>
   </div>
+  <div v-if="hintVisible" class="hint-overlay" :class="{'hint-flash': isHintFlashing}">🎯</div>
 </div>
 </template>

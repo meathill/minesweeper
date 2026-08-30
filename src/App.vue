@@ -56,6 +56,52 @@ const probabilities = computed(() => probResult.value.map)
 const isApproximate = computed(() => probResult.value.isApproximate)
 const bestProbs = computed(() => getBestProbs(probabilities.value))
 
+// 提示：最低概率格
+const hintIndex = ref(null)
+const hintFlashKey = ref(0)
+function handleHint() {
+  if (!isRealStart.value || !grid.value) return
+  const candidates = []
+  let minP = Infinity
+  for (const [idx, p] of probabilities.value) {
+    const cell = grid.value[idx]
+    if (!cell || cell.isOpen || cell.isFlag) continue
+    if (p <= 0 || p >= 1) continue // 仅未确定的格子
+    if (p < minP - 1e-9) {
+      minP = p
+      candidates.length = 0
+      candidates.push(idx)
+    } else if (Math.abs(p - minP) < 1e-9) {
+      candidates.push(idx)
+    }
+  }
+  // 若没有 0<p<1 的格子（例如全 0/1），则退化为取最低 p 的未开格
+  if (candidates.length === 0) {
+    let minAny = Infinity
+    for (const [idx, p] of probabilities.value) {
+      const cell = grid.value[idx]
+      if (!cell || cell.isOpen || cell.isFlag) continue
+      if (p < minAny) {
+        minAny = p
+        candidates.length = 0
+        candidates.push(idx)
+      } else if (Math.abs(p - minAny) < 1e-9) {
+        candidates.push(idx)
+      }
+    }
+  }
+  if (candidates.length === 0) return
+  const pick = candidates[Math.floor(Math.random() * candidates.length)]
+  hintIndex.value = pick
+  hintFlashKey.value++
+}
+
+function clearHintIfOpened(idx) {
+  if (hintIndex.value === idx) {
+    hintIndex.value = null
+  }
+}
+
 function recordEfficiency(index, action) {
   const prob = probabilities.value.get(index)
   if (prob == null) return
@@ -79,6 +125,7 @@ function doStart(event) {
   isRealStart.value = false;
   isFailed.value = isSuccess.value = null;
   flagged.value = timeCount.value = opened.value = 0;
+  hintIndex.value = null
   const bombs = [];
   bombs.length = total.value;
   bombs.fill(0, 0, total.value);
@@ -206,10 +253,12 @@ async function onOpen(item, index, delayMs = 0) {
   }
 
   if (item.isBomb) {
+    clearHintIfOpened(index)
     return doStop();
   }
   // 同步到 grid 供概率计算使用
   if (grid.value[index] && !grid.value[index].isOpen) grid.value[index].isOpen = true
+  clearHintIfOpened(index)
   opened.value += 1;
   if (opened.value >= total.value - bombNumber.value) {
     return doStop(true);
@@ -295,43 +344,6 @@ function onBeforeUnload(event) {
       </div>
       <div class="flex items-center gap-2 flex-wrap justify-end shrink-0">
         <BrandSiteSwitcher />
-        <label class="flex items-center gap-1.5 text-xs sm:text-sm cursor-pointer select-none shrink-0">
-          <input type="checkbox" class="toggle toggle-xs toggle-primary" v-model="learningStore.showProbability" />
-          <span class="whitespace-nowrap">学习模式</span>
-        </label>
-        <template v-if="learningStore.showProbability">
-          <span class="hidden sm:inline-flex items-center gap-1 text-xs whitespace-nowrap">
-            <span class="w-12 h-2 rounded" style="background: linear-gradient(90deg, rgba(34,197,94,0.75), rgba(234,179,8,0.75), rgba(239,68,68,0.75))"></span>
-            0%→100%
-          </span>
-          <label class="hidden sm:flex items-center gap-1 text-xs cursor-pointer select-none">
-            <input type="checkbox" class="checkbox checkbox-xs" v-model="learningStore.showPercent" />
-            <span>%</span>
-          </label>
-          <label class="hidden sm:flex items-center gap-1 text-xs cursor-pointer select-none">
-            <input type="checkbox" class="checkbox checkbox-xs" v-model="learningStore.showFraction" />
-            <span>分数</span>
-          </label>
-          <div class="dropdown dropdown-end sm:hidden">
-            <label tabindex="0" class="btn btn-xs btn-ghost px-1">⚙️</label>
-            <div tabindex="0" class="dropdown-content mt-2 p-2 shadow bg-base-100 rounded-box w-40">
-              <div class="flex flex-col gap-2">
-                <label class="flex items-center gap-2 text-xs cursor-pointer">
-                  <input type="checkbox" class="checkbox checkbox-xs" v-model="learningStore.showPercent" />
-                  显示 %
-                </label>
-                <label class="flex items-center gap-2 text-xs cursor-pointer">
-                  <input type="checkbox" class="checkbox checkbox-xs" v-model="learningStore.showFraction" />
-                  显示分数
-                </label>
-                <div class="flex items-center gap-1 text-xs">
-                  <span class="w-10 h-2 rounded shrink-0" style="background: linear-gradient(90deg, rgba(34,197,94,0.75), rgba(234,179,8,0.75), rgba(239,68,68,0.75))"></span>
-                  0%→100%
-                </div>
-              </div>
-            </div>
-          </div>
-        </template>
         <div class="dropdown dropdown-end">
           <label tabindex="0" class="btn btn-ghost btn-sm px-2">
             {{level}}
@@ -361,32 +373,68 @@ function onBeforeUnload(event) {
       </div>
     </div>
   </header>
-  <div class="flex items-center justify-center my-4">
-    <span class="w-32 countdown">地雷：<span :style="{'--value': bombNumber - flagged}"></span></span>
-    <button
-      type="button"
-      class="btn btn-outline btn-primary start-button"
-      @click="doStart"
-    >
-      <template v-if="isSuccess">😊</template>
-      <template v-else-if="isFailed">😭</template>
-      <template v-else>🎮</template>
-    </button>
-    <span class="w-32 justify-end countdown">
-      <template v-if="timeCount <= 59">
-        <span :style="{ '--value': timeCount }"></span>
-      </template>
-      <template v-else-if="timeCount >= 99 * 60 + 59">
-        <span style="--value:99"></span>
-        :
-        <span :style="{ '--value': timeCount % 60 }"></span>
-      </template>
-      <template v-else>
-        <span :style="{ '--value': Math.floor(timeCount / 60) }"></span>
-        :
-        <span :style="{ '--value': timeCount % 60 }"></span>
-      </template>
-    </span>
+  <div class="bg-slate-800 text-white">
+    <div class="container mx-auto flex items-center justify-between gap-2 px-2 py-2">
+      <!-- 左红框预留：前进后退 -->
+      <div class="w-[140px] sm:w-[220px] h-8 border-2 border-red-500 rounded flex items-center justify-center shrink-0">
+        <span class="text-xs opacity-30 hidden sm:inline">前进 / 后退（预留）</span>
+      </div>
+      <div class="flex items-center gap-3 sm:gap-6">
+        <span class="w-24 sm:w-32 text-sm">地雷：{{ bombNumber - flagged }}</span>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline bg-white text-slate-800 border-slate-300 start-button"
+          @click="doStart"
+        >
+          <template v-if="isSuccess">😊</template>
+          <template v-else-if="isFailed">😭</template>
+          <template v-else>🎮</template>
+        </button>
+        <span class="w-24 sm:w-32 text-right text-sm flex justify-end items-center gap-1">
+          <template v-if="timeCount <= 59">
+            <span class="countdown"><span :style="{ '--value': timeCount }"></span></span>
+          </template>
+          <template v-else-if="timeCount >= 99 * 60 + 59">
+            <span class="countdown" style="--value:99"></span>
+            :
+            <span class="countdown" :style="{ '--value': timeCount % 60 }"></span>
+          </template>
+          <template v-else>
+            <span class="countdown" :style="{ '--value': Math.floor(timeCount / 60) }"></span>
+            :
+            <span class="countdown" :style="{ '--value': timeCount % 60 }"></span>
+          </template>
+        </span>
+      </div>
+      <!-- 右红框：提示 + 学习模式 dropdown -->
+      <div class="w-[140px] sm:w-[260px] h-8 flex items-center justify-end gap-1 sm:gap-2 shrink-0">
+        <button class="btn btn-xs sm:btn-sm btn-warning" @click="handleHint" :disabled="!isRealStart || !probabilities.size">提示</button>
+        <div class="dropdown dropdown-end">
+          <label tabindex="0" class="btn btn-xs sm:btn-sm btn-primary">学习模式</label>
+          <div tabindex="0" class="dropdown-content mt-3 p-3 shadow menu bg-base-100 text-base-content rounded-box w-56">
+            <label class="flex items-center gap-2 text-sm cursor-pointer">
+              <input type="checkbox" class="toggle toggle-sm toggle-primary" v-model="learningStore.showProbability" />
+              <span>开启热力图</span>
+            </label>
+            <div v-if="learningStore.showProbability" class="mt-3 flex flex-col gap-2">
+              <div class="flex items-center gap-1 text-xs">
+                <span class="w-12 h-2 rounded" style="background: linear-gradient(90deg, rgba(34,197,94,0.75), rgba(234,179,8,0.75), rgba(239,68,68,0.75))"></span>
+                <span>0%→100%</span>
+              </div>
+              <label class="flex items-center gap-2 text-sm cursor-pointer">
+                <input type="checkbox" class="checkbox checkbox-xs" v-model="learningStore.showPercent" />
+                显示 %
+              </label>
+              <label class="flex items-center gap-2 text-sm cursor-pointer">
+                <input type="checkbox" class="checkbox checkbox-xs" v-model="learningStore.showFraction" />
+                显示分数
+              </label>
+            </div>
+            <p v-else class="text-xs opacity-60 mt-2">开启后实时显示每格地雷概率</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <div v-if="grid" id="stage" :class="{'pointer-events-none': !isStart}" :style="gridStyle" @contextmenu.stop.prevent>
     <grid-item
@@ -400,6 +448,8 @@ function onBeforeUnload(event) {
       :show-probability="learningStore.showProbability && isRealStart"
       :show-percent="learningStore.showPercent"
       :show-fraction="learningStore.showFraction"
+      :is-hint="hintIndex === index"
+      :hint-flash-key="hintFlashKey"
       @flag="onFlag(index, $event)"
       @open="onOpen(item, index, $event)"
       @open-all="onOpenAll(item, index)"
