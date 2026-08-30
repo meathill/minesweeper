@@ -1,3 +1,4 @@
+@import "@meathill/brand/tokens.css";
 @import "tailwindcss";
 
 @plugin "daisyui" {
@@ -7,6 +8,164 @@
 :root {
   --column: 10;
   --row: 10;
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  border-bottom: 1px solid var(--meathill-rule);
+  background: color-mix(in srgb, var(--meathill-cream) 92%, transparent);
+  color: var(--meathill-ink);
+  backdrop-filter: blur(8px);
+}
+
+.brand-studio {
+  color: var(--meathill-ink);
+  font-family: var(--meathill-font-display);
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.brand-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--meathill-rule-strong);
+}
+
+.brand-switcher {
+  position: relative;
+  font-size: 14px;
+}
+
+.brand-switcher summary {
+  border-radius: var(--meathill-radius);
+  padding: 6px 8px;
+  color: var(--meathill-ink-soft);
+  cursor: pointer;
+  list-style: none;
+}
+
+.brand-switcher summary::-webkit-details-marker {
+  display: none;
+}
+
+.brand-switcher summary:hover,
+.brand-switcher[open] summary {
+  background: var(--meathill-fluff);
+  color: var(--meathill-ink);
+}
+
+.brand-switcher-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  display: grid;
+  width: min(320px, calc(100vw - 32px));
+  max-height: min(480px, 70vh);
+  gap: 4px;
+  overflow-y: auto;
+  border: 1px solid var(--meathill-rule-strong);
+  border-radius: var(--meathill-radius-large);
+  padding: 8px;
+  background: var(--meathill-paper);
+  box-shadow: 0 10px 20px -5px rgb(58 46 35 / 0.16);
+}
+
+.brand-switcher-panel a {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  border-radius: var(--meathill-radius);
+  padding: 7px 10px;
+  color: var(--meathill-ink-soft);
+  text-decoration: none;
+}
+
+.brand-switcher-panel a:hover,
+.brand-switcher-panel a[aria-current="page"] {
+  background: var(--meathill-fluff);
+  color: var(--meathill-ink);
+}
+
+.brand-switcher-panel small {
+  color: var(--meathill-mute);
+  font-size: 12px;
+}
+
+.brand-switcher-panel .all-products {
+  margin-top: 4px;
+  border-top: 1px solid var(--meathill-rule);
+  border-radius: 0;
+  color: var(--meathill-yellow-deep);
+  font-weight: 700;
+}
+
+.brand-switcher summary:focus-visible,
+.brand-switcher-panel a:focus-visible,
+.brand-studio:focus-visible,
+.brand-footer a:focus-visible {
+  outline: none;
+  box-shadow: var(--meathill-focus-ring);
+}
+
+.brand-footer {
+  margin-top: 32px;
+  border-top: 1px solid var(--meathill-rule);
+  background: var(--meathill-paper);
+  color: var(--meathill-ink);
+}
+
+.brand-footer-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, .8fr);
+  width: min(100% - 32px, 1152px);
+  margin-inline: auto;
+  gap: 24px;
+  padding-block: 24px;
+}
+
+.brand-footer-name {
+  color: var(--meathill-ink);
+  font-family: var(--meathill-font-display);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.brand-footer p {
+  margin-top: 8px;
+  color: var(--meathill-mute);
+  font-size: 12px;
+}
+
+.brand-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: start;
+  gap: 8px 16px;
+}
+
+.brand-footer-links a {
+  color: var(--meathill-ink-soft);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.brand-footer-links a:hover {
+  color: var(--meathill-yellow-deep);
+}
+
+@media (max-width: 720px) {
+  .brand-studio,
+  .brand-divider {
+    display: none;
+  }
+
+  .brand-footer-inner {
+    grid-template-columns: 1fr;
+  }
 }
 
 .start-button {

@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@meathill/brand':
+        specifier: file:/tmp/meathill-brand-0.1.0.tgz
+        version: file:../../../../../tmp/meathill-brand-0.1.0.tgz
       chart.js:
         specifier: ^4.5.1
         version: 4.5.1
@@ -93,6 +96,10 @@ packages:
 
   '@kurkle/color@0.3.4':
     resolution: {integrity: sha512-M5UknZPHRu3DEDWoipU6sE8PdkZ6Z/S+v4dD+Ke8IaNlpdSQah50lz1KtcFBa2vsdOnwbbnxJwVM4wty6udA5w==}
+
+  '@meathill/brand@file:../../../../../tmp/meathill-brand-0.1.0.tgz':
+    resolution: {integrity: sha512-LzfnNoSXHzLgPvtpkLDVUer2LoBpW1ZSsE46AG1Gmq6IW+Fr9hDHV5m1d41JgKAMRcJ1/7eidX6zljL0suGlZg==, tarball: file:../../../../../tmp/meathill-brand-0.1.0.tgz}
+    version: 0.1.0
 
   '@oxc-project/types@0.147.0':
     resolution: {integrity: sha512-IJ3s6ltHLp45S0bh7phkX+gJO7A1Wuz2EaqpAhb8WjqDwbzMiWKHhyyT42tskaWjEYXtHtVCPpnBJVT9+dcRLg==}
@@ -857,6 +864,8 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.5
 
   '@kurkle/color@0.3.4': {}
+
+  '@meathill/brand@file:../../../../../tmp/meathill-brand-0.1.0.tgz': {}
 
   '@oxc-project/types@0.147.0': {}
 

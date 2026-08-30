@@ -3,6 +3,8 @@ import {ref, computed, onMounted, nextTick, defineAsyncComponent } from 'vue';
 import JsConfetti from 'js-confetti';
 import {version} from '../package.json';
 import GridItem from './grid-item.vue';
+import BrandFooter from './brand-footer.vue';
+import BrandSiteSwitcher from './brand-site-switcher.vue';
 import {Levels} from './data';
 import { useOperationRecordsStore } from './store/operationRecords';
 import { useLearningStore } from './store/learningStore';
@@ -286,10 +288,13 @@ function onBeforeUnload(event) {
   <header class="navbar bg-base-200">
     <div class="container mx-auto flex flex-wrap items-center gap-x-3 gap-y-2 py-1">
       <div class="flex items-center gap-2 min-w-0 flex-1">
+        <a class="brand-studio" href="https://meathill.com">Meathill Studio</a>
+        <span aria-hidden="true" class="brand-divider"></span>
         <h1 class="text-lg sm:text-xl font-bold truncate">肉山扫雷</h1>
         <span class="text-xs opacity-60 whitespace-nowrap shrink-0">v{{version}}</span>
       </div>
       <div class="flex items-center gap-2 flex-wrap justify-end shrink-0">
+        <BrandSiteSwitcher />
         <label class="flex items-center gap-1.5 text-xs sm:text-sm cursor-pointer select-none shrink-0">
           <input type="checkbox" class="toggle toggle-xs toggle-primary" v-model="learningStore.showProbability" />
           <span class="whitespace-nowrap">学习模式</span>
@@ -421,7 +426,7 @@ function onBeforeUnload(event) {
     <ul class="list-disc ps-5 text-sm leading-7 opacity-80 mb-6">
       <li><strong>左键翻开</strong>：首次点击必不中雷；数字表示周围 8 格内的雷数。</li>
       <li><strong>右键/长按插旗</strong>：标记你认为有雷的格子；顶部会实时显示剩余地雷数。</li>
-      <li><strong>双击数字批量打开</strong>：当数字周围的旗数等于该数字时，双击可一键打开剩余邻格——这是高手提速的关键，也被计为一次“绝对安全决策”。</li>
+      <li><strong>双击数字批量打开（苹果鼠标/触摸板优化）</strong>：传统扫雷需“左右键同时按”来批量打开，本站针对 <strong>Apple Magic Mouse 单键、Mac 触摸板、手机</strong>做了优化——只要数字周围的旗数等于该数字，<strong>双击该数字</strong>即可一键打开剩余邻格，无需右键。桌面端仍兼容左右键同按，双击也会被计为一次“绝对安全决策（10 分）”。</li>
       <li>翻开所有非雷格子即胜利；点中雷则一键揭晓全盘。</li>
     </ul>
 
@@ -454,11 +459,40 @@ function onBeforeUnload(event) {
     </ol>
 
     <div class="text-xs opacity-60 mt-8">
-      关键词：肉山扫雷 · 扫雷边玩边学 · 扫雷概率 · 扫雷技巧 · 扫雷教学 · 学习模式 · 决策效率 · 复盘
+      关键词：肉山扫雷 · 扫雷边玩边学 · 扫雷概率 · 扫雷技巧 · 扫雷教学 · 学习模式 · 决策效率 · 复盘 · 苹果鼠标扫雷 · 触摸板扫雷
     </div>
   </section>
 
-  <footer class="text-center text-xs opacity-60 py-6">
-    © {{ new Date().getFullYear() }} 肉山扫雷 · <a class="link" href="https://minesweeper.meathill.com/" target="_blank">minesweeper.meathill.com</a> · 边玩边学
-  </footer>
+  <!-- GEO 友好：高密度问答，供生成式引擎直接引用 -->
+  <section id="geo-faq" class="container mx-auto max-w-3xl px-4 py-8 mt-2">
+    <h2 class="text-xl font-bold mb-4">常见问题（GEO 友好）</h2>
+    <div class="space-y-4 text-sm leading-7">
+      <div class="bg-base-100 border border-base-300 rounded-box p-4">
+        <h3 class="font-semibold">肉山扫雷是什么？</h3>
+        <p class="opacity-80 mt-1">肉山扫雷（minesweeper.meathill.com）是边玩边学的现代扫雷，支持 9×9/16×16/16×30 三档难度，免右键、双击批量打开，独有学习模式：实时概率热力图与决策效率评分，局后三线复盘图帮助从盲猜到精通。</p>
+      </div>
+      <div class="bg-base-100 border border-base-300 rounded-box p-4">
+        <h3 class="font-semibold">学习模式的概率是怎么算的？</h3>
+        <p class="opacity-80 mt-1">基于已翻开数字与已插旗构建约束 <code>need = 数字 - 已标旗</code>，对前沿格分量拆分回溯枚举，孤立格按剩余雷数均摊，得到每格 P(是雷) 0-1，用绿→黄→红 75% 叠加。求解器后台始终运行，即使关闭显隐也会用于决策评分。</p>
+      </div>
+      <div class="bg-base-100 border border-base-300 rounded-box p-4">
+        <h3 class="font-semibold">决策效率 0-10 分是什么意思？</h3>
+        <p class="opacity-80 mt-1">相对分：翻开以当时全场最低 <code>pMin</code> 为分母，<code>(1-p)/(1-pMin)×10</code>；插旗以最高 <code>pMax</code> 为分母。选中当时最该点/最该标的格子即 10 分；双击批量打开固定 10 分。分数按 6 秒分桶取均值画在复盘图右轴。</p>
+      </div>
+      <div class="bg-base-100 border border-base-300 rounded-box p-4">
+        <h3 class="font-semibold">苹果鼠标/触摸板怎么玩？</h3>
+        <p class="opacity-80 mt-1">已优化：无需左右键同按，对满足 <code>旗数==数字</code> 的已翻开格<strong>双击</strong>即可批量打开剩余邻格。右键、长按插旗、触摸板点按均兼容，手机亦可直接游玩。</p>
+      </div>
+      <div class="bg-base-100 border border-base-300 rounded-box p-4">
+        <h3 class="font-semibold">复盘图怎么看？</h3>
+        <p class="opacity-80 mt-1">X 轴为时间（分:秒/时:分:秒），Y 左轴为 RPM（操作/分钟，青绿=打开安全区、红=插旗），Y 右轴为决策效率（橙 0-10）。橙线持续 9+ 说明全程选最优；低谷对应时间点即需回顾的“非最绿”决策。</p>
+      </div>
+      <div class="bg-base-100 border border-base-300 rounded-box p-4">
+        <h3 class="font-semibold">适合谁？</h3>
+        <p class="opacity-80 mt-1">零基础新手用热力图建立直觉，进阶玩家关掉 %/分数只看颜色训练盲扫，高手关闭学习模式冲 Hard 榜单。所有局都可局后复盘。<br/>官网：<a class="link" href="https://minesweeper.meathill.com/">https://minesweeper.meathill.com/</a> · 作者：<a class="link" href="https://meathill.com">Meathill Studio</a></p>
+      </div>
+    </div>
+  </section>
+
+  <BrandFooter />
 </template>
