@@ -9,8 +9,8 @@ const props = defineProps({
   isStart: Boolean,
   probability: Number,
   showProbability: Boolean,
-  probDisplay: String,
-  isApproximate: Boolean,
+  showPercent: Boolean,
+  showFraction: Boolean,
 });
 const {count, isBomb} = toRefs(props);
 const isOpen = ref(false);
@@ -23,8 +23,19 @@ const operationStore = useOperationRecordsStore()
 const probOverlayVisible = computed(() => {
   return props.showProbability && !isOpen.value && !isFlag.value && !isUncovered.value && props.probability != null
 })
+const probPercent = computed(() => props.probability != null ? Math.round(props.probability * 100) : null)
+const probFraction = computed(() => {
+  if (props.probability == null) return ''
+  const p = props.probability
+  const denoms = [2,3,4,6,8]
+  for (const d of denoms) {
+    const n = Math.round(p * d)
+    if (Math.abs(n/d - p) < 0.015) return `${n}/${d}`
+  }
+  return `${probPercent.value}%`
+})
 function probColor(p) {
-  // 0 绿  -> 0.5 黄 -> 1 红，均 75% alpha 叠加，只显示颜色
+  // 0 绿  -> 0.5 黄 -> 1 红，均 75% alpha 叠加
   const alpha = 0.75
   // green #22c55e (34,197,94), yellow #eab308 (234,179,8), red #ef4444 (239,68,68)
   let r,g,b
@@ -137,6 +148,12 @@ export default {
     <template v-else>{{count ? count : ''}}</template>
   </template>
   <template v-else-if="isUncovered && isBomb">💣</template>
-  <div v-if="probOverlayVisible" class="prob-overlay" :style="probStyle"></div>
+  <div v-if="probOverlayVisible" class="prob-overlay" :style="probStyle">
+    <template v-if="showPercent || showFraction">
+      <span v-if="showPercent" class="prob-text">{{probPercent}}%</span>
+      <span v-if="showPercent && showFraction" class="prob-sep"> </span>
+      <span v-if="showFraction" class="prob-text">{{probFraction}}</span>
+    </template>
+  </div>
 </div>
 </template>

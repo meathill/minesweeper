@@ -297,10 +297,39 @@ function onBeforeUnload(event) {
           <input type="checkbox" class="toggle toggle-xs toggle-primary" v-model="learningStore.showProbability" />
           <span class="whitespace-nowrap">学习模式</span>
         </label>
-        <span v-if="learningStore.showProbability" class="hidden sm:inline-flex items-center gap-1 text-xs whitespace-nowrap">
-          <span class="w-12 h-2 rounded" style="background: linear-gradient(90deg, rgba(34,197,94,0.75), rgba(234,179,8,0.75), rgba(239,68,68,0.75))"></span>
-          0%→100%
-        </span>
+        <template v-if="learningStore.showProbability">
+          <span class="hidden sm:inline-flex items-center gap-1 text-xs whitespace-nowrap">
+            <span class="w-12 h-2 rounded" style="background: linear-gradient(90deg, rgba(34,197,94,0.75), rgba(234,179,8,0.75), rgba(239,68,68,0.75))"></span>
+            0%→100%
+          </span>
+          <label class="hidden sm:flex items-center gap-1 text-xs cursor-pointer select-none">
+            <input type="checkbox" class="checkbox checkbox-xs" v-model="learningStore.showPercent" />
+            <span>%</span>
+          </label>
+          <label class="hidden sm:flex items-center gap-1 text-xs cursor-pointer select-none">
+            <input type="checkbox" class="checkbox checkbox-xs" v-model="learningStore.showFraction" />
+            <span>分数</span>
+          </label>
+          <div class="dropdown dropdown-end sm:hidden">
+            <label tabindex="0" class="btn btn-xs btn-ghost px-1">⚙️</label>
+            <div tabindex="0" class="dropdown-content mt-2 p-2 shadow bg-base-100 rounded-box w-40">
+              <div class="flex flex-col gap-2">
+                <label class="flex items-center gap-2 text-xs cursor-pointer">
+                  <input type="checkbox" class="checkbox checkbox-xs" v-model="learningStore.showPercent" />
+                  显示 %
+                </label>
+                <label class="flex items-center gap-2 text-xs cursor-pointer">
+                  <input type="checkbox" class="checkbox checkbox-xs" v-model="learningStore.showFraction" />
+                  显示分数
+                </label>
+                <div class="flex items-center gap-1 text-xs">
+                  <span class="w-10 h-2 rounded shrink-0" style="background: linear-gradient(90deg, rgba(34,197,94,0.75), rgba(234,179,8,0.75), rgba(239,68,68,0.75))"></span>
+                  0%→100%
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
         <div class="dropdown dropdown-end">
           <label tabindex="0" class="btn btn-ghost btn-sm px-2">
             {{level}}
@@ -367,8 +396,8 @@ function onBeforeUnload(event) {
       :flagable="flagged < bombNumber"
       :probability="getProbability(index)"
       :show-probability="learningStore.showProbability && isRealStart"
-      :prob-display="learningStore.probDisplay"
-      :is-approximate="isApproximate"
+      :show-percent="learningStore.showPercent"
+      :show-fraction="learningStore.showFraction"
       @flag="onFlag(index, $event)"
       @open="onOpen(item, index, $event)"
       @open-all="onOpenAll(item, index)"
