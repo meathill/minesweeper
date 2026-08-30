@@ -149,6 +149,89 @@ function approximateComponent(vars, constraints) {
   return prob
 }
 
+// 大分量下用 SAT 检查找“必雷/必安全”（forced），避免平均化把 100% 抹成 40%
+function hasSolutionWithFixed(vars, constraints, fixedPos, fixedVal, nodeLimit = 80000) {
+  const n = vars.length
+  const varPos = new Map()
+  vars.forEach((v, i) => varPos.set(v, i))
+  const cPos = constraints.map(c => ({
+    need: c.need,
+    pos: c.vars.map(v => varPos.get(v)),
+  }))
+  const assign = new Array(n).fill(-1)
+  assign[fixedPos] = fixedVal
+  let nodes = 0
+  function isPartialValid() {
+    for (const c of cPos) {
+      let assigned = 0
+      let unassigned = 0
+      for (const p of c.pos) {
+        const v = assign[p]
+        if (v === -1) unassigned++
+        else if (v === 1) assigned++
+      }
+      if (assigned > c.need) return false
+      if (assigned + unassigned < c.need) return false
+    }
+    return true
+  }
+  function dfs(nextIdx) {
+    nodes++
+    if (nodes > nodeLimit) return true // 超限按“可能有解”处理，避免误判 forced
+    // 找下一个未赋值的 pos
+    let pos = -1
+    for (let i = nextIdx; i < n; i++) if (assign[i] === -1) { pos = i; break }
+    if (pos === -1) {
+      // 全赋值，校验
+      for (const c of cPos) {
+        let s = 0
+        for (const p of c.pos) if (assign[p] === 1) s++
+        if (s !== c.need) return false
+      }
+      return true
+    }
+    // 试 0/1
+    for (const val of [0, 1]) {
+      assign[pos] = val
+      if (isPartialValid()) {
+        if (dfs(pos + 1)) return true
+      }
+      assign[pos] = -1
+    }
+    return false
+  }
+  if (!isPartialValid()) return false
+  return dfs(0)
+}
+
+export function hasSolutionWithFixedExport(vars, constraints, pos, val) {
+  return hasSolutionWithFixed(vars, constraints, pos, val)
+}
+export function solveLargeComponentExport(vars, constraints) {
+  return solveLargeComponent(vars, constraints)
+}
+
+function solveLargeComponent(vars, constraints) {
+  const n = vars.length
+  const forced = new Map() // var -> 0/1
+  let hasForced = false
+  for (let i = 0; i < n; i++) {
+    const canBe0 = hasSolutionWithFixed(vars, constraints, i, 0)
+    const canBe1 = hasSolutionWithFixed(vars, constraints, i, 1)
+    if (!canBe0 && canBe1) { forced.set(vars[i], 1); hasForced = true }
+    else if (canBe0 && !canBe1) { forced.set(vars[i], 0); hasForced = true }
+    else if (!canBe0 && !canBe1) {
+      // 无解，脏数据，回退
+      return { forced: null, hasForced: false }
+    }
+  }
+  if (!hasForced) return { forced, hasForced: false }
+  // 对非 forced 的剩余变量用平均近似，但 forced 的保持 0/1
+  const approx = approximateComponent(vars, constraints)
+  for (const [v, val] of forced) approx.set(v, val)
+  return { forced: approx, hasForced: true }
+}
+
 /**
  * 计算所有未翻开格的雷概率
  * @param {Array} grid
@@ -191,13 +274,21 @@ export function computeProbabilities(grid, row, column, bombNumber) {
 
   for (const comp of components) {
     const n = comp.vars.length
-    // 阈值：>25 用近似，避免指数爆炸
-    if (n > 25) {
+    // 阈值：>28 用近似，但先尝试找出必雷/必安全，避免把 100% 平均成 40%
+    if (n > 28) {
       isApproximate = true
-      const approx = approximateComponent(comp.vars, comp.constraints)
-      for (const [v, p] of approx) {
-        frontierProbs.set(v, p)
-        expectedFrontierMines += p
+      const large = solveLargeComponent(comp.vars, comp.constraints)
+      if (large.forced) {
+        for (const [v, p] of large.forced) {
+          frontierProbs.set(v, p)
+          expectedFrontierMines += p
+        }
+      } else {
+        const approx = approximateComponent(comp.vars, comp.constraints)
+        for (const [v, p] of approx) {
+          frontierProbs.set(v, p)
+          expectedFrontierMines += p
+        }
       }
       continue
     }
