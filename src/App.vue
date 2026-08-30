@@ -17,6 +17,14 @@ const OperationChart = defineAsyncComponent(() => import('./operation-chart.vue'
 const operationStore = useOperationRecordsStore()
 const learningStore = useLearningStore()
 
+function trackEvent(name, params = {}) {
+  try {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', name, { ...params, level: level.value })
+    }
+  } catch (e) {}
+}
+
 // locale -> URL + SEO sync
 function toggleLocale() {
   const next = locale.value === 'en' ? 'zh' : 'en'
@@ -26,7 +34,12 @@ function toggleLocale() {
     history.pushState(null, '', target)
   }
   updateSeoMeta(next)
+  trackEvent('locale_switch', { to_locale: next })
 }
+// 学习模式开关埋点
+watch(() => learningStore.showProbability, (v) => trackEvent('learn_mode_toggle', { enabled: v }))
+watch(() => learningStore.showPercent, (v) => trackEvent('learn_show_percent', { enabled: v }))
+watch(() => learningStore.showFraction, (v) => trackEvent('learn_show_fraction', { enabled: v }))
 function updateSeoMeta(loc) {
   const isEn = loc === 'en'
   document.title = isEn ? t('meta.title') : '肉山扫雷 - 边玩边学的扫雷 | 概率热力图·决策效率'
@@ -97,19 +110,17 @@ const probabilities = computed(() => probResult.value.map)
 const isApproximate = computed(() => probResult.value.isApproximate)
 const bestProbs = computed(() => getBestProbs(probabilities.value))
 
-// 提示：最低概率格（优先有推断的前沿格）
+// 提示：最低概率格（优先有推断的前沿格，0% 绝对安全最优先）
 const hintIndex = ref(null)
 const hintFlashKey = ref(0)
 function handleHint() {
   if (!isRealStart.value || !grid.value) return
   const frontierSet = probResult.value.frontierSet || new Set()
-  // 先在未确定 0<p<1 中找最优，优先前沿
   let candidates = []
   let minP = Infinity
   for (const [idx, p] of probabilities.value) {
     const cell = grid.value[idx]
     if (!cell || cell.isOpen || cell.isFlag) continue
-    if (p <= 0 || p >= 1) continue
     if (p < minP - 1e-9) {
       minP = p
       candidates = [idx]
@@ -117,27 +128,14 @@ function handleHint() {
       candidates.push(idx)
     }
   }
-  // 若没有 0<p<1，则在所有未开格中找最低（包括 0% 安全格）
-  if (candidates.length === 0) {
-    minP = Infinity
-    for (const [idx, p] of probabilities.value) {
-      const cell = grid.value[idx]
-      if (!cell || cell.isOpen || cell.isFlag) continue
-      if (p < minP - 1e-9) {
-        minP = p
-        candidates = [idx]
-      } else if (Math.abs(p - minP) < 1e-9) {
-        candidates.push(idx)
-      }
-    }
-  }
   if (candidates.length === 0) return
-  // 在并列最低中，优先有推断条件的前沿格
+  // 在并列最低（通常是大量 0%）中，优先有推断条件的前沿格，避免落在无推断的孤立区
   const frontierCandidates = candidates.filter(idx => frontierSet.has(idx))
   const finalCandidates = frontierCandidates.length ? frontierCandidates : candidates
   const pick = finalCandidates[Math.floor(Math.random() * finalCandidates.length)]
   hintIndex.value = pick
   hintFlashKey.value++
+  trackEvent('hint_click', { hint_prob: probabilities.value.get(pick), hint_index: pick })
 }
 
 function clearHintIfOpened(idx) {
@@ -171,6 +169,7 @@ function doStart(event) {
   isFailed.value = isSuccess.value = null;
   flagged.value = timeCount.value = opened.value = 0;
   hintIndex.value = null
+  trackEvent('game_start', { action: event ? 'restart' : 'init' })
   const bombs = [];
   bombs.length = total.value;
   bombs.fill(0, 0, total.value);
@@ -234,6 +233,12 @@ function doStop(success = false) {
   isSuccess.value = success;
   isStart.value = isRealStart.value = false;
   removeEventListener('beforeunload', onBeforeUnload);
+  // GA: 结算
+  const avgEff = (() => {
+    const ev = operationStore.efficiencyEvents
+    if (!ev.length) return null
+    return (ev.reduce((a, b) => a + b.score10, 0) / ev.length).toFixed(1)
+  })()
   if (success) {
     jsConfetti.addConfetti({
       confettiNumber: 500,
@@ -241,12 +246,15 @@ function doStop(success = false) {
     for (const gridItem of gridItems.value) {
       gridItem.addFlag(true);
     }
+    trackEvent('game_win', { time_seconds: timeCount.value, avg_efficiency: avgEff })
   } else {
     for (const gridItem of gridItems.value) {
       gridItem.uncover();
     }
+    trackEvent('game_lose', { time_seconds: timeCount.value, avg_efficiency: avgEff })
   }
   operationStore.onStopOperateRecords()
+  trackEvent(success ? 'game_complete_win' : 'game_complete_lose', { time_seconds: timeCount.value })
 }
 
 function onFlag(index, flag) {
@@ -264,6 +272,7 @@ function onFlag(index, flag) {
   }
   flagged.value += flag ? 1 : -1;
   if (grid.value && grid.value[index]) grid.value[index].isFlag = flag
+  trackEvent(flag ? 'flag_set' : 'flag_unset', { index })
 }
 
 const REVEAL_STEP_MS = 25; // 批量展开时每层涟漪的延迟
@@ -295,6 +304,7 @@ async function onOpen(item, index, delayMs = 0) {
         operationStore.onRecordEfficiency({ index, prob: prob ?? 0, pBest: pMin ?? 0, score: 1, action: 'open' })
       }
     }
+    if (delayMs === 0) trackEvent('open_cell', { index, is_bomb: !!item.isBomb })
   }
 
   if (item.isBomb) {
@@ -340,6 +350,7 @@ function onOpenAll(item, index) {
       const pMin = bestProbs.value.pMin
       const avgProb = targetIndices.reduce((a, ti) => a + (probabilities.value.get(ti) ?? 0), 0) / targetIndices.length
       operationStore.onRecordEfficiency({ index, prob: avgProb, pBest: pMin ?? 0, score: 1, action: 'chord' })
+      trackEvent('chord_open', { center_index: index, opened_count: targetIndices.length })
     }
     for (const gridItem of items) {
       gridItem.open();
@@ -353,6 +364,7 @@ function onLevelChange(level) {
   row.value = Levels[level].row;
   column.value = Levels[level].column;
   doStart(true);
+  trackEvent('level_change', { new_level: level })
 }
 
 function openGridItem(item, index, delayMs = 0) {
@@ -370,6 +382,13 @@ function openGridItem(item, index, delayMs = 0) {
       gridItem.open(false, delayMs + REVEAL_STEP_MS);
     }
   }
+}
+
+function formatTime(sec) {
+  const m = Math.floor(sec / 60)
+  const s = sec % 60
+  if (m >= 99) return `99:${String(Math.min(s, 59)).padStart(2,'0')}`
+  return `${m}:${String(s).padStart(2,'0')}`
 }
 
 function onBeforeUnload(event) {
@@ -433,21 +452,7 @@ function onBeforeUnload(event) {
             <template v-else-if="isFailed">😭</template>
             <template v-else>🎮</template>
           </button>
-          <span class="w-24 sm:w-32 text-right text-sm flex justify-end items-center gap-1">
-            <template v-if="timeCount <= 59">
-              <span class="countdown"><span :style="{ '--value': timeCount }"></span></span>
-            </template>
-            <template v-else-if="timeCount >= 99 * 60 + 59">
-              <span class="countdown" style="--value:99"></span>
-              :
-              <span class="countdown" :style="{ '--value': timeCount % 60 }"></span>
-            </template>
-            <template v-else>
-              <span class="countdown" :style="{ '--value': Math.floor(timeCount / 60) }"></span>
-              :
-              <span class="countdown" :style="{ '--value': timeCount % 60 }"></span>
-            </template>
-          </span>
+          <span class="w-24 sm:w-32 text-right text-sm font-mono">{{ formatTime(timeCount) }}</span>
         </div>
       </div>
       <!-- 右侧：提示 + 学习模式（对齐高级难度游戏区右缘） -->

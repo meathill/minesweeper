@@ -13,6 +13,24 @@
     <link rel="alternate" hreflang="en" href="https://minesweeper.meathill.com/en/" />
     <link rel="alternate" hreflang="x-default" href="https://minesweeper.meathill.com/" />
     <script>try{ if(location.pathname.startsWith('/en')) document.documentElement.lang='en'; }catch(e){}</script>
+    <!-- Google Analytics (GA4) - 请替换为你的 Measurement ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MEATHILL01"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-MEATHILL01');
+      // 修复 Google Vignette 对 body aria-hidden 的误用导致的无障碍告警
+      try {
+        const mo = new MutationObserver(() => {
+          if (document.body.getAttribute('aria-hidden') === 'true') {
+            document.body.removeAttribute('aria-hidden');
+            document.body.setAttribute('aria-hidden', 'false');
+          }
+        });
+        mo.observe(document.body, { attributes: true, attributeFilter: ['aria-hidden'] });
+      } catch(e) {}
+    </script>
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="肉山扫雷 - 边玩边学的扫雷" />
