@@ -1,4 +1,4 @@
-@import "@meathill/brand/tokens.css";
+@import "meathill-brand/tokens.css";
 @import "tailwindcss";
 
 @plugin "daisyui" {

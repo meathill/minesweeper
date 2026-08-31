@@ -8,10 +8,10 @@
     "test": "node --test src/solver/probability.test.js src/brand-network.test.js"
   },
   "dependencies": {
-    "@meathill/brand": "file:./meathill-brand-0.1.0.tgz",
     "chart.js": "^4.5.1",
     "colors.css": "^3.0.0",
     "js-confetti": "^0.13.1",
+    "meathill-brand": "^0.1.0",
     "pinia": "^4.0.3",
     "vue": "^3.5.42",
     "vue-chartjs": "^5.3.4",

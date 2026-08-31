@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@meathill/brand':
-        specifier: file:./meathill-brand-0.1.0.tgz
-        version: file:meathill-brand-0.1.0.tgz
       chart.js:
         specifier: ^4.5.1
         version: 4.5.1
@@ -20,6 +17,9 @@ importers:
       js-confetti:
         specifier: ^0.13.1
         version: 0.13.1
+      meathill-brand:
+        specifier: ^0.1.0
+        version: 0.1.0
       pinia:
         specifier: ^4.0.3
         version: 4.0.3(@vue/devtools-api@8.2.1)(vue@3.5.42)
@@ -111,10 +111,6 @@ packages:
 
   '@kurkle/color@0.3.4':
     resolution: {integrity: sha512-M5UknZPHRu3DEDWoipU6sE8PdkZ6Z/S+v4dD+Ke8IaNlpdSQah50lz1KtcFBa2vsdOnwbbnxJwVM4wty6udA5w==}
-
-  '@meathill/brand@file:meathill-brand-0.1.0.tgz':
-    resolution: {integrity: sha512-LzfnNoSXHzLgPvtpkLDVUer2LoBpW1ZSsE46AG1Gmq6IW+Fr9hDHV5m1d41JgKAMRcJ1/7eidX6zljL0suGlZg==, tarball: file:meathill-brand-0.1.0.tgz}
-    version: 0.1.0
 
   '@oxc-project/types@0.147.0':
     resolution: {integrity: sha512-IJ3s6ltHLp45S0bh7phkX+gJO7A1Wuz2EaqpAhb8WjqDwbzMiWKHhyyT42tskaWjEYXtHtVCPpnBJVT9+dcRLg==}
@@ -644,6 +640,9 @@ packages:
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
+  meathill-brand@0.1.0:
+    resolution: {integrity: sha512-ua09wnW8UeGtmkFESdPse6xnjq2Ixny4Qjlobp+nTUk9CBigx+Jb0Bp0xk58MxVlstDAeErGqi6GAl7+9kOpuw==}
+
   minimatch@9.0.9:
     resolution: {integrity: sha512-OBwBN9AL4dqmETlpS2zasx+vTeWclWzkblfZk7KTA5j3jeOONz/tRCnZomUyvNg83wL5Zv9Ss6HMJXAgL8R2Yg==}
     engines: {node: '>=16 || 14 >=14.17'}
@@ -900,8 +899,6 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.5
 
   '@kurkle/color@0.3.4': {}
-
-  '@meathill/brand@file:meathill-brand-0.1.0.tgz': {}
 
   '@oxc-project/types@0.147.0': {}
 
@@ -1320,6 +1317,8 @@ snapshots:
   magic-string@0.30.21:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  meathill-brand@0.1.0: {}
 
   minimatch@9.0.9:
     dependencies:
