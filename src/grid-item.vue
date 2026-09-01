@@ -13,6 +13,9 @@ const props = defineProps({
   showFraction: Boolean,
   isHint: Boolean,
   hintFlashKey: Number,
+  cellIndex: Number,
+  columns: Number,
+  isSelected: Boolean,
 });
 const {count, isBomb} = toRefs(props);
 const isOpen = ref(false);
@@ -87,16 +90,24 @@ function onClick() {
   mouseCount.value = 0;
   open(true);
 }
+function getCellMeta() {
+  if (props.cellIndex == null || props.columns == null) return {}
+  return {
+    index: props.cellIndex,
+    row: Math.floor(props.cellIndex / props.columns),
+    col: props.cellIndex % props.columns,
+  }
+}
 function onRightClick(event) {
   mouseCount.value = 0;
   event.preventDefault();
   addFlag();
-  operationStore.onUpdateOperateRecords('flag')
+  operationStore.onUpdateOperateRecords('flag', getCellMeta())
 }
 function onDoubleClick() {
   mouseCount.value = 0;
   if (isOpen.value) {
-    operationStore.onUpdateOperateRecords('doubleClick')
+    operationStore.onUpdateOperateRecords('doubleClick', getCellMeta())
     emit('openAll');
   }
 }
@@ -116,10 +127,11 @@ function open(isUserAction = false, delayMs = 0) {
   revealDelay.value = delayMs;
   isOpen.value = true;
 
+  const meta = getCellMeta()
   if (isUserAction && !props.isBomb){
-    operationStore.onUpdateOperateRecords(count.value === 0 ? 'openBlank' : 'open');
+    operationStore.onUpdateOperateRecords(count.value === 0 ? 'openBlank' : 'open', meta);
   }
-  operationStore.onUpdateOperateRecords('openSave');
+  operationStore.onUpdateOperateRecords('openSave', meta);
 
   emit('open', delayMs);
 }
@@ -158,7 +170,7 @@ export default {
 <div
   class="grid-item"
   :class="[
-    {'open bg-base-200 dark:bg-base-100': isOpen, 'bg-base-300': !isOpen, 'wrong-mark': !isBomb && isFlag && isUncovered},
+    {'open bg-base-200 dark:bg-base-100': isOpen, 'bg-base-300': !isOpen, 'wrong-mark': !isBomb && isFlag && isUncovered, 'ring-2 ring-warning ring-offset-1 z-10': isSelected},
     'count-' + count
   ]"
   :style="{ animationDelay: revealDelay + 'ms' }"

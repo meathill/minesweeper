@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 56" width="640" height="56" role="img" aria-label="复盘图例：4条线分工">
+<title>复盘图例 - 4条线分工</title>
+<text x="0" y="12" font-family="ui-sans-serif,system-ui" font-size="10" font-weight="600" fill="#64748b" letter-spacing="0.6">图例 · 4 条线分工</text>
+<!-- 打开安全区 -->
+<g transform="translate(0,22)">
+  <line x1="0" y1="10" x2="36" y2="10" stroke="#4bc0c0" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="10" cy="10" r="4.5" fill="#4bc0c0" stroke="white" stroke-width="1.2"/>
+  <circle cx="26" cy="10" r="4.5" fill="white" stroke="#4bc0c0" stroke-width="1.6"/>
+  <text x="0" y="30" font-family="ui-sans-serif,system-ui" font-size="10.5" fill="#334155">打开安全区</text>
+  <text x="0" y="42" font-family="ui-sans-serif,system-ui" font-size="8.5" fill="#94a3b8">6s 一桶 · 左轴</text>
+</g>
+<!-- 插旗 -->
+<g transform="translate(160,22)">
+  <line x1="0" y1="10" x2="36" y2="10" stroke="#FF6B6B" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="10" cy="10" r="4.5" fill="#FF6B6B" stroke="white" stroke-width="1.2"/>
+  <circle cx="26" cy="10" r="4.5" fill="white" stroke="#FF6B6B" stroke-width="1.6"/>
+  <text x="0" y="30" font-family="ui-sans-serif,system-ui" font-size="10.5" fill="#334155">插旗</text>
+  <text x="0" y="42" font-family="ui-sans-serif,system-ui" font-size="8.5" fill="#94a3b8">6s 一桶 · 左轴</text>
+</g>
+<!-- 决策效率 -->
+<g transform="translate(320,22)">
+  <line x1="0" y1="10" x2="36" y2="10" stroke="#f59e0b" stroke-width="2" opacity="0.95"/>
+  <circle cx="6" cy="10" r="4" fill="#ef4444" stroke="white" stroke-width="1"/>
+  <circle cx="18" cy="10" r="4" fill="#f59e0b" stroke="white" stroke-width="1"/>
+  <circle cx="30" cy="10" r="4.5" fill="#22c55e" stroke="white" stroke-width="1.2"/>
+  <text x="0" y="30" font-family="ui-sans-serif,system-ui" font-size="10.5" fill="#334155">决策效率</text>
+  <text x="0" y="42" font-family="ui-sans-serif,system-ui" font-size="8.5" fill="#94a3b8">按真实时刻 · 右轴</text>
+</g>
+<!-- 地雷概率 -->
+<g transform="translate(480,22)">
+  <line x1="0" y1="10" x2="36" y2="10" stroke="#a855f7" stroke-width="2" stroke-dasharray="6 4"/>
+  <polygon points="10,4 6,12 14,12" fill="#a855f7" stroke="white" stroke-width="0.8"/>
+  <polygon points="26,4 22,12 30,12" fill="white" stroke="#a855f7" stroke-width="1.4"/>
+  <text x="0" y="30" font-family="ui-sans-serif,system-ui" font-size="10.5" fill="#334155">地雷概率</text>
+  <text x="0" y="42" font-family="ui-sans-serif,system-ui" font-size="8.5" fill="#94a3b8">按真实时刻 · ×10</text>
+</g>
+</svg>

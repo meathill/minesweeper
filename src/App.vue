@@ -144,6 +144,9 @@ function clearHintIfOpened(idx) {
   }
 }
 
+function getRowCol(index) {
+  return { row: Math.floor(index / column.value), col: index % column.value }
+}
 function recordEfficiency(index, action) {
   const prob = probabilities.value.get(index)
   if (prob == null) return
@@ -152,7 +155,8 @@ function recordEfficiency(index, action) {
   if (pBest == null) return
   const score = scoreForAction(prob, pBest, action)
   if (score == null) return
-  operationStore.onRecordEfficiency({ index, prob, pBest, score, action })
+  const { row: r, col: c } = getRowCol(index)
+  operationStore.onRecordEfficiency({ index, row: r, col: c, prob, pBest, score, action })
 }
 function getProbability(index) {
   return probabilities.value.get(index) ?? null
@@ -169,6 +173,7 @@ function doStart(event) {
   isFailed.value = isSuccess.value = null;
   flagged.value = timeCount.value = opened.value = 0;
   hintIndex.value = null
+  operationStore.clearSelection()
   trackEvent('game_start', { action: event ? 'restart' : 'init' })
   const bombs = [];
   bombs.length = total.value;
@@ -280,14 +285,15 @@ function doStop(success = false) {
 function onFlag(index, flag) {
   // 在状态变更前快照效率（评分始终记录，显隐不影响）
   if (isRealStart.value) {
+    const { row, col } = getRowCol(index)
     const prob = probabilities.value.get(index)
     const { pMax } = bestProbs.value
     if (prob != null && pMax != null) {
       const score = scoreForAction(prob, pMax, 'flag')
-      if (score != null) operationStore.onRecordEfficiency({ index, prob, pBest: pMax, score, action: 'flag' })
+      if (score != null) operationStore.onRecordEfficiency({ index, row, col, prob, pBest: pMax, score, action: 'flag' })
     } else if (prob == null && pMax == null) {
       // 孤立或首步旗标，无约束时视为最优
-      operationStore.onRecordEfficiency({ index, prob: prob ?? 0, pBest: 0, score: 1, action: 'flag' })
+      operationStore.onRecordEfficiency({ index, row, col, prob: prob ?? 0, pBest: 0, score: 1, action: 'flag' })
     }
   }
   flagged.value += flag ? 1 : -1;
@@ -310,18 +316,19 @@ async function onOpen(item, index, delayMs = 0) {
   // 仅玩家主动点开（delayMs===0 且未通过递归展开）时计分；递归展开的空白连开不计分
   const isUserAction = delayMs === 0
   if (isUserAction) {
+    const { row, col } = getRowCol(index)
     // 首步必定安全（规避地雷），或孤立无约束时直接满分
     if (opened.value === 0 && flagged.value === 0) {
-      operationStore.onRecordEfficiency({ index, prob: 0, pBest: 0, score: 1, action: 'open' })
+      operationStore.onRecordEfficiency({ index, row, col, prob: 0, pBest: 0, score: 1, action: 'open' })
     } else {
       const prob = probabilities.value.get(index)
       const { pMin } = bestProbs.value
       if (prob != null && pMin != null) {
         const score = scoreForAction(prob, pMin, 'open')
-        if (score != null) operationStore.onRecordEfficiency({ index, prob, pBest: pMin, score, action: 'open' })
+        if (score != null) operationStore.onRecordEfficiency({ index, row, col, prob, pBest: pMin, score, action: 'open' })
       } else {
         // 无约束或概率缺失时视为最优（与当前最低一致）
-        operationStore.onRecordEfficiency({ index, prob: prob ?? 0, pBest: pMin ?? 0, score: 1, action: 'open' })
+        operationStore.onRecordEfficiency({ index, row, col, prob: prob ?? 0, pBest: pMin ?? 0, score: 1, action: 'open' })
       }
     }
     if (delayMs === 0) trackEvent('open_cell', { index, is_bomb: !!item.isBomb })
@@ -369,7 +376,8 @@ function onOpenAll(item, index) {
     if (targetIndices.length) {
       const pMin = bestProbs.value.pMin
       const avgProb = targetIndices.reduce((a, ti) => a + (probabilities.value.get(ti) ?? 0), 0) / targetIndices.length
-      operationStore.onRecordEfficiency({ index, prob: avgProb, pBest: pMin ?? 0, score: 1, action: 'chord' })
+      const { row, col } = getRowCol(index)
+      operationStore.onRecordEfficiency({ index, row, col, prob: avgProb, pBest: pMin ?? 0, score: 1, action: 'chord' })
       trackEvent('chord_open', { center_index: index, opened_count: targetIndices.length })
     }
     for (const gridItem of items) {
@@ -519,6 +527,9 @@ function onBeforeUnload(event) {
       :show-fraction="learningStore.showFraction"
       :is-hint="hintIndex === index"
       :hint-flash-key="hintFlashKey"
+      :cell-index="index"
+      :columns="column"
+      :is-selected="operationStore.selectedIndex === index"
       @flag="onFlag(index, $event)"
       @open="onOpen(item, index, $event)"
       @open-all="onOpenAll(item, index)"

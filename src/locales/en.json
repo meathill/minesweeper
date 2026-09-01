@@ -30,15 +30,32 @@
     "revealedBomb": "💣"
   },
   "chart": {
-    "title": "⭐ Performance & Decision Efficiency",
+    "title": "⭐ Performance & Decision Efficiency (click to trace)",
     "openSafe": "Open safe",
     "flag": "Flag",
     "efficiency": "Efficiency",
+    "mineProb": "Mine prob",
     "rpm": "RPM (ops/min)",
-    "efficiencyAxis": "Efficiency 0-10",
+    "efficiencyAxis": "Efficiency / Mine prob ×10",
     "time": "Time",
     "timeMinutes": "Time (min)",
-    "timeSeconds": "Time (sec)"
+    "timeSeconds": "Time (sec)",
+    "selected": "Selected",
+    "cell": "Cell",
+    "clearSelection": "Clear",
+    "clickHint": "Click orange/purple dots to highlight the cell you clicked",
+    "legendTitle": "Legend · 4 lines",
+    "legendAria": "Replay legend: open safe, flag, efficiency, mine prob",
+    "bucket": "bucket",
+    "legendExact": "exact time",
+    "legendLeftAxis": "Left: speed (RPM)",
+    "legendRightAxis": "Right: quality (0-10)",
+    "legendClickHint": "Click dots to highlight · red<5 orange 5-9 green 10",
+    "exampleAria": "Replay example: valley in orange + spike in purple = risky guess",
+    "exampleBad": "Risky guess · click to trace",
+    "exampleProbHigh": "purple spike = high risk",
+    "exampleEffLow": "orange valley = low score",
+    "exampleCaption": "Example: steady 10 is optimal; when purple spikes and orange dips together, you guessed on a high-prob cell — click that dot to highlight it."
   },
   "seo": {
     "whatIsTitle": "What is Meathill Minesweeper?",
@@ -56,13 +73,14 @@
     "efficiencyTitle": "Decision efficiency: how good was that move?",
     "efficiencyDesc": "No absolute 10 — only <strong>relative to the board</strong>. Open: <code>score=(1-p)/(1-pMin)*10</code> where pMin is the current safest cell; Flag: <code>score=p/pMax*10</code>. Picking the safest/riskiest at that moment is <strong>10</strong>; picking 50% when 0% exists is ~5. Chording is always <strong>10</strong>. Scores share the solver, so closing the heatmap still records for the post-game chart.",
     "chartTitle": "How to read the replay chart",
-    "chartDesc": "After win/lose a 3-line chart appears, X is <strong>time (m:s / h:mm:ss)</strong> bucketed every 6s:",
+    "chartDesc": "It pops up at game over. X is <strong>time</strong>, left Y is speed, right Y is quality — 4 lines, two rhythms:",
     "chartBullets": [
-      "<strong class=\"text-[#4bc0c0]\">Open safe (teal)</strong>: RPM left axis — raw speed and flood-fill efficiency.",
-      "<strong class=\"text-[#FF6B6B]\">Flag (red)</strong>: same axis, when you were flagging.",
-      "<strong class=\"text-[#f59e0b]\">Efficiency (orange, right 0-10)</strong>: mean score per 6s bucket; 10 is optimal, dipping means guessing."
+      "<strong class=\"text-[#4bc0c0]\">Open safe (teal · left)</strong>: RPM background, bucketed every 6s — raw speed & flood-fill bursts.",
+      "<strong class=\"text-[#FF6B6B]\">Flag (red · left)</strong>: RPM background, also 6s buckets — when you were flagging.",
+      "<strong class=\"text-[#f59e0b]\">Efficiency (orange dots+line · right 0-10)</strong>: <strong>plotted at the exact click time</strong>. 10 = optimal at that moment; <5 red, 5-9 orange, 10 green. <strong>Click any dot to highlight that cell on the board</strong> and trace the low score.",
+      "<strong class=\"text-[#a855f7]\">Mine prob (purple triangles, dashed · right 0-10 = prob×10)</strong>: only for open/chord, the P(mine) of that cell at that moment. Overlay it with orange — high purple + low orange = a risky guess."
     ],
-    "chartHint": "Dip in orange? Check which step didn't pick the greenest cell — that's your next improvement.",
+    "chartHint": "<strong>How to use it:</strong> find valleys in orange, check if purple spikes at the same time — that's the move to review. Click the dot, the board highlights the cell; next time pick a greener one.",
     "progressTitle": "From novice to expert",
     "progressSteps": [
       "Start with heatmap on, learn green=open, red=flag intuition;",
@@ -84,7 +102,7 @@
       },
       {
         "q": "What does 0-10 efficiency mean?",
-        "a": "Relative: open (1-p)/(1-pMin)*10, flag p/pMax*10, chording always 10. Picking the current best is 10. Averaged per 6s bucket on the replay chart's right axis."
+        "a": "Relative, not absolute. Open: (1-p)/(1-pMin)*10, flag: p/pMax*10, chord always 10. Picking the safest/most certain cell at that moment is 10; picking 50% when 0% exists is ~5. Each orange dot in the replay is one score — click it to highlight the cell."
       },
       {
         "q": "How to chord on Apple / trackpad?",
@@ -92,7 +110,7 @@
       },
       {
         "q": "How to read the replay chart?",
-        "a": "X=time (m:s / h:mm:ss), left Y=RPM (teal=open safe, red=flag), right Y=efficiency 0-10 (orange). Sustained 9+ means optimal; valleys point to non-greenest moves to review."
+        "a": "Left Y = speed, right Y = quality. X is time, two RPM lines (teal=open, red=flag, left) are 6s-bucketed background; two scatter lines (orange=efficiency 0-10, purple=mine prob×10, right) are plotted at the exact click time. Sustained 9+ in orange means optimal; click a valley — if purple spikes there, it was a high-risk guess on that highlighted cell."
       },
       {
         "q": "Who is it for?",
