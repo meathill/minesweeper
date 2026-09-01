@@ -32,7 +32,9 @@
   "chart": {
     "title": "⭐玩家操作结算 & 决策效率（点点可回溯）",
     "openSafe": "打开安全区",
+    "openExact": "翻开(精确)",
     "flag": "插旗",
+    "flagExact": "插旗(精确)",
     "efficiency": "决策效率",
     "mineProb": "地雷概率",
     "rpm": "RPM（操作次数/分钟）",
@@ -55,7 +57,9 @@
     "exampleBad": "盲猜点 · 点此回溯",
     "exampleProbHigh": "紫三角冲高 = 高风险",
     "exampleEffLow": "橙点低谷 = 低分",
-    "exampleCaption": "示例：橙点持续 10 分为最优；低谷处若紫三角也冲高，就是在高概率格上盲猜——点击该点可直接高亮当时那块砖。"
+    "exampleCaption": "示例：橙点持续 10 分为最优；低谷处若紫三角也冲高，就是在高概率格上盲猜——点击该点可直接高亮当时那块砖。",
+    "lowScoreList": "低分回溯 · 点不动？点这里",
+    "lowScoreHint": "按分数从低到高列出 <9 分的操作，点按钮同样高亮对应砖块"
   },
   "seo": {
     "whatIsTitle": "什么是肉山扫雷？",

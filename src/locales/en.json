@@ -32,7 +32,9 @@
   "chart": {
     "title": "⭐ Performance & Decision Efficiency (click to trace)",
     "openSafe": "Open safe",
+    "openExact": "Open (exact)",
     "flag": "Flag",
+    "flagExact": "Flag (exact)",
     "efficiency": "Efficiency",
     "mineProb": "Mine prob",
     "rpm": "RPM (ops/min)",
@@ -55,7 +57,9 @@
     "exampleBad": "Risky guess · click to trace",
     "exampleProbHigh": "purple spike = high risk",
     "exampleEffLow": "orange valley = low score",
-    "exampleCaption": "Example: steady 10 is optimal; when purple spikes and orange dips together, you guessed on a high-prob cell — click that dot to highlight it."
+    "exampleCaption": "Example: steady 10 is optimal; when purple spikes and orange dips together, you guessed on a high-prob cell — click that dot to highlight it.",
+    "lowScoreList": "Low-score trace · hard to click? Click here",
+    "lowScoreHint": "Sorted by score <9 — click a button to highlight that cell too"
   },
   "seo": {
     "whatIsTitle": "What is Meathill Minesweeper?",
