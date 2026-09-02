@@ -1,0 +1,106 @@
+---
+import GuideLayout from '../../../layouts/GuideLayout.astro';
+import type { FaqItem, HowToData } from '../../../types';
+
+const faq: FaqItem[] = [
+  {
+    question: 'How do I open Google Minesweeper?',
+    answer:
+      'Type "minesweeper" into the Google search box and the playable game appears right at the top of the results. No app, no download, no account needed.',
+  },
+  {
+    question: 'How do you flag in Google Minesweeper?',
+    answer:
+      'Right-click a cell on desktop; long-press a cell on mobile or tablet. Flagging marks cells you know are mines so you cannot misclick them.',
+  },
+  {
+    question: 'Is Google Minesweeper free?',
+    answer:
+      'Yes, completely free. It is a built-in Google easter egg and does not require signing in to anything.',
+  },
+  {
+    question: 'Is Google Minesweeper different from classic Minesweeper?',
+    answer:
+      'The rules are identical to classic Minesweeper. The differences are around the edges: no probability hints, no post-game replay, and no saved stats across devices.',
+  },
+  {
+    question: 'Can I play Google Minesweeper on my phone?',
+    answer:
+      'Yes — search "minesweeper" in a mobile browser and play right in the results; long-press to flag. If touch controls feel clunky, a no-right-click version like Meathill Minesweeper plays better on phones.',
+  },
+];
+
+const howTo: HowToData = {
+  name: 'How to open and play Google Minesweeper',
+  steps: [
+    'Type "minesweeper" into the Google search box; the playable board appears at the top of the results.',
+    'Pick a difficulty and left-click any cell to make the safe first click.',
+    'Read the numbers: each counts the mines in the 8 surrounding cells.',
+    'Right-click or long-press to flag mines; open every safe cell to win.',
+  ],
+};
+---
+
+<GuideLayout
+  lang="en"
+  title="How to Play Google Minesweeper: Open It, Flag, Win - Meathill Minesweeper"
+  heading="How to Play Google Minesweeper"
+  description="Everything about Google Minesweeper: how to open it from the search page, how to flag with right-click or long-press, what the numbers mean, and where it falls short for players who want to improve."
+  path="/guide/google-minesweeper/"
+  keywords="google minesweeper, how to play google minesweeper, how to flag in google minesweeper, minesweeper without a mouse"
+  updated="2026-09-03"
+  lede="Google Minesweeper is the easter egg built into search: type “minesweeper” and a playable board appears at the top of the results, with rules identical to classic Minesweeper. Here is how to open it, how the gestures work, and when to reach for a fuller version."
+  faq={faq}
+  howTo={howTo}
+>
+  <h2>How do you open Google Minesweeper?</h2>
+  <p>
+    The fastest way: <strong>search for "minesweeper" on Google</strong>. A playable board is embedded at the top of the
+    results — click and play. It comes from Google's easter egg / Doodle series: no app to install, no account to sign in.
+  </p>
+
+  <h2>What are the rules?</h2>
+  <p>Identical to classic Minesweeper:</p>
+  <ul>
+    <li><strong>Numbers</strong>: an opened number counts the mines in the 8 cells around it.</li>
+    <li><strong>Flagging</strong>: mark cells you know are mines to protect against misclicks.</li>
+    <li><strong>Safe first click</strong>: like most modern implementations, your first click never hits a mine.</li>
+    <li><strong>Winning</strong>: open every non-mine cell to win; the page tracks your time.</li>
+  </ul>
+
+  <h2>How do you flag in Google Minesweeper?</h2>
+  <p>
+    <strong>Right-click a cell on desktop</strong>; <strong>long-press a cell on mobile or tablet</strong>.
+    Flags matter beyond preventing misclicks: when the flags around a number equal the number itself, its remaining
+    neighbors are all safe.
+  </p>
+  <p>
+    Chording — opening those remaining neighbors at once — is triggered by double-click in most Minesweeper
+    implementations. Where a version lacks the gesture, mid-game slows to one cell at a time, which is a big reason
+    players eventually move to dedicated Minesweeper sites.
+  </p>
+
+  <h2>Playing without a mouse (trackpad users)</h2>
+  <p>
+    On a laptop trackpad, "right-click" usually means two-finger click, and chord-style "press both buttons" is
+    miserable. Two options:
+  </p>
+  <ol>
+    <li>Live with system gestures: two-finger tap for right-click, and pay for it in speed.</li>
+    <li>Switch to a trackpad-first version: <a href="/">Meathill Minesweeper</a> drops right-click entirely — when flags
+      match a number, double-click it to open the rest, tuned for single-button Apple mice, Mac trackpads and phones.</li>
+  </ol>
+
+  <h2>Where Google Minesweeper falls short: fun to play, hard to learn</h2>
+  <p>As a casual distraction it is great. For players trying to improve, three things hurt:</p>
+  <ul>
+    <li>No <strong>probability hints</strong>: coin-flip moments stay coin flips, and you never learn how close the call was.</li>
+    <li>No <strong>replay</strong>: a loss is just over — you cannot revisit the turning point.</li>
+    <li>No <strong>saved stats</strong>: times and win rates do not persist across devices, so progress is invisible.</li>
+  </ul>
+  <p>
+    If that matters to you, play a round of <a href="/">Meathill Minesweeper</a>: Learn Mode overlays a live probability
+    heatmap, scores every decision, and the post-game replay chart plots efficiency and mine probability at real click
+    times — turning guessing into calculating.
+  </p>
+</GuideLayout>
