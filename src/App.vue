@@ -66,6 +66,7 @@ watch(locale, (v) => updateSeoMeta(v))
 const seoHowToPlay = computed(() => tm('seo.howToPlay'))
 const seoChartBullets = computed(() => tm('seo.chartBullets'))
 const seoProgressSteps = computed(() => tm('seo.progressSteps'))
+const seoGuideLinks = computed(() => tm('seo.guides'))
 const faqItems = computed(() => tm('faq.items'))
 
 
@@ -572,6 +573,13 @@ function onBeforeUnload(event) {
     <ol class="list-decimal ps-5 text-sm leading-7 opacity-80 mb-6">
       <li v-for="(item, idx) in seoProgressSteps" :key="idx" v-html="item"></li>
     </ol>
+
+    <h2 class="text-xl font-bold mt-8 mb-3">{{ t('seo.guidesTitle') }}</h2>
+    <ul class="list-disc ps-5 text-sm leading-7 mb-6">
+      <li v-for="(item, idx) in seoGuideLinks" :key="idx">
+        <a class="link link-hover" :href="item.href">{{ item.label }}</a>
+      </li>
+    </ul>
 
     <div class="text-xs opacity-60 mt-8">{{ t('seo.keywords') }}</div>
   </section>

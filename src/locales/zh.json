@@ -91,6 +91,13 @@
       "关掉 %/分数，只用颜色做决策，再对照复盘看分数是否仍 10；",
       "最后关闭学习模式，靠逻辑与记忆挑战 Hard 16×30，目标 RPM 稳定、橙线维持 9 以上。"
     ],
+    "guides": [
+      { "label": "扫雷怎么玩？规则、技巧与新手指南", "href": "/guide/how-to-play/" },
+      { "label": "谷歌扫雷怎么玩？插旗与规则详解", "href": "/guide/google-minesweeper/" },
+      { "label": "扫雷概率计算器（精确算每格是雷概率）", "href": "/tools/probability-calculator/" },
+      { "label": "扫雷在线玩（免下载打开即玩）", "href": "/unblocked/" }
+    ],
+    "guidesTitle": "教程与工具",
     "keywords": "关键词：肉山扫雷 · 扫雷边玩边学 · 扫雷概率 · 扫雷技巧 · 扫雷教学 · 学习模式 · 决策效率 · 复盘 · 苹果鼠标扫雷 · 触摸板扫雷"
   },
   "faq": {

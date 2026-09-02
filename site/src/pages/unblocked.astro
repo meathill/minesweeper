@@ -1,0 +1,72 @@
+---
+import GuideLayout from '../layouts/GuideLayout.astro';
+import type { FaqItem } from '../types';
+
+const faq: FaqItem[] = [
+  {
+    question: '在线玩扫雷需要下载吗？',
+    answer:
+      '不需要。本页就是游戏本体：浏览器打开即可玩，无需安装、无需登录、没有任何插件。',
+  },
+  {
+    question: '玩到一半断网了怎么办？',
+    answer:
+      '页面加载完成后，游戏完全在你的设备本地运行，短暂断网不影响当前对局；刷新页面会重新开局。',
+  },
+  {
+    question: '手机上怎么插旗？',
+    answer:
+      '长按格子即可插旗；旗数与数字一致时，双击数字还能批量打开其余邻格，全程不需要右键。',
+  },
+  {
+    question: '怎么全屏玩？',
+    answer:
+      '点击下面的「全屏打开」按钮在新标签页游玩，体验最完整；桌面浏览器也可以按 F11 进入全屏。',
+  },
+];
+---
+
+<GuideLayout
+  lang="zh"
+  title="扫雷在线玩 - 免下载、打开即玩、手机可玩 - 肉山扫雷"
+  heading="扫雷在线玩，免下载打开即玩"
+  description="在浏览器里直接玩的在线扫雷：免下载免安装、无弹窗干扰、长按插旗、免右键设计，三档难度加复盘图表。棋盘就在本页，点开即玩。"
+  path="/unblocked/"
+  keywords="扫雷在线,在线扫雷,免下载扫雷,扫雷游戏在线玩,网页扫雷"
+  updated="2026-09-03"
+  lede="这就是在浏览器里直接玩的扫雷：无需下载安装、无需登录、加载完即可开局——棋盘就在下方，点开即玩。"
+  faq={faq}
+  cta={{ href: '/', label: '全屏打开', text: '想要更大的棋盘和完整体验？在新标签页全屏打开游戏。' }}
+>
+  <h2>在线扫雷，即开即玩</h2>
+  <ul>
+    <li><strong>免下载免安装</strong>：这是一个普通网页，打开就是完整游戏，不做任何本地写入。</li>
+    <li><strong>无弹窗干扰</strong>：没有开屏广告和弹窗，加载后运行在本地，操作零延迟。</li>
+    <li><strong>触屏友好</strong>：长按插旗、双击连开，免右键设计对触摸板和手机同样友好。</li>
+    <li><strong>想提升水平</strong>：内置学习模式——实时概率热力图与决策效率评分，局后可复盘。</li>
+  </ul>
+
+  <h2>在线玩扫雷</h2>
+  <iframe
+    class="play-iframe"
+    src="/"
+    title="肉山扫雷 - 在线扫雷游戏"
+  ></iframe>
+  <p class="text-sm opacity-60">上方即游戏本体：左键翻开，右键或长按插旗，双击数字批量打开。</p>
+
+  <h2>什么样的网络环境能玩？</h2>
+  <p>
+    本页是普通的 HTTPS 网页，家庭与常规办公网络都能直接访问。如果所在学校或公司的网络明确限制访问游戏站点，请遵守所在网络的管理规定；
+    完全断网时，系统自带的扫雷也可以解闷。
+  </p>
+</GuideLayout>
+<style>
+  .play-iframe {
+    display: block;
+    width: 100%;
+    height: clamp(480px, 72vh, 760px);
+    border: 1px solid var(--meathill-rule-strong);
+    border-radius: var(--meathill-radius-large);
+    background: var(--meathill-paper);
+  }
+</style>

@@ -91,6 +91,13 @@
       "Turn off %/fraction, decide by color alone, still aim for 10;",
       "Turn Learn Mode off and challenge Hard 16×30 — keep RPM steady and orange ≥9."
     ],
+    "guides": [
+      { "label": "How to Play Minesweeper: Rules, Tips & Guide", "href": "/en/guide/how-to-play/" },
+      { "label": "How to Play Google Minesweeper: Flag, No Mouse", "href": "/en/guide/google-minesweeper/" },
+      { "label": "Minesweeper Probability Calculator (exact odds)", "href": "/en/tools/probability-calculator/" },
+      { "label": "Minesweeper Unblocked — play instantly", "href": "/en/unblocked/" }
+    ],
+    "guidesTitle": "Guides & tools",
     "keywords": "Keywords: Meathill Minesweeper · learn while playing · mine probability · minesweeper tips · tutorial · no right-click · trackpad · Learn Mode · decision efficiency"
   },
   "faq": {

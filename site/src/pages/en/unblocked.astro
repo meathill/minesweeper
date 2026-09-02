@@ -1,0 +1,73 @@
+---
+import GuideLayout from '../../layouts/GuideLayout.astro';
+import type { FaqItem } from '../../types';
+
+const faq: FaqItem[] = [
+  {
+    question: 'Do I need to download anything to play?',
+    answer:
+      'No. This page is the game itself: open it in a browser and play — nothing to install, no account, no plugins.',
+  },
+  {
+    question: 'What if I lose my connection mid-game?',
+    answer:
+      'Once the page has loaded, the game runs entirely on your device. A brief disconnect will not affect the current game; refreshing starts a new one.',
+  },
+  {
+    question: 'How do I flag on a phone?',
+    answer:
+      'Long-press a cell to flag it. When flags equal a number, double-click that number to open the remaining neighbors — no right-click needed anywhere.',
+  },
+  {
+    question: 'How do I play full screen?',
+    answer:
+      'Use the “Open full screen” button below to play in a new tab, or press F11 in a desktop browser for full-screen mode.',
+  },
+];
+---
+
+<GuideLayout
+  lang="en"
+  title="Minesweeper Unblocked - Play Free in Your Browser - Meathill Minesweeper"
+  heading="Minesweeper Unblocked — Play Instantly"
+  description="Play Minesweeper right in your browser: no download, no install, no sign-in, no pop-ups. Long-press to flag, no right-click needed, three difficulties plus a probability Learn Mode. The board is on this page."
+  path="/unblocked/"
+  keywords="minesweeper unblocked, unblocked minesweeper, minesweeper online, play minesweeper online"
+  updated="2026-09-03"
+  lede="This is Minesweeper played directly in the browser: nothing to download, nothing to sign, and the board is right below — click and play."
+  faq={faq}
+  cta={{ href: '/en/', label: 'Open full screen', text: 'Want the bigger board and the full experience? Open the game in a new tab.' }}
+>
+  <h2>Online Minesweeper, zero setup</h2>
+  <ul>
+    <li><strong>No download, no install</strong>: an ordinary web page that is the complete game; nothing is written to your device.</li>
+    <li><strong>No pop-ups</strong>: no interstitials or pop-unders; after loading, everything runs locally with zero input lag.</li>
+    <li><strong>Touch friendly</strong>: long-press to flag, double-click to chord — the no-right-click design loves trackpads and phones.</li>
+    <li><strong>Want to improve?</strong> Built-in Learn Mode: a live probability heatmap plus per-decision scoring and full post-game replay.</li>
+  </ul>
+
+  <h2>Play Minesweeper online</h2>
+  <iframe
+    class="play-iframe"
+    src="/en/"
+    title="Meathill Minesweeper - online Minesweeper game"
+  ></iframe>
+  <p class="text-sm opacity-60">That is the actual game above: left-click to open, right-click or long-press to flag, double-click numbers to chord.</p>
+
+  <h2>Which networks can play?</h2>
+  <p>
+    This page is a plain HTTPS website and loads on home and typical office networks. If your school or workplace network
+    explicitly restricts game sites, please follow that network's rules; when fully offline, the Minesweeper that ships
+    with your operating system still works.
+  </p>
+</GuideLayout>
+<style>
+  .play-iframe {
+    display: block;
+    width: 100%;
+    height: clamp(480px, 72vh, 760px);
+    border: 1px solid var(--meathill-rule-strong);
+    border-radius: var(--meathill-radius-large);
+    background: var(--meathill-paper);
+  }
+</style>

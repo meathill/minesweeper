@@ -15,7 +15,7 @@
 
 每个内容页都是独立任务：静态 HTML、双语、canonical/hreflang、进 sitemap、与游戏页互链。
 
-### P1 扫雷教程/规则页 → `/guide/how-to-play` + `/en/guide/how-to-play`
+### P1 扫雷教程/规则页 → `/guide/how-to-play` + `/en/guide/how-to-play`（已上线 2026-09-02）
 
 | 关键词 | 量/KD | 竞品现状 |
 | --- | --- | --- |
@@ -28,7 +28,7 @@
 中文侧打：扫雷怎么玩、扫雷规则、扫雷技巧、扫雷数字含义。
 写法：终极教程（规则 → 数字/插旗/双击 → 常见误区 → 进阶），直接答案放开头，配原创截图 + B 站/YouTube 视频（VideoObject），文末引流本站学习模式。
 
-### P2 Google 扫雷怎么玩 → `/guide/google-minesweeper` + 英文版
+### P2 Google 扫雷怎么玩 → `/guide/google-minesweeper` + 英文版（已上线 2026-09-03）
 
 | 关键词 | 量/KD | 竞品现状 |
 | --- | --- | --- |
@@ -41,13 +41,13 @@
 
 与免右键/触摸板/移动端特性严丝合缝，竞品无法承接。中文侧：谷歌扫雷怎么玩、没有鼠标怎么玩扫雷。
 
-### P3 概率计算器工具页 → `/tools/probability-calculator` + 英文版
+### P3 概率计算器工具页 → `/tools/probability-calculator` + 英文版（已上线 2026-09-03）
 
 - 目标词：minesweeper probability calculator、minesweeper solver、minesweeper odds、扫雷概率计算器（竞品报告未覆盖，属增量蓝海，量需另行查证）。
 - 实现：复用 `src/solver` 概率引擎，做一个可粘贴/还原棋盘、输出每格概率的纯前端工具页。
 - 价值：工具页是最强外链磁铁（社区/教程/博客自发引用），直接拉动全站权重。
 
-### P4 Unblocked 落地页 → `/unblocked` + 英文版
+### P4 Unblocked 落地页 → `/unblocked` + 英文版（已上线 2026-09-03，iframe 内嵌游戏即玩）
 
 | 关键词 | 量/KD | 竞品现状 |
 | --- | --- | --- |
@@ -71,7 +71,7 @@
 - **内容页必须是静态 HTML**：内容子站用 Astro（`site/`，pnpm workspace 子包），构建期直出正文、零框架 JS；游戏 SPA 完全不动。产物由 `scripts/merge-dist.mjs` 并入游戏 `dist/`，同时重生成整站 `sitemap.xml`（游戏 2 页 + 内容页自动收录，含 lastmod）。
 - 构建链：`pnpm build` = vite build → astro build → merge；写作预览用 `pnpm dev:site`（Astro dev，http://localhost:4321）。
 - 每页双语互为 hreflang + 各自 canonical；`path` 传语言中立路径（如 `/guide/how-to-play/`），`SeoHead` 自动派生 en 前缀与 x-default；URL kebab-case、目录式尾斜杠。
-- 内链：内容页 ↔ 游戏页互链，锚文本带关键词；游戏 UI 加「教程」入口（待办）。
+- 内链：内容页 ↔ 游戏页互链，锚文本带关键词；游戏首页 SEO 区已加「教程与工具」链接组（`seo.guides`）。
 - 结构化数据：`SeoHead`/`GuideLayout` 自动生成 Organization + BreadcrumbList + FAQPage + HowTo；配视频后加 VideoObject。
 
 ### 新增内容页 checklist
