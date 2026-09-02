@@ -1,0 +1,15 @@
+{
+  "name": "肉山扫雷 Minesweeper",
+  "short_name": "肉山扫雷",
+  "description": "边玩边学的现代扫雷：概率热力图、决策效率复盘，免右键、双击批量打开。",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f2f2f2",
+  "theme_color": "#f2f2f2",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/favicon.png", "sizes": "128x128", "type": "image/png" }
+  ]
+}

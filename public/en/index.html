@@ -7,7 +7,10 @@
     <meta name="description" content="Modern learn-while-playing Minesweeper: no right-click, double-click chording (Apple/trackpad optimized), live mine probability heatmap and 0-10 efficiency scoring. Easy/Medium/Hard + replay." />
     <meta name="keywords" content="Meathill Minesweeper, minesweeper learn, mine probability, minesweeper tips, no right-click, trackpad, Apple mouse, Learn Mode, decision efficiency" />
     <meta name="theme-color" content="#f2f2f2" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/icon-192.png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="canonical" href="https://minesweeper.meathill.com/en/" />
     <link rel="alternate" hreflang="zh" href="https://minesweeper.meathill.com/" />
     <link rel="alternate" hreflang="en" href="https://minesweeper.meathill.com/en/" />
@@ -87,6 +90,16 @@
                 }
               }
             ]
+          },
+          {
+            "@type": "HowTo",
+            "name": "How to play Meathill Minesweeper",
+            "step": [
+              { "@type": "HowToStep", "text": "Left-click to open a cell; the first click is always safe, and each number counts mines in the 8 surrounding cells." },
+              { "@type": "HowToStep", "text": "Right-click or long-press to flag; the header shows remaining mines." },
+              { "@type": "HowToStep", "text": "When flags equal the number, double-click the number to open the remaining neighbors at once (Apple mouse/trackpad optimized)." },
+              { "@type": "HowToStep", "text": "Turn on Learn Mode for the live probability heatmap and efficiency scoring, then review the replay chart (RPM, efficiency and mine probability plotted at real click times, click points to trace back)." }
+            ]
           }
         ]
       }
@@ -109,6 +122,12 @@
     </script>
   </head>
   <body>
+    <noscript>
+      <nav aria-label="Meathill Studio product network">
+        <a href="https://meathill.com">Meathill Studio</a>
+        · <a href="https://meathill.com/app">All Products</a>
+      </nav>
+    </noscript>
     <div id="app"></div>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
     <script type="module" src="/src/main.js"></script>
