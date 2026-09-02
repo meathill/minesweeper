@@ -1,0 +1,101 @@
+---
+import GuideLayout from '../../../layouts/GuideLayout.astro';
+import type { FaqItem, HowToData } from '../../../types';
+
+const faq: FaqItem[] = [
+  {
+    question: 'Will my first click hit a mine?',
+    answer:
+      'In the classic random-board version it could, but virtually every modern implementation protects the first click. Meathill Minesweeper goes further: the first click is always an empty cell and a 3×3 area around it is kept mine-free, so every game opens with a region.',
+  },
+  {
+    question: 'What do the numbers in Minesweeper mean?',
+    answer:
+      'A number counts the mines in the 8 cells surrounding it. A "1" means exactly one adjacent mine, a "3" means three, and so on.',
+  },
+  {
+    question: 'How do you play Minesweeper without a mouse?',
+    answer:
+      'On a touchscreen, long-press to flag. Meathill Minesweeper also works without right-click at all: when the flag count equals a number, double-click that number to open all remaining neighbors — trackpad and mobile friendly.',
+  },
+  {
+    question: 'Is Minesweeper just guessing?',
+    answer:
+      'No. Almost every board can be solved by reasoning about how numbers overlap; only rare endgames force a guess. Learn Mode in Meathill Minesweeper shows the live mine probability of every cell, so you can see exactly where logic ends and guessing begins.',
+  },
+  {
+    question: 'What is chording in Minesweeper?',
+    answer:
+      'When the number of flags around an opened number equals the number itself, double-clicking it opens all remaining neighbors at once. Chording is the key to fast, consistent times.',
+  },
+];
+
+const howTo: HowToData = {
+  name: 'How to play Minesweeper',
+  steps: [
+    'Start a game and click any cell to open it — the first click is always safe.',
+    'Read the numbers: each one counts the mines in the 8 surrounding cells, and reveals cells that must be mines.',
+    'Right-click or long-press to flag mines; when flags equal a number, double-click it to open the rest at once.',
+    'Open every safe cell to win. When stuck, turn on Learn Mode to see a live probability heatmap of every cell.',
+  ],
+};
+---
+
+<GuideLayout
+  lang="en"
+  title="How to Play Minesweeper: Rules, Tips & Beginner Guide - Meathill Minesweeper"
+  heading="How to Play Minesweeper"
+  description="Learn how to play Minesweeper step by step: what the numbers mean, flagging, chording, common beginner mistakes, the 1-2-1 pattern and probability play — plus answers to the questions beginners ask most."
+  path="/guide/how-to-play/"
+  keywords="how to play minesweeper, minesweeper rules, minesweeper tips, minesweeper numbers, minesweeper chording"
+  updated="2026-09-02"
+  lede="The goal of Minesweeper is to open every safe cell without clicking a mine: each number tells you how many mines surround it, and you win by flagging every mine and opening the rest. Here is everything you need to go from first click to consistent wins."
+  faq={faq}
+  howTo={howTo}
+>
+  <h2>What is the goal of Minesweeper?</h2>
+  <p>
+    A board hides a number of mines; every other cell is safe. Your job is to <strong>open all the safe cells</strong>:
+    clicking a mine ends the game, opening everything else wins it. Minesweeper is really a logic puzzle that advances
+    one clue at a time — every number is information, not luck.
+  </p>
+
+  <h2>What are the rules of Minesweeper?</h2>
+  <ul>
+    <li><strong>Numbers</strong>: an opened number counts the mines in the 8 cells around it. "1" means one adjacent mine, "3" means three.</li>
+    <li><strong>Flagging</strong>: mark cells you know are mines to avoid misclicks and to track how many mines remain.</li>
+    <li><strong>Safe first click</strong>: modern Minesweeper protects your first click; Meathill Minesweeper guarantees an empty opening and keeps a 3×3 area mine-free.</li>
+    <li><strong>Winning</strong>: open every non-mine cell to win; clicking a mine loses immediately.</li>
+  </ul>
+
+  <h2>Basic moves: open, flag and chord</h2>
+  <p>Three actions carry every game:</p>
+  <ol>
+    <li><strong>Open</strong>: left-click an unopened cell. Numbers appear directly; empty cells flood open into a region.</li>
+    <li><strong>Flag</strong>: right-click (or long-press on mobile) to mark suspected mines.</li>
+    <li><strong>Chord</strong>: when the flags around a number equal the number itself, double-click it to open all remaining neighbors — the core speed technique.</li>
+  </ol>
+  <p>
+    Trackpad and Apple-mouse players often bounce off the "press both buttons" convention — <a href="/">Meathill Minesweeper</a>
+    removes right-click entirely: when flags match a number, double-click opens the rest, and it works just as well on trackpads and phones.
+  </p>
+
+  <h2>Three mistakes every beginner makes</h2>
+  <ol>
+    <li><strong>Reading numbers in isolation</strong>: the game lives in how numbers overlap. Look for cells where the number equals the count of unopened neighbors (all mines), then where flags already satisfy a number (safe to chord).</li>
+    <li><strong>Flagging on a hunch</strong>: uncertain flags pollute your own clues. Only flag cells that are 100% certain.</li>
+    <li><strong>Stalling on a coin flip</strong>: some endgames truly are guesses. Pick the better-probability cell and move on — agonizing costs more than the risk.</li>
+  </ol>
+
+  <h2>Beyond the basics: from deduction to probability</h2>
+  <p>Two classic patterns instantly raise your win rate:</p>
+  <ul>
+    <li><strong>"1-1"</strong>: two adjacent 1s sharing the same unopened cells — anything outside their shared scope is safe.</li>
+    <li><strong>"1-2-1"</strong>: a horizontal 1-2-1 — the outer corners of the 1s are mines, and the 2's remaining neighbors are safe.</li>
+  </ul>
+  <p>
+    When patterns run out, you play the probabilities — and intuition fails here surprisingly often: two cells that "look" similar
+    may be 30% versus 70%. <a href="/">Learn Mode in Meathill Minesweeper</a> overlays a live probability heatmap on the board,
+    turning every click into a decision you can compare, review and improve.
+  </p>
+</GuideLayout>

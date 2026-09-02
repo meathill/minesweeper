@@ -68,10 +68,19 @@
 
 ## 技术 SEO 原则
 
-- **内容页必须是静态 HTML**（Vite 多入口或 `public/` 直出），正文不得依赖客户端渲染；游戏页保持 SPA。
-- 每页双语互为 hreflang + 各自 canonical；URL kebab-case；上线即加 sitemap（含 lastmod）。
-- 内链：内容页 ↔ 游戏页互链，锚文本带关键词；游戏 UI 加「教程」入口。
-- 结构化数据：FAQPage（问答直接放开头）、HowTo（教程步骤）、VideoObject（配视频后）。
+- **内容页必须是静态 HTML**：内容子站用 Astro（`site/`，pnpm workspace 子包），构建期直出正文、零框架 JS；游戏 SPA 完全不动。产物由 `scripts/merge-dist.mjs` 并入游戏 `dist/`，同时重生成整站 `sitemap.xml`（游戏 2 页 + 内容页自动收录，含 lastmod）。
+- 构建链：`pnpm build` = vite build → astro build → merge；写作预览用 `pnpm dev:site`（Astro dev，http://localhost:4321）。
+- 每页双语互为 hreflang + 各自 canonical；`path` 传语言中立路径（如 `/guide/how-to-play/`），`SeoHead` 自动派生 en 前缀与 x-default；URL kebab-case、目录式尾斜杠。
+- 内链：内容页 ↔ 游戏页互链，锚文本带关键词；游戏 UI 加「教程」入口（待办）。
+- 结构化数据：`SeoHead`/`GuideLayout` 自动生成 Organization + BreadcrumbList + FAQPage + HowTo；配视频后加 VideoObject。
+
+### 新增内容页 checklist
+
+1. 建 `site/src/pages/<路径>.astro`（中文）与 `site/src/pages/en/<路径>.astro`（英文），复用 `GuideLayout`，两页传相同的语言中立 `path`。
+2. `pnpm dev:site` 预览，`pnpm build` 验证并确认 sitemap 收录新 URL。
+3. 玩法特性相关的截图/图表配 alt 后再配 `<figure>`；有视频再补 VideoObject。
+4. 需要游戏站内入口（导航/页脚）时回 `src/App.vue` 增加。
+5. 在本文档路线图勾掉对应项。
 
 ## SERP 特性与 GEO
 

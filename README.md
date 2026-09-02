@@ -51,6 +51,15 @@
 4. 打开浏览器访问 `http://localhost:5173`
 
 
+内容子站（SEO）
+--------
+
+SEO 内容页（教程、工具页等）由 Astro 构建，位于 `site/`，构建产物合并进游戏 `dist/` 一起部署，策略与关键词路线图见 [docs/seo-plan.md](docs/seo-plan.md)。
+
+1. 本地写作预览：`pnpm run dev:site`（http://localhost:4321）
+2. 完整构建：`pnpm run build`（游戏 → 内容子站 → 合并产物并重生成 sitemap）
+
+
 LICENCE
 -------
 
