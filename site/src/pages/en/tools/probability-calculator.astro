@@ -1,0 +1,65 @@
+---
+import GuideLayout from '../../../layouts/GuideLayout.astro';
+import Calculator from '../../../components/Calculator.astro';
+import type { FaqItem } from '../../../types';
+
+const faq: FaqItem[] = [
+  {
+    question: 'How accurate is the Minesweeper probability calculator?',
+    answer:
+      'Frontier cells (hidden cells next to numbers) are computed by exact enumeration over all consistent mine placements, so those are true mathematical probabilities. Isolated cells share the remaining mines evenly. Very large components fall back to forced-mine/safe detection plus approximation, and the page says so.',
+  },
+  {
+    question: 'How is this different from Learn Mode in the game?',
+    answer:
+      'Learn Mode updates live during a game, scores every decision and supports post-game replay. The calculator is a static analysis tool for any board — replaying your own losses or studying someone else’s position. Both use the same solver.',
+  },
+  {
+    question: 'What board sizes are supported?',
+    answer:
+      'Three presets (Easy 9×9·10, Medium 16×16·40, Hard 16×30·99) plus custom rows, columns and mine counts. Components larger than 28 cells switch to approximation to stay fast.',
+  },
+  {
+    question: 'Why do some cells show no percentage?',
+    answer:
+      'Usually the position is invalid — for example more flags than total mines. The status line shows a red warning; fix it and the calculation resumes.',
+  },
+];
+---
+
+<GuideLayout
+  lang="en"
+  title="Minesweeper Probability Calculator - Exact Odds per Cell - Meathill Minesweeper"
+  heading="Minesweeper Probability Calculator"
+  description="Free online Minesweeper probability calculator: reconstruct any position and get the exact mine probability of every hidden cell. Same solver as Learn Mode in Meathill Minesweeper, with custom board sizes."
+  path="/tools/probability-calculator/"
+  keywords="minesweeper probability calculator, minesweeper solver, minesweeper odds calculator, minesweeper calculator"
+  updated="2026-09-03"
+  lede="Reconstruct the position you see — click to mark numbers and known mines — and the calculator computes the exact mine probability of every hidden cell, using the same solver as Learn Mode in Meathill Minesweeper."
+  faq={faq}
+>
+  <Calculator lang="en" />
+
+  <h2>How to use the calculator</h2>
+  <ol>
+    <li>Pick a difficulty preset or set custom rows, columns and total mines.</li>
+    <li><strong>Click cells to cycle states</strong>: hidden → 🚩 (known mine) → number 1–8; right-click cycles backwards, until the board matches what you see.</li>
+    <li>Every hidden cell shows its live mine probability (%), green low → red high; “mines left” auto-subtracts your flags.</li>
+    <li>Stuck? Play the lowest percentage — that is the best expected-value move.</li>
+  </ol>
+
+  <h2>How the probabilities are computed</h2>
+  <p>
+    Every opened number is a constraint: “exactly (number − flags) mines among my hidden neighbors”. The solver splits
+    connected constraints into independent components and <strong>enumerates each exactly with pruning</strong>, counting how
+    often each cell is a mine across all valid placements; isolated cells share the remaining mines evenly. Components
+    larger than 28 cells switch to forced-mine/safe detection plus approximation, clearly marked on the page.
+  </p>
+
+  <h2>When is it useful?</h2>
+  <ul>
+    <li><strong>Coin-flip moments</strong>: intuition says “about the same”; the numbers say 30% vs 70%.</li>
+    <li><strong>Post-game replay</strong>: rebuild the losing position and check whether that click was right.</li>
+    <li><strong>Training intuition</strong>: compare your gut feeling against the heatmap until they agree.</li>
+  </ul>
+</GuideLayout>

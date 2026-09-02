@@ -13,5 +13,11 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    // dev 下引用仓库根的 src/solver（游戏与子站共用同一求解器）
+    server: {
+      fs: {
+        allow: ['..'],
+      },
+    },
   },
 });

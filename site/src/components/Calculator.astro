@@ -1,0 +1,217 @@
+---
+/**
+ * 扫雷概率计算器：静态页面里的 vanilla 交互岛。
+ * 所有文案在组件内按语言渲染；脚本只更新数字与棋盘，保证 zh/en 共用同一个 bundle。
+ * 样式用 is:global：棋盘格子由脚本动态创建，拿不到 Astro 的 scoped 标记；类名统一 calc- 前缀防冲突。
+ */
+interface Props {
+  lang: 'zh' | 'en';
+}
+
+const { lang } = Astro.props;
+const t = lang === 'en'
+  ? {
+    difficulty: 'Difficulty',
+    easy: 'Easy 9×9 · 10',
+    medium: 'Medium 16×16 · 40',
+    hard: 'Hard 16×30 · 99',
+    rows: 'Rows',
+    cols: 'Cols',
+    mines: 'Total mines',
+    reset: 'Reset',
+    flagged: 'Flagged',
+    remaining: 'Mines left',
+    warn: 'Flagged mines exceed the total — adjust the count.',
+    legend: 'Click a cell to cycle: hidden → 🚩 → number 1–8; right-click cycles backwards. The percentage on each hidden cell is its mine probability (green low → red high).',
+    approx: '* Large regions are approximate (forced mines / safe cells stay exact).',
+    labelTemplate: 'Cell {x},{y}',
+  }
+  : {
+    difficulty: '难度',
+    easy: '简单 9×9 · 10',
+    medium: '中等 16×16 · 40',
+    hard: '困难 16×30 · 99',
+    rows: '行',
+    cols: '列',
+    mines: '总雷数',
+    reset: '重置',
+    flagged: '已标雷',
+    remaining: '剩余雷数',
+    warn: '已标雷超过总雷数，请调整。',
+    legend: '点击格子循环：未翻开 → 🚩 → 数字 1–8；右键反向循环。未翻开格上的百分比即该格是雷的概率（绿低红高）。',
+    approx: '* 大分量区域为近似值（必雷/必安全格仍然精确）。',
+    labelTemplate: '格子 {x},{y}',
+  };
+---
+
+<div class="calc" data-calculator data-label-template={t.labelTemplate}>
+  <div class="calc-controls">
+    <div class="calc-presets" role="group" aria-label={t.difficulty}>
+      <button type="button" data-preset="9x9x10">{t.easy}</button>
+      <button type="button" data-preset="16x16x40">{t.medium}</button>
+      <button type="button" data-preset="16x30x99">{t.hard}</button>
+    </div>
+    <label>{t.rows} <input data-slot="rows" type="number" min="5" max="30" value="9" /></label>
+    <label>{t.cols} <input data-slot="cols" type="number" min="5" max="40" value="9" /></label>
+    <label>{t.mines} <input data-slot="mines" type="number" min="1" value="10" /></label>
+    <button type="button" data-slot="reset">{t.reset}</button>
+  </div>
+  <p class="calc-status">
+    {t.flagged} <b data-slot="flags">0</b> · {t.remaining} <b data-slot="remaining">10</b>
+    <span class="calc-warn" data-slot="warn" hidden>{t.warn}</span>
+  </p>
+  <div class="calc-board" data-slot="board"></div>
+  <p class="calc-legend">{t.legend}</p>
+  <p class="calc-approx" data-slot="approx" hidden>{t.approx}</p>
+</div>
+
+<style is:global>
+  .calc-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    font-size: 14px;
+  }
+
+  .calc-controls label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--meathill-ink-soft);
+  }
+
+  .calc-controls input {
+    width: 64px;
+    border: 1px solid var(--meathill-rule-strong);
+    border-radius: var(--meathill-radius);
+    background: var(--meathill-paper);
+    color: var(--meathill-ink);
+    padding: 4px 8px;
+  }
+
+  .calc-controls button {
+    border: 1px solid var(--meathill-rule-strong);
+    border-radius: var(--meathill-radius);
+    background: var(--meathill-paper);
+    color: var(--meathill-ink-soft);
+    padding: 6px 10px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .calc-controls button:hover {
+    background: var(--meathill-fluff);
+    color: var(--meathill-ink);
+  }
+
+  .calc-status {
+    font-size: 14px;
+    color: var(--meathill-ink-soft);
+    margin: 0 0 10px;
+  }
+
+  .calc-warn {
+    color: #dc2626;
+    font-weight: 700;
+    margin-left: 8px;
+  }
+
+  .calc-board {
+    --calc-cell: clamp(20px, calc((100vw - 64px) / var(--calc-column, 9)), 32px);
+    display: grid;
+    grid-template-columns: repeat(var(--calc-column, 9), var(--calc-cell));
+    width: fit-content;
+    user-select: none;
+  }
+
+  .calc-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--calc-cell);
+    height: var(--calc-cell);
+    padding: 0;
+    border: 2px solid;
+    border-color: #cbd5e1 #64748b #64748b #cbd5e1;
+    background: #9aa8bd;
+    color: #111;
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .calc-cell {
+      border-color: #7a8597 #2f3642 #2f3642 #7a8597;
+      background: #5a6577;
+    }
+  }
+
+  .calc-cell.open {
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    cursor: pointer;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .calc-cell.open {
+      border-color: #334155;
+      background: #1e293b;
+    }
+  }
+
+  .calc-cell.count-1 { color: var(--blue, #2b6cb0); }
+  .calc-cell.count-2 { color: var(--green, #2f855a); }
+  .calc-cell.count-3 { color: var(--red, #c53030); }
+  .calc-cell.count-4 { color: var(--navy, #2c5282); }
+  .calc-cell.count-5 { color: var(--orange, #c05621); }
+  .calc-cell.count-6 { color: var(--olive, #6b8e23); }
+  .calc-cell.count-7 { color: var(--purple, #6b46c1); }
+  .calc-cell.count-8 { color: #111; }
+
+  @media (prefers-color-scheme: dark) {
+    .calc-cell.count-1 { color: #60a5fa; }
+    .calc-cell.count-2 { color: #4ade80; }
+    .calc-cell.count-3 { color: #f87171; }
+    .calc-cell.count-4 { color: #93c5fd; }
+    .calc-cell.count-5 { color: #fb923c; }
+    .calc-cell.count-6 { color: #a3e635; }
+    .calc-cell.count-7 { color: #c084fc; }
+    .calc-cell.count-8 { color: #f3f4f6; }
+  }
+
+  .calc-cell.prob-low { color: #15803d; }
+  .calc-cell.prob-mid { color: #b45309; }
+  .calc-cell.prob-high { color: #c2410c; }
+  .calc-cell.prob-certain { color: #b91c1c; }
+
+  .calc-cell.prob-low,
+  .calc-cell.prob-mid,
+  .calc-cell.prob-high,
+  .calc-cell.prob-certain {
+    text-shadow: 0 0 2px #fff, 0 0 4px #fff;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .calc-cell.prob-low,
+    .calc-cell.prob-mid,
+    .calc-cell.prob-high,
+    .calc-cell.prob-certain {
+      color: #f3f4f6;
+      text-shadow: 0 0 3px #000, 0 0 5px #000;
+    }
+  }
+
+  .calc-legend,
+  .calc-approx {
+    font-size: 13px;
+    color: var(--meathill-mute);
+    margin-top: 10px;
+  }
+</style>
+
+<script>
+  import '../scripts/probability-calculator.js';
+</script>
