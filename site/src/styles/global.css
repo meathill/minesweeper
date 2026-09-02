@@ -1,0 +1,192 @@
+@import 'meathill-brand/tokens.css';
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+@plugin 'daisyui' {
+  themes: cupcake --default, dark --prefersdark;
+}
+
+/* 暗色品牌变量（与游戏 src/style/index.css 保持一致） */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --meathill-cream: #1a1410;
+    --meathill-paper: #231b14;
+    --meathill-paper-deep: #31251b;
+    --meathill-fluff: #3a2b1d;
+    --meathill-ink: #f3e9d5;
+    --meathill-ink-soft: #d8cbb6;
+    --meathill-mute: #ad9b83;
+    --meathill-rule: #493a2d;
+    --meathill-rule-strong: #6a5642;
+    --meathill-yellow-deep: #e6b240;
+  }
+}
+
+body {
+  background: var(--meathill-cream);
+  color: var(--meathill-ink);
+}
+
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  border-bottom: 1px solid var(--meathill-rule);
+  background: color-mix(in srgb, var(--meathill-cream) 92%, transparent);
+  color: var(--meathill-ink);
+  backdrop-filter: blur(8px);
+}
+
+.site-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: min(100% - 32px, 1152px);
+  margin-inline: auto;
+  padding-block: 10px;
+}
+
+.site-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--meathill-ink);
+  font-family: var(--meathill-font-display);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.site-brand img {
+  width: 24px;
+  height: 24px;
+}
+
+.site-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.site-nav-links a {
+  color: var(--meathill-ink-soft);
+  text-decoration: none;
+}
+
+.site-nav-links a:hover {
+  color: var(--meathill-yellow-deep);
+}
+
+.site-nav-cta {
+  border-radius: var(--meathill-radius);
+  background: var(--meathill-yellow-deep);
+  padding: 6px 14px;
+  color: var(--meathill-cream);
+  font-weight: 700;
+}
+
+.site-nav-cta:hover {
+  color: var(--meathill-cream);
+  filter: brightness(1.05);
+}
+
+.site-footer {
+  margin-top: 48px;
+  border-top: 1px solid var(--meathill-rule);
+  background: var(--meathill-paper);
+  color: var(--meathill-ink);
+}
+
+.site-footer-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.8fr);
+  width: min(100% - 32px, 1152px);
+  margin-inline: auto;
+  gap: 24px;
+  padding-block: 24px;
+}
+
+.site-footer-name {
+  color: var(--meathill-ink);
+  font-family: var(--meathill-font-display);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.site-footer p {
+  margin-top: 8px;
+  color: var(--meathill-mute);
+  font-size: 12px;
+}
+
+.site-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: start;
+  gap: 8px 16px;
+}
+
+.site-footer-links a {
+  color: var(--meathill-ink-soft);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.site-footer-links a:hover {
+  color: var(--meathill-yellow-deep);
+}
+
+.site-footer a:focus-visible,
+.site-nav a:focus-visible {
+  outline: none;
+  box-shadow: var(--meathill-focus-ring);
+}
+
+.cta-box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid var(--meathill-rule-strong);
+  border-radius: var(--meathill-radius-large);
+  background: var(--meathill-paper);
+  padding: 16px 20px;
+}
+
+.cta-box p {
+  margin: 0;
+  color: var(--meathill-ink-soft);
+  font-size: 15px;
+}
+
+@media (max-width: 720px) {
+  .site-footer-inner {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 文章排版：让 prose 跟随品牌变量 */
+.prose {
+  --tw-prose-body: var(--meathill-ink-soft);
+  --tw-prose-headings: var(--meathill-ink);
+  --tw-prose-links: var(--meathill-yellow-deep);
+  --tw-prose-bold: var(--meathill-ink);
+  --tw-prose-quotes: var(--meathill-ink);
+  --tw-prose-quote-borders: var(--meathill-yellow-deep);
+  --tw-prose-bullets: var(--meathill-rule-strong);
+  --tw-prose-hr: var(--meathill-rule);
+  --tw-prose-th-borders: var(--meathill-rule-strong);
+  --tw-prose-td-borders: var(--meathill-rule);
+  --tw-prose-code: var(--meathill-ink);
+}
+
+@media (prefers-color-scheme: dark) {
+  .prose {
+    --tw-prose-invert-body: var(--meathill-ink-soft);
+    --tw-prose-invert-headings: var(--meathill-ink);
+    --tw-prose-invert-links: var(--meathill-yellow-deep);
+    --tw-prose-invert-bold: var(--meathill-ink);
+    --tw-prose-invert-bullets: var(--meathill-rule-strong);
+  }
+}

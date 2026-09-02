@@ -1,0 +1,91 @@
+---
+import { getOrganizationJsonLd } from 'meathill-brand';
+import type { FaqItem, HowToData } from '../types';
+
+const SITE = 'https://minesweeper.meathill.com';
+
+interface Props {
+  lang: 'zh' | 'en';
+  title: string;
+  description: string;
+  /** 本语言版本的规范路径（含尾斜杠），如 '/guide/how-to-play/' */
+  path: string;
+  keywords?: string;
+  ogType?: 'website' | 'article';
+  ogImage?: string;
+  faq?: FaqItem[];
+  howTo?: HowToData;
+  breadcrumbs?: { name: string; path: string }[];
+}
+
+const { lang, title, description, path, keywords, ogType = 'website', ogImage, faq, howTo, breadcrumbs } = Astro.props;
+
+const enPath = `/en${path}`;
+const canonical = `${SITE}${lang === 'en' ? enPath : path}`;
+const imageUrl = `${SITE}${ogImage ?? (lang === 'en' ? '/og-image-en.png' : '/og-image.png')}`;
+const { '@context': _ignored, ...organization } = getOrganizationJsonLd();
+
+const graph: Record<string, unknown>[] = [organization];
+
+if (breadcrumbs?.length) {
+  graph.push({
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbs.map((crumb, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: crumb.name,
+      item: `${SITE}${crumb.path}`,
+    })),
+  });
+}
+
+if (faq?.length) {
+  graph.push({
+    '@type': 'FAQPage',
+    mainEntity: faq.map(({ question, answer }) => ({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: { '@type': 'Answer', text: answer },
+    })),
+  });
+}
+
+if (howTo) {
+  graph.push({
+    '@type': 'HowTo',
+    name: howTo.name,
+    step: howTo.steps.map((text) => ({ '@type': 'HowToStep', text })),
+  });
+}
+
+const schema = { '@context': 'https://schema.org', '@graph': graph };
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+{keywords && <meta name="keywords" content={keywords} />}
+<meta name="theme-color" content="#f2f2f2" />
+<link rel="icon" href="/favicon.ico" sizes="32x32" />
+<link rel="icon" type="image/png" href="/icon-192.png" sizes="192x192" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<link rel="canonical" href={canonical} />
+<link rel="alternate" hreflang="zh" href={`${SITE}${path}`} />
+<link rel="alternate" hreflang="en" href={`${SITE}${enPath}`} />
+<link rel="alternate" hreflang="x-default" href={`${SITE}${path}`} />
+<meta property="og:type" content={ogType} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:site_name" content="肉山扫雷" />
+<meta property="og:locale" content={lang === 'en' ? 'en_US' : 'zh_CN'} />
+{lang === 'en' && <meta property="og:locale:alternate" content="zh_CN" />}
+{lang === 'zh' && <meta property="og:locale:alternate" content="en_US" />}
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+<script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />

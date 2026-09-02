@@ -3,7 +3,8 @@
   "version": "0.5.1",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "dev:site": "pnpm --filter minesweeper-content-site dev",
+    "build": "vite build && pnpm --filter minesweeper-content-site build && node scripts/merge-dist.mjs",
     "serve": "vite preview",
     "test": "node --test src/solver/probability.test.js src/brand-network.test.js"
   },

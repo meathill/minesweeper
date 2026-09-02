@@ -1,0 +1,50 @@
+---
+import '../styles/global.css';
+import SeoHead from '../components/SeoHead.astro';
+import type { FaqItem, HowToData } from '../types';
+import SiteNav from '../components/SiteNav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+
+interface Props {
+  lang: 'zh' | 'en';
+  title: string;
+  description: string;
+  /** 本语言版本的规范路径（含尾斜杠），如 '/guide/how-to-play/' */
+  path: string;
+  keywords?: string;
+  ogType?: 'website' | 'article';
+  ogImage?: string;
+  faq?: FaqItem[];
+  howTo?: HowToData;
+  breadcrumbs?: { name: string; path: string }[];
+  langSwitchPath?: string;
+}
+
+const props = Astro.props;
+// path 约定为语言中立（即中文路径）：中文页的切换目标是 /en 前缀，英文页去掉前缀
+const langSwitchPath = props.langSwitchPath
+  ?? (props.lang === 'en' ? props.path : `/en${props.path}`);
+---
+
+<!doctype html>
+<html lang={props.lang === 'en' ? 'en' : 'zh-CN'}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <SeoHead {...props} />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MEATHILL01" is:inline></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-MEATHILL01');
+    </script>
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <SiteNav lang={props.lang} langSwitchPath={langSwitchPath} />
+    <main class="flex-1">
+      <slot />
+    </main>
+    <SiteFooter lang={props.lang} />
+  </body>
+</html>

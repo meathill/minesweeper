@@ -1,0 +1,29 @@
+---
+import Paw from 'meathill-brand/assets/paw.svg';
+
+interface Props {
+  lang: 'zh' | 'en';
+  /** 语言切换目标的路径；不传则不渲染切换链接 */
+  langSwitchPath?: string;
+}
+
+const { lang, langSwitchPath } = Astro.props;
+const homePath = lang === 'en' ? '/en/' : '/';
+const brandName = lang === 'en' ? 'Meathill Minesweeper' : '肉山扫雷';
+const copy = lang === 'en'
+  ? { play: 'Play now', switchTo: '中文', navLabel: 'Site' }
+  : { play: '开始游戏', switchTo: 'English', navLabel: '站点导航' };
+---
+
+<header class="site-nav">
+  <div class="site-nav-inner">
+    <a class="site-brand" href={homePath}>
+      <Paw width={24} height={24} aria-hidden="true" />
+      {brandName}
+    </a>
+    <nav class="site-nav-links" aria-label={copy.navLabel}>
+      {langSwitchPath && <a href={langSwitchPath}>{copy.switchTo}</a>}
+      <a class="site-nav-cta" href={homePath}>{copy.play}</a>
+    </nav>
+  </div>
+</header>
