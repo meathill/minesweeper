@@ -51,9 +51,13 @@ watch(() => learningStore.showProbability, (v) => trackEvent('learn_mode_toggle'
 watch(() => learningStore.showPercent, (v) => trackEvent('learn_show_percent', { enabled: v }))
 watch(() => learningStore.showFraction, (v) => trackEvent('learn_show_fraction', { enabled: v }))
 function updateSeoMeta(loc) {
+  const homePath = LOCALES.find((item) => item.code === loc)?.path ?? '/'
+  const homeUrl = `https://minesweeper.meathill.com${homePath}`
   document.title = t('meta.title')
   const desc = t('meta.description')
   document.querySelector('meta[name="description"]')?.setAttribute('content', desc)
+  document.querySelector('link[rel="canonical"]')?.setAttribute('href', homeUrl)
+  document.querySelector('meta[property="og:url"]')?.setAttribute('content', homeUrl)
   document.querySelector('meta[property="og:title"]')?.setAttribute('content', t('meta.ogTitle'))
   document.querySelector('meta[property="og:description"]')?.setAttribute('content', t('meta.ogDescription'))
   document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', t('meta.ogTitle'))

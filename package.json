@@ -1,6 +1,6 @@
 {
   "name": "meathill-mine-sweeper",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "scripts": {
     "dev": "vite",
     "dev:site": "pnpm --filter minesweeper-content-site dev",
