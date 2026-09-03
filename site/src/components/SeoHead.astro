@@ -1,14 +1,15 @@
 ---
 import { getOrganizationJsonLd } from 'meathill-brand';
+import { LOCALES, getLocaleMeta } from '../i18n';
 import type { FaqItem, HowToData } from '../types';
 
 const SITE = 'https://minesweeper.meathill.com';
 
 interface Props {
-  lang: 'zh' | 'en';
+  lang: string;
   title: string;
   description: string;
-  /** 本语言版本的规范路径（含尾斜杠），如 '/guide/how-to-play/' */
+  /** 语言中立路径（含尾斜杠），如 '/guide/how-to-play/' */
   path: string;
   keywords?: string;
   ogType?: 'website' | 'article';
@@ -19,10 +20,10 @@ interface Props {
 }
 
 const { lang, title, description, path, keywords, ogType = 'website', ogImage, faq, howTo, breadcrumbs } = Astro.props;
+const locale = getLocaleMeta(lang);
 
-const enPath = `/en${path}`;
-const canonical = `${SITE}${lang === 'en' ? enPath : path}`;
-const imageUrl = `${SITE}${ogImage ?? (lang === 'en' ? '/og-image-en.png' : '/og-image.png')}`;
+const canonical = `${SITE}${locale.prefix}${path}`;
+const imageUrl = `${SITE}${ogImage ?? (lang === 'zh' ? '/og-image.png' : '/og-image-en.png')}`;
 const { '@context': _ignored, ...organization } = getOrganizationJsonLd();
 
 const graph: Record<string, unknown>[] = [organization];
@@ -70,8 +71,9 @@ const schema = { '@context': 'https://schema.org', '@graph': graph };
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <link rel="manifest" href="/site.webmanifest" />
 <link rel="canonical" href={canonical} />
-<link rel="alternate" hreflang="zh" href={`${SITE}${path}`} />
-<link rel="alternate" hreflang="en" href={`${SITE}${enPath}`} />
+{LOCALES.map((locale) => (
+  <link rel="alternate" hreflang={locale.code} href={`${SITE}${locale.prefix}${path}`} />
+))}
 <link rel="alternate" hreflang="x-default" href={`${SITE}${path}`} />
 <meta property="og:type" content={ogType} />
 <meta property="og:title" content={title} />
@@ -81,9 +83,10 @@ const schema = { '@context': 'https://schema.org', '@graph': graph };
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:site_name" content="肉山扫雷" />
-<meta property="og:locale" content={lang === 'en' ? 'en_US' : 'zh_CN'} />
-{lang === 'en' && <meta property="og:locale:alternate" content="zh_CN" />}
-{lang === 'zh' && <meta property="og:locale:alternate" content="en_US" />}
+<meta property="og:locale" content={locale.ogLocale} />
+{LOCALES.filter((item) => item.code !== lang).map((item) => (
+  <meta property="og:locale:alternate" content={item.ogLocale} />
+))}
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />

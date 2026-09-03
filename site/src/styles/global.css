@@ -77,6 +77,54 @@ body {
   color: var(--meathill-yellow-deep);
 }
 
+.lang-switch {
+  position: relative;
+  font-size: 14px;
+}
+
+.lang-switch summary {
+  border-radius: var(--meathill-radius);
+  padding: 6px 8px;
+  color: var(--meathill-ink-soft);
+  cursor: pointer;
+  list-style: none;
+}
+
+.lang-switch summary::-webkit-details-marker {
+  display: none;
+}
+
+.lang-switch summary:hover,
+.lang-switch[open] summary {
+  background: var(--meathill-fluff);
+  color: var(--meathill-ink);
+}
+
+.lang-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 40;
+  display: grid;
+  min-width: 140px;
+  border: 1px solid var(--meathill-rule-strong);
+  border-radius: var(--meathill-radius-large);
+  padding: 6px;
+  background: var(--meathill-paper);
+  box-shadow: 0 10px 20px -5px rgb(58 46 35 / 0.16);
+}
+
+.lang-menu a {
+  border-radius: var(--meathill-radius);
+  padding: 6px 10px;
+  white-space: nowrap;
+}
+
+.lang-menu a:hover {
+  background: var(--meathill-fluff);
+  color: var(--meathill-ink) !important;
+}
+
 .site-nav-cta {
   border-radius: var(--meathill-radius);
   background: var(--meathill-yellow-deep);

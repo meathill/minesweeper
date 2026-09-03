@@ -6,8 +6,10 @@ interface Props {
 }
 
 const { lang } = Astro.props;
+// 游戏与子站只有 zh 为中文，其余语言复用英文页脚文案
+const isEn = lang !== 'zh';
 const productLinks = getBrandNetworkLinks('minesweeper');
-const legalLinks = lang === 'en'
+const legalLinks = isEn
   ? [
     { href: 'https://meathill.com/privacy', label: 'Privacy Policy' },
     { href: 'https://meathill.com/terms', label: 'Terms of Service' },
@@ -20,7 +22,7 @@ const legalLinks = lang === 'en'
     { href: 'https://meathill.com/about', label: '关于我们' },
     { href: 'https://meathill.com/contact', label: '联系方式' },
   ];
-const copy = lang === 'en'
+const copy = isEn
   ? { tagline: 'Learn while playing.', allProducts: 'All Products', navLabel: 'Product network' }
   : { tagline: '边玩边学。', allProducts: '全部产品', navLabel: '产品网络' };
 ---

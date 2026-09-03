@@ -1,15 +1,16 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import { gameHomePath } from '../i18n';
 import type { FaqItem, HowToData } from '../types';
 
 interface Props {
-  lang: 'zh' | 'en';
+  lang: string;
   /** <title> 完整文案 */
   title: string;
   /** 文章 H1 */
   heading: string;
   description: string;
-  /** 本语言版本的规范路径（含尾斜杠） */
+  /** 语言中立路径（含尾斜杠） */
   path: string;
   keywords?: string;
   updated?: string;
@@ -20,23 +21,37 @@ interface Props {
 }
 
 const { lang, heading, updated, lede, faq, cta, ...seo } = Astro.props;
-const copy = lang === 'en'
-  ? { home: 'Home', faqHeading: 'Frequently asked questions', updated: 'Last updated', playNow: 'Play for free' }
-  : { home: '首页', faqHeading: '常见问题', updated: '最后更新', playNow: '免费开始游戏' };
+const copy: Record<string, { home: string; faqHeading: string; updated: string }> = {
+  zh: { home: '首页', faqHeading: '常见问题', updated: '最后更新' },
+  en: { home: 'Home', faqHeading: 'Frequently asked questions', updated: 'Last updated' },
+  es: { home: 'Inicio', faqHeading: 'Preguntas frecuentes', updated: 'Última actualización' },
+  ru: { home: 'Главная', faqHeading: 'Частые вопросы', updated: 'Обновлено' },
+  vi: { home: 'Trang chủ', faqHeading: 'Câu hỏi thường gặp', updated: 'Cập nhật' },
+  de: { home: 'Startseite', faqHeading: 'Häufige Fragen', updated: 'Zuletzt aktualisiert' },
+};
+const strings = copy[lang] ?? copy.en;
+const homePath = gameHomePath(lang);
 const breadcrumbs = [
-  { name: copy.home, path: lang === 'en' ? '/en/' : '/' },
+  { name: strings.home, path: homePath },
   { name: heading, path: seo.path },
 ];
-const ctaBox = cta ?? (lang === 'en'
-  ? { href: '/en/', label: copy.playNow, text: 'Open Meathill Minesweeper and practice what you just learned — Learn Mode shows every cell\'s mine probability.' }
-  : { href: '/', label: copy.playNow, text: '打开肉山扫雷练一练：学习模式会实时显示每格是雷的概率，帮你把技巧变成直觉。' });
+const defaultCta: Record<string, { label: string; text: string }> = {
+  zh: { label: '免费开始游戏', text: '打开肉山扫雷练一练：学习模式会实时显示每格是雷的概率，帮你把技巧变成直觉。' },
+  en: { label: 'Play for free', text: 'Open Meathill Minesweeper and practice what you just learned — Learn Mode shows every cell\'s mine probability.' },
+  es: { label: 'Jugar gratis', text: 'Abre Meathill Minesweeper y practica lo que acabas de aprender: el Modo Aprendizaje muestra la probabilidad de mina de cada casilla.' },
+  ru: { label: 'Играть бесплатно', text: 'Откройте Meathill Minesweeper и закрепите прочитанное — режим обучения показывает вероятность мины в каждой клетке.' },
+  vi: { label: 'Chơi miễn phí', text: 'Mở Meathill Minesweeper để thực hành ngay — Chế độ học hiển thị xác suất có mìn của từng ô.' },
+  de: { label: 'Kostenlos spielen', text: 'Öffne Meathill Minesweeper und übe direkt los — der Lernmodus zeigt die Minenwahrscheinlichkeit jedes Feldes.' },
+};
+const fallbackCta = defaultCta[lang] ?? defaultCta.en;
+const ctaBox = cta ?? { href: gameHomePath(lang), ...fallbackCta };
 ---
 
 <BaseLayout lang={lang} {...seo} faq={faq} breadcrumbs={breadcrumbs}>
   <div class="mx-auto w-full max-w-3xl px-4">
     <nav aria-label={lang === 'en' ? 'Breadcrumb' : '面包屑'} class="pt-6 text-sm">
       <ol class="flex items-center gap-2">
-        <li><a class="underline-offset-2 hover:underline" href={lang === 'en' ? '/en/' : '/'}>{copy.home}</a></li>
+        <li><a class="underline-offset-2 hover:underline" href={homePath}>{strings.home}</a></li>
         <li aria-hidden="true">/</li>
         <li aria-current="page" class="opacity-70">{heading}</li>
       </ol>
@@ -44,12 +59,12 @@ const ctaBox = cta ?? (lang === 'en'
     <article class="prose mt-4 max-w-none">
       <h1>{heading}</h1>
       {lede && <p class="lead">{lede}</p>}
-      {updated && <p class="text-sm opacity-60">{copy.updated}：{updated}</p>}
+      {updated && <p class="text-sm opacity-60">{strings.updated}：{updated}</p>}
       <slot />
     </article>
     {faq && faq.length > 0 && (
       <section class="prose mt-12 max-w-none" id="faq">
-        <h2>{copy.faqHeading}</h2>
+        <h2>{strings.faqHeading}</h2>
         {faq.map((item) => (
           <div>
             <h3>{item.question}</h3>

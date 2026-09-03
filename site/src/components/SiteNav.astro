@@ -1,18 +1,33 @@
 ---
 import Paw from 'meathill-brand/assets/paw.svg';
+import { LOCALES, gameHomePath, getLocaleMeta } from '../i18n';
 
 interface Props {
-  lang: 'zh' | 'en';
-  /** 语言切换目标的路径；不传则不渲染切换链接 */
-  langSwitchPath?: string;
+  lang: string;
+  /** 语言中立路径，用于生成各语言切换链接 */
+  path: string;
 }
 
-const { lang, langSwitchPath } = Astro.props;
-const homePath = lang === 'en' ? '/en/' : '/';
-const brandName = lang === 'en' ? 'Meathill Minesweeper' : '肉山扫雷';
-const copy = lang === 'en'
-  ? { play: 'Play now', switchTo: '中文', navLabel: 'Site' }
-  : { play: '开始游戏', switchTo: 'English', navLabel: '站点导航' };
+const { lang, path } = Astro.props;
+const locale = getLocaleMeta(lang);
+const homePath = gameHomePath(lang);
+const brandName = lang === 'zh' ? '肉山扫雷' : 'Meathill Minesweeper';
+const playLabel: Record<string, string> = {
+  zh: '开始游戏',
+  en: 'Play now',
+  es: 'Jugar ahora',
+  ru: 'Играть',
+  vi: 'Chơi ngay',
+  de: 'Jetzt spielen',
+};
+const navLabel: Record<string, string> = {
+  zh: '站点导航',
+  en: 'Site',
+  es: 'Sitio',
+  ru: 'Навигация',
+  vi: 'Điều hướng',
+  de: 'Navigation',
+};
 ---
 
 <header class="site-nav">
@@ -21,9 +36,16 @@ const copy = lang === 'en'
       <Paw width={24} height={24} aria-hidden="true" />
       {brandName}
     </a>
-    <nav class="site-nav-links" aria-label={copy.navLabel}>
-      {langSwitchPath && <a href={langSwitchPath}>{copy.switchTo}</a>}
-      <a class="site-nav-cta" href={homePath}>{copy.play}</a>
+    <nav class="site-nav-links" aria-label={navLabel[lang] ?? navLabel.en}>
+      <details class="lang-switch">
+        <summary aria-label={`Language: ${locale.name}`}>{locale.name}</summary>
+        <div class="lang-menu">
+          {LOCALES.filter((item) => item.code !== lang).map((item) => (
+            <a href={`${item.prefix}${path}`}>{item.name}</a>
+          ))}
+        </div>
+      </details>
+      <a class="site-nav-cta" href={homePath}>{playLabel[lang] ?? playLabel.en}</a>
     </nav>
   </div>
 </header>

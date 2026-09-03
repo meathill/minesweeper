@@ -4,12 +4,13 @@ import SeoHead from '../components/SeoHead.astro';
 import type { FaqItem, HowToData } from '../types';
 import SiteNav from '../components/SiteNav.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import { getLocaleMeta } from '../i18n';
 
 interface Props {
-  lang: 'zh' | 'en';
+  lang: string;
   title: string;
   description: string;
-  /** 本语言版本的规范路径（含尾斜杠），如 '/guide/how-to-play/' */
+  /** 语言中立路径（含尾斜杠），如 '/guide/how-to-play/' */
   path: string;
   keywords?: string;
   ogType?: 'website' | 'article';
@@ -17,17 +18,13 @@ interface Props {
   faq?: FaqItem[];
   howTo?: HowToData;
   breadcrumbs?: { name: string; path: string }[];
-  langSwitchPath?: string;
 }
 
 const props = Astro.props;
-// path 约定为语言中立（即中文路径）：中文页的切换目标是 /en 前缀，英文页去掉前缀
-const langSwitchPath = props.langSwitchPath
-  ?? (props.lang === 'en' ? props.path : `/en${props.path}`);
 ---
 
 <!doctype html>
-<html lang={props.lang === 'en' ? 'en' : 'zh-CN'}>
+<html lang={getLocaleMeta(props.lang).htmlLang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -41,7 +38,7 @@ const langSwitchPath = props.langSwitchPath
     </script>
   </head>
   <body class="flex min-h-screen flex-col">
-    <SiteNav lang={props.lang} langSwitchPath={langSwitchPath} />
+    <SiteNav lang={props.lang} path={props.path} />
     <main class="flex-1">
       <slot />
     </main>
