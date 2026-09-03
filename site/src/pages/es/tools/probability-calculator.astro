@@ -1,0 +1,65 @@
+---
+import GuideLayout from '../../../layouts/GuideLayout.astro';
+import Calculator from '../../../components/Calculator.astro';
+import type { FaqItem } from '../../../types';
+
+const faq: FaqItem[] = [
+  {
+    question: '¿Qué tan precisa es la calculadora de probabilidad del Buscaminas?',
+    answer:
+      'Las casillas de frontera (las cerradas junto a números) se calculan por enumeración exacta de todas las colocaciones de minas consistentes: son probabilidades matemáticas reales. Las casillas aisladas reparten las minas restantes a partes iguales. Los componentes muy grandes pasan a detección de minas/casillas seguras forzadas más aproximación, y la página lo indica.',
+  },
+  {
+    question: '¿En qué se diferencia del Modo Aprendizaje del juego?',
+    answer:
+      'El Modo Aprendizaje se actualiza en vivo durante la partida, puntúa cada decisión y permite repetirla al terminar. La calculadora es análisis estático de cualquier tablero — para reproducir tus derrotas o estudiar la posición de otro. Ambos usan el mismo solver.',
+  },
+  {
+    question: '¿Qué tamaños de tablero admite?',
+    answer:
+      'Tres preajustes (Fácil 9×9·10, Medio 16×16·40, Difícil 16×30·99) más filas, columnas y minas personalizadas. Los componentes de más de 28 casillas pasan a aproximación para mantener la velocidad.',
+  },
+  {
+    question: '¿Por qué algunas casillas no muestran porcentaje?',
+    answer:
+      'Normalmente la posición es inválida: por ejemplo, más banderas que minas totales. La barra de estado muestra un aviso rojo; corrígelo y el cálculo se reanuda.',
+  },
+];
+---
+
+<GuideLayout
+  lang="es"
+  title="Calculadora de probabilidad del Buscaminas - probabilidad exacta por casilla - Meathill Minesweeper"
+  heading="Calculadora de probabilidad del Buscaminas"
+  description="Calculadora de probabilidad del Buscaminas gratis y online: reconstruye cualquier posición y obtén la probabilidad exacta de mina de cada casilla cerrada. El mismo solver que el Modo Aprendizaje de Meathill Minesweeper."
+  path="/tools/probability-calculator/"
+  keywords="calculadora probabilidad buscaminas, buscaminas solver, probabilidad buscaminas, resolvedor de buscaminas"
+  updated="2026-09-03"
+  lede="Reconstruye la posición que ves — haz clic para marcar números y minas conocidas — y la calculadora obtiene la probabilidad exacta de mina de cada casilla cerrada, con el mismo solver que el Modo Aprendizaje de Meathill Minesweeper."
+  faq={faq}
+>
+  <Calculator lang="es" />
+
+  <h2>Cómo usar la calculadora</h2>
+  <ol>
+    <li>Elige un preajuste de dificultad o configura filas, columnas y minas totales.</li>
+    <li><strong>Haz clic en las casillas para ciclar</strong>: oculta → 🚩 (mina conocida) → número 1–8; el clic derecho cicla al revés, hasta que el tablero reproduzca lo que ves.</li>
+    <li>Cada casilla cerrada muestra su probabilidad de mina en vivo (%), verde bajo → rojo alto; las «minas restantes» descuentan tus banderas.</li>
+    <li>¿Atascado? Juega el porcentaje más bajo: es la jugada de mejor valor esperado.</li>
+  </ol>
+
+  <h2>Cómo se calculan las probabilidades</h2>
+  <p>
+    Cada número abierto es una restricción: «exactamente (número − banderas) minas entre mis vecinas cerradas». El solver separa
+    las restricciones conectadas en componentes independientes y <strong>enumera cada uno de forma exacta con poda</strong>,
+    contando cuántas veces es mina cada casilla entre todas las colocaciones válidas; las casillas aisladas reparten las minas
+    restantes. Los componentes de más de 28 casillas pasan a detección forzada más aproximación, indicada en la página.
+  </p>
+
+  <h2>¿Cuándo es útil?</h2>
+  <ul>
+    <li><strong>Momentos de moneda al aire</strong>: la intuición dice «más o menos igual»; los números dicen 30% frente a 70%.</li>
+    <li><strong>Repasar derrotas</strong>: reconstruye la posición perdida y comprueba si aquel clic era correcto.</li>
+    <li><strong>Entrenar la intuición</strong>: compara tu corazonada con el mapa de calor hasta que coincidan.</li>
+  </ul>
+</GuideLayout>

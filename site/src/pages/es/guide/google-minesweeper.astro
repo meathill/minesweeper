@@ -1,0 +1,103 @@
+---
+import GuideLayout from '../../../layouts/GuideLayout.astro';
+import type { FaqItem, HowToData } from '../../../types';
+
+const faq: FaqItem[] = [
+  {
+    question: '¿Cómo se abre el Buscaminas de Google?',
+    answer:
+      'Escribe «buscaminas» o «minesweeper» en el buscador de Google y el juego aparecerá jugable justo encima de los resultados. Sin app, sin descargas y sin cuenta.',
+  },
+  {
+    question: '¿Cómo se ponen banderas en el Buscaminas de Google?',
+    answer:
+      'Clic derecho sobre la casilla en el ordenador; pulsación larga en el móvil o la tablet. Las banderas marcan las casillas que sabes que son minas.',
+  },
+  {
+    question: '¿Es gratis el Buscaminas de Google?',
+    answer:
+      'Sí, totalmente gratis. Es un huevo de pascua integrado en Google y no requiere iniciar sesión en nada.',
+  },
+  {
+    question: '¿En qué se diferencia del Buscaminas clásico?',
+    answer:
+      'Las reglas son idénticas. Las diferencias están en los alrededores: sin pistas de probabilidad, sin repetición de la partida y sin estadísticas guardadas entre dispositivos.',
+  },
+  {
+    question: '¿Se puede jugar en el móvil?',
+    answer:
+      'Sí: busca «buscaminas» en el navegador del móvil y juega en los mismos resultados; pulsación larga para marcar. Si los controles táctiles se hacen incómodos, una versión sin clic derecho como Meathill Minesweeper va mejor en el teléfono.',
+  },
+];
+
+const howTo: HowToData = {
+  name: 'Cómo abrir y jugar al Buscaminas de Google',
+  steps: [
+    'Escribe «buscaminas» en el buscador de Google; el tablero jugable aparece sobre los resultados.',
+    'Elige la dificultad y haz clic en cualquier casilla: el primer clic es seguro.',
+    'Lee los números: cada uno cuenta las minas en las 8 casillas vecinas.',
+    'Clic derecho o pulsación larga para poner banderas; abre todas las casillas seguras para ganar.',
+  ],
+};
+---
+
+<GuideLayout
+  lang="es"
+  title="Buscaminas de Google: cómo abrirlo, poner banderas y jugar - Meathill Minesweeper"
+  heading="Buscaminas de Google: cómo jugar"
+  description="Todo sobre el Buscaminas de Google: cómo abrirlo desde el buscador, cómo poner banderas con clic derecho o pulsación larga, qué significan los números y en qué se queda corto para quien quiere mejorar."
+  path="/guide/google-minesweeper/"
+  keywords="buscaminas de google, buscaminas google, cómo jugar al buscaminas de google, banderas buscaminas google"
+  updated="2026-09-03"
+  lede="El Buscaminas de Google es el huevo de pascua integrado en el buscador: escribe «buscaminas» y aparece un tablero jugable sobre los resultados, con reglas idénticas al Buscaminas clásico. Aquí tienes cómo abrirlo, cómo funcionan los gestos y cuándo merece la pena una versión más completa."
+  faq={faq}
+  howTo={howTo}
+>
+  <h2>¿Cómo se abre el Buscaminas de Google?</h2>
+  <p>
+    La forma más rápida: <strong>busca «buscaminas» en Google</strong>. Un tablero jugable aparece integrado sobre los
+    resultados — clic y a jugar. Viene de la serie de huevos de pascua y Doodles de Google: nada que instalar, nada que iniciar.
+  </p>
+
+  <h2>¿Cuáles son las reglas?</h2>
+  <p>Idénticas al Buscaminas clásico:</p>
+  <ul>
+    <li><strong>Los números</strong>: una casilla abierta cuenta las minas en las 8 casillas de alrededor.</li>
+    <li><strong>Las banderas</strong>: marca las minas que conoces para evitar pulsarlas por error.</li>
+    <li><strong>Primer clic seguro</strong>: como en casi todas las versiones modernas, el primer clic nunca toca una mina.</li>
+    <li><strong>Ganar</strong>: abre todas las casillas sin mina; el cronómetro mide tu tiempo.</li>
+  </ul>
+
+  <h2>¿Cómo se ponen banderas?</h2>
+  <p>
+    <strong>Clic derecho en el ordenador</strong>; <strong>pulsación larga en móvil o tablet</strong>. Las banderas importan
+    más allá de evitar errores: cuando las banderas alrededor de un número igualan al número, sus vecinas restantes son todas seguras.
+  </p>
+  <p>
+    Esa apertura en cadena se dispara con doble clic en casi todas las versiones. Donde falta el gesto, el medio juego se
+    vuelve casilla a casilla — una gran razón por la que los jugadores acaban migrando a sitios dedicados al Buscaminas.
+  </p>
+
+  <h2>Jugar sin ratón (usuarios de trackpad)</h2>
+  <p>
+    En un portátil, el «clic derecho» suele ser un toque con dos dedos, y «pulsar los dos botones» es un suplicio. Dos opciones:
+  </p>
+  <ol>
+    <li>Aguantar con los gestos del sistema: toque de dos dedos para el clic derecho, pagándolo en velocidad.</li>
+    <li>Cambiar a una versión pensada para el trackpad: <a href="/">Meathill Minesweeper</a> prescinde del clic derecho —
+      cuando las banderas igualan un número, doble clic abre el resto, afinado para el ratón de un botón de Apple, el trackpad del Mac y el móvil.</li>
+  </ol>
+
+  <h2>Dónde se queda corto: divertido sí, para aprender no</h2>
+  <p>Como distracción está muy bien. Para quien quiere mejorar, tres cosas duelen:</p>
+  <ul>
+    <li>Sin <strong>pistas de probabilidad</strong>: los momentos de moneda al aire siguen siendo moneda al aire, y nunca sabes lo ajustada que estaba la decisión.</li>
+    <li>Sin <strong>repetición</strong>: una derrota es simplemente el final — no puedes volver al punto de inflexión.</li>
+    <li>Sin <strong>estadísticas</strong>: tiempos y victorias no se guardan entre dispositivos; el progreso es invisible.</li>
+  </ul>
+  <p>
+    Si eso te importa, juega una partida en <a href="/">Meathill Minesweeper</a>: el Modo Aprendizaje superpone un mapa de calor
+    de probabilidad en vivo, puntúa cada decisión y la repetición dibuja eficiencia y probabilidad de mina en los instantes reales
+    de cada clic — convirtiendo adivinar en calcular.
+  </p>
+</GuideLayout>

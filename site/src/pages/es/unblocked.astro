@@ -1,0 +1,73 @@
+---
+import GuideLayout from '../../layouts/GuideLayout.astro';
+import type { FaqItem } from '../../types';
+
+const faq: FaqItem[] = [
+  {
+    question: '¿Hay que descargar algo para jugar?',
+    answer:
+      'No. Esta página es el juego en sí: ábrela en el navegador y juega — nada que instalar, sin cuenta y sin complementos.',
+  },
+  {
+    question: '¿Qué pasa si pierdo la conexión a mitad de partida?',
+    answer:
+      'Una vez cargada la página, el juego funciona por completo en tu dispositivo. Un corte breve no afecta a la partida en curso; al recargar empieza una nueva.',
+  },
+  {
+    question: '¿Cómo se marcan las minas en el móvil?',
+    answer:
+      'Pulsación larga sobre la casilla para poner bandera. Cuando las banderas igualan un número, doble clic abre el resto de vecinas — sin clic derecho en ningún momento.',
+  },
+  {
+    question: '¿Cómo se juega a pantalla completa?',
+    answer:
+      'Usa el botón «Abrir a pantalla completa» para jugar en una pestaña nueva, o pulsa F11 en un navegador de escritorio para el modo a pantalla completa.',
+  },
+];
+---
+
+<GuideLayout
+  lang="es"
+  title="Buscaminas online gratis - jugar sin descargar en el navegador - Meathill Minesweeper"
+  heading="Buscaminas online — juega sin descargar"
+  description="Juega al Buscaminas directamente en el navegador: sin descargas, sin registros, sin ventanas emergentes. Pulsación larga para marcar, sin clic derecho, tres dificultades y Modo Aprendizaje. El tablero está en esta página."
+  path="/unblocked/"
+  keywords="buscaminas online, jugar buscaminas, buscaminas gratis, buscaminas sin descargar, buscaminas en el navegador"
+  updated="2026-09-03"
+  lede="Este es el Buscaminas jugado directamente en el navegador: nada que descargar, nada que registrar, y el tablero está justo abajo — clic y a jugar."
+  faq={faq}
+  cta={{ href: '/en/', label: 'Abrir a pantalla completa', text: '¿Quieres el tablero más grande y la experiencia completa? Abre el juego en una pestaña nueva.' }}
+>
+  <h2>Buscaminas online, sin instalación</h2>
+  <ul>
+    <li><strong>Sin descargas ni instalación</strong>: una página web corriente que es el juego completo; no escribe nada en tu dispositivo.</li>
+    <li><strong>Sin ventanas emergentes</strong>: sin intersticiales ni pop-unders; tras cargar, todo funciona en local y sin retardo.</li>
+    <li><strong>Pensado para el táctil</strong>: pulsación larga para marcar, doble clic para abrir en cadena — sin clic derecho en ningún momento.</li>
+    <li><strong>¿Quieres mejorar?</strong> Modo Aprendizaje integrado: mapa de calor de probabilidad en vivo, puntuación por decisión y repetición completa.</li>
+  </ul>
+
+  <h2>Jugar al Buscaminas online</h2>
+  <iframe
+    class="play-iframe"
+    src="/en/"
+    title="Meathill Minesweeper - juego de Buscaminas online"
+  ></iframe>
+  <p class="text-sm opacity-60">Ese es el juego de verdad: clic izquierdo para abrir, clic derecho o pulsación larga para marcar, doble clic para abrir en cadena.</p>
+
+  <h2>¿Desde qué redes se puede jugar?</h2>
+  <p>
+    Esta página es un sitio HTTPS normal y carga en redes domésticas y de oficina habituales. Si la red de tu escuela o trabajo
+    restringe explícitamente los sitios de juegos, sigue las normas de esa red; sin conexión, el Buscaminas que incluye tu sistema
+    operativo también funciona.
+  </p>
+</GuideLayout>
+<style>
+  .play-iframe {
+    display: block;
+    width: 100%;
+    height: clamp(480px, 72vh, 760px);
+    border: 1px solid var(--meathill-rule-strong);
+    border-radius: var(--meathill-radius-large);
+    background: var(--meathill-paper);
+  }
+</style>

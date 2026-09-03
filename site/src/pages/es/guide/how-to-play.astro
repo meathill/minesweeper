@@ -1,0 +1,102 @@
+---
+import GuideLayout from '../../../layouts/GuideLayout.astro';
+import type { FaqItem, HowToData } from '../../../types';
+
+const faq: FaqItem[] = [
+  {
+    question: '¿La primera jugada puede ser una mina?',
+    answer:
+      'En la versión clásica podría, pero prácticamente todas las implementaciones modernas protegen el primer clic. Meathill Minesweeper va más lejos: el primer clic siempre abre una casilla vacía y el área 3×3 alrededor queda libre de minas.',
+  },
+  {
+    question: '¿Qué significan los números del Buscaminas?',
+    answer:
+      'Cada número cuenta las minas en las 8 casillas que lo rodean. Un «1» significa exactamente una mina adyacente, un «3» significa tres, y así sucesivamente.',
+  },
+  {
+    question: '¿Cómo se juega sin ratón? ¿Cómo se marca en el móvil?',
+    answer:
+      'En pantalla táctil, mantén pulsada una casilla para poner bandera. Meathill Minesweeper ni siquiera necesita clic derecho: cuando las banderas igualan un número, doble clic lo abre todo — ideal para trackpad y móvil.',
+  },
+  {
+    question: '¿El Buscaminas es cuestión de suerte?',
+    answer:
+      'No. Casi todos los tableros se resuelven razonando cómo se solapan los números; solo algunos finales obligan a adivinar. El Modo Aprendizaje de Meathill Minesweeper muestra la probabilidad de mina de cada casilla en tiempo real.',
+  },
+  {
+    question: '¿Qué es el «chording» (apertura en cadena)?',
+    answer:
+      'Cuando las banderas alrededor de un número igualan al número, doble clic sobre él abre todas las casillas vecinas restantes de una vez. Es la técnica clave para jugar rápido.',
+  },
+];
+
+const howTo: HowToData = {
+  name: 'Cómo jugar al Buscaminas',
+  steps: [
+    'Empieza una partida y haz clic en cualquier casilla: el primer clic siempre es seguro.',
+    'Lee los números: cada uno cuenta las minas en las 8 casillas vecinas.',
+    'Clic derecho o pulsación larga para poner banderas; cuando las banderas igualen un número, doble clic para abrir el resto.',
+    'Abre todas las casillas seguras para ganar. Si te atascas, activa el Modo Aprendizaje y mira la probabilidad de cada casilla.',
+  ],
+};
+---
+
+<GuideLayout
+  lang="es"
+  title="Cómo jugar al Buscaminas: reglas, trucos y guía para principiantes - Meathill Minesweeper"
+  heading="Cómo jugar al Buscaminas"
+  description="Aprende a jugar al Buscaminas paso a paso: qué significan los números, cómo poner banderas, la apertura en cadena, los errores típicos y el patrón 1-2-1 — con las preguntas que hacen todos los principiantes."
+  path="/guide/how-to-play/"
+  keywords="cómo jugar al buscaminas, buscaminas reglas, buscaminas trucos, juego de minas, buscaminas principiantes"
+  updated="2026-09-03"
+  lede="El objetivo del Buscaminas es abrir todas las casillas seguras sin pisar ninguna mina: cada número indica cuántas minas hay alrededor. Marca todas las minas, abre el resto y ganas. Esto es todo lo que necesitas para pasar de la primera partida a ganar con constancia."
+  faq={faq}
+  howTo={howTo}
+>
+  <h2>¿Cuál es el objetivo del Buscaminas?</h2>
+  <p>
+    El tablero esconde varias minas; todas las demás casillas son seguras. Tu trabajo es <strong>abrir todas las casillas
+    seguras</strong>: pisar una mina termina la partida, abrir el resto la gana. El Buscaminas es un puzle lógico que avanza
+    una pista cada vez — cada número es información, no suerte.
+  </p>
+
+  <h2>¿Cuáles son las reglas del Buscaminas?</h2>
+  <ul>
+    <li><strong>Los números</strong>: una casilla abierta cuenta las minas en las 8 casillas de alrededor. «1» significa una mina vecina, «3» significa tres.</li>
+    <li><strong>Las banderas</strong>: marca las casillas que sabes que son minas para evitar pulsarlas por error.</li>
+    <li><strong>Primer clic seguro</strong>: las versiones modernas protegen el primer clic; Meathill Minesweeper garantiza una apertura vacía y un área 3×3 sin minas.</li>
+    <li><strong>Ganar</strong>: abre todas las casillas sin mina; tocar una mina pierde al instante.</li>
+  </ul>
+
+  <h2>Movimientos básicos: abrir, marcar y abrir en cadena</h2>
+  <p>Tres acciones concentran toda la partida:</p>
+  <ol>
+    <li><strong>Abrir</strong>: clic izquierdo en una casilla cerrada. Los números aparecen directamente; las casillas vacías se abren en cadena.</li>
+    <li><strong>Marcar</strong>: clic derecho (o pulsación larga en el móvil) para poner banderas en las minas sospechadas.</li>
+    <li><strong>Abrir en cadena</strong>: cuando las banderas alrededor de un número igualan al número, doble clic abre todas las vecinas restantes — la técnica de velocidad esencial.</li>
+  </ol>
+  <p>
+    Los usuarios de trackpad o ratón Apple suelen abandonar por lo de «pulsar los dos botones a la vez» —
+    <a href="/">Meathill Minesweeper</a> elimina el clic derecho por completo: cuando las banderas igualan un número,
+    doble clic lo abre el resto, igual de cómodo en trackpad y móvil.
+  </p>
+
+  <h2>Tres errores de principiante</h2>
+  <ol>
+    <li><strong>Leer los números por separado</strong>: el juego vive en cómo se solapan. Busca casillas donde el número equivale a las vecinas cerradas (todas mina) y números ya satisfechos por banderas (seguras de abrir).</li>
+    <li><strong>Marcar por corazonada</strong>: las banderas inciertas ensucian tus propias pistas. Solo marca casillas 100% seguras.</li>
+    <li><strong>Dudar demasiado en un 50/50</strong>: algunos finales son puro azar. Elige la casilla con mejor probabilidad y sigue — dudar cuesta más que el riesgo.</li>
+  </ol>
+
+  <h2>Más allá de lo básico: de la deducción a la probabilidad</h2>
+  <p>Dos patrones clásicos elevan tu porcentaje de victorias al instante:</p>
+  <ul>
+    <li><strong>«1-1»</strong>: dos 1 adyacentes que comparten las mismas casillas cerradas — todo lo que queda fuera de su ámbito compartido es seguro.</li>
+    <li><strong>«1-2-1»</strong>: un 1-2-1 horizontal — las esquinas de los 1 son minas y las vecinas restantes del 2 son seguras.</li>
+  </ul>
+  <p>
+    Cuando se acaban los patrones, se juega con probabilidades — y la intuición falla sorprendentemente a menudo: dos casillas
+    que «parecen» iguales pueden estar al 30% y al 70%. <a href="/">El Modo Aprendizaje de Meathill Minesweeper</a> superpone
+    un mapa de calor de probabilidad en vivo, convirtiendo cada clic en una decisión que puedes comparar, repasar y mejorar.
+  </p>
+</GuideLayout>
