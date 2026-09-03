@@ -1,0 +1,100 @@
+---
+import GuideLayout from '../../../layouts/GuideLayout.astro';
+import type { FaqItem, HowToData } from '../../../types';
+
+const faq: FaqItem[] = [
+  {
+    question: 'Lần bấm đầu có trúng mìn không?',
+    answer:
+      'Ở phiên bản phân bố mìn ngẫu nhiên cổ điển thì có thể, nhưng hầu hết các phiên bản hiện đại đều bảo vệ lần bấm đầu. Meathill Minesweeper đi xa hơn: lần bấm đầu luôn là ô trống và vùng 3×3 xung quanh không có mìn.',
+  },
+  {
+    question: 'Các con số trong Dò Mìn nghĩa là gì?',
+    answer:
+      'Mỗi con số đếm số quả mìn trong 8 ô xung quanh nó. «1» nghĩa là có đúng 1 quả mìn kề bên, «3» nghĩa là 3 quả, cứ thế.',
+  },
+  {
+    question: 'Chơi không có chuột thì sao? Cắm cờ trên điện thoại thế nào?',
+    answer:
+      'Trên màn hình cảm ứng, nhấn giữ ô để cắm cờ. Meathill Minesweeper thậm chí không cần chuột phải: khi số cờ bằng con số, nháy đúp để mở phần còn lại — rất tiện cho touchpad và điện thoại.',
+  },
+  {
+    question: 'Dò Mìn có phải là chơi may rủi không?',
+    answer:
+      'Không. Gần như mọi thế bàn đều giải được bằng logic giữa các con số; chỉ vài thế cuối mới phải đoán. Chế độ học trong Meathill Minesweeper hiển thị xác suất có mìn của từng ô theo thời gian thực.',
+  },
+  {
+    question: '«Mở dây chuyền» (chording) là gì?',
+    answer:
+      'Khi số cờ quanh một con số bằng chính con số đó, nháy đúp vào nó sẽ mở tất cả các ô kề còn lại cùng lúc. Đây là kỹ thuật then chốt để chơi nhanh.',
+  },
+];
+
+const howTo: HowToData = {
+  name: 'Cách chơi Dò Mìn',
+  steps: [
+    'Bắt đầu ván mới và bấm vào bất kỳ ô nào — lần bấm đầu luôn an toàn.',
+    'Đọc các con số: mỗi số đếm mìn trong 8 ô xung quanh.',
+    'Chuột phải hoặc nhấn giữ để cắm cờ; khi số cờ bằng con số, nháy đúp để mở phần còn lại.',
+    'Mở hết mọi ô không có mìn để thắng. Bí thì bật Chế độ học để xem xác suất từng ô.',
+  ],
+};
+---
+
+<GuideLayout
+  lang="vi"
+  title="Cách chơi Dò Mìn: luật, mẹo và hướng dẫn cho người mới - Meathill Minesweeper"
+  heading="Cách chơi Dò Mìn"
+  description="Hướng dẫn chơi Dò Mìn từ A đến Z: ý nghĩa các con số, cách cắm cờ, mở dây chuyền, lỗi người mới hay mắc và mô hình 1-2-1 — kèm các câu hỏi thường gặp nhất."
+  path="/guide/how-to-play/"
+  keywords="cách chơi dò mìn, luật chơi dò mìn, game dò mìn, dò mìn online, mẹo chơi dò mìn"
+  updated="2026-09-03"
+  lede="Mục tiêu của Dò Mìn là mở tất cả các ô an toàn mà không dẫm trúng mìn: mỗi con số cho biết có bao nhiêu quả mìn xung quanh. Đánh dấu đủ mìn, mở hết phần còn lại là thắng. Đây là tất cả những gì bạn cần để từ ván đầu tiên chơi thắng đều đặn."
+  faq={faq}
+  howTo={howTo}
+>
+  <h2>Mục tiêu của Dò Mìn là gì?</h2>
+  <p>
+    Bàn chơi giấu một số quả mìn; mọi ô còn lại đều an toàn. Nhiệm vụ của bạn là <strong>mở tất cả các ô an toàn</strong>:
+    dẫm vào mìn là thua ngay, mở hết phần còn lại là thắng. Dò Mìn thực chất là một câu đố logic đi từng bước — mỗi con số là một manh mối, không phải may rủi.
+  </p>
+
+  <h2>Luật chơi Dò Mìn</h2>
+  <ul>
+    <li><strong>Con số</strong>: ô đã mở đếm số mìn trong 8 ô quanh nó. «1» là có đúng một quả mìn kề bên, «3» là ba quả.</li>
+    <li><strong>Cắm cờ</strong>: đánh dấu những ô chắc chắn có mìn để tránh bấm nhầm.</li>
+    <li><strong>Lần bấm đầu an toàn</strong>: các phiên bản hiện đại đều bảo vệ lần bấm đầu; Meathill Minesweeper đảm bảo mở được ô trống và vùng 3×3 không mìn.</li>
+    <li><strong>Thắng thua</strong>: mở hết mọi ô không mìn là thắng; dẫm mìn là thua ngay.</li>
+  </ul>
+
+  <h2>Thao tác cơ bản: mở, cắm cờ và mở dây chuyền</h2>
+  <p>Ba thao tác xuyên suốt ván đấu:</p>
+  <ol>
+    <li><strong>Mở</strong>: chuột trái vào ô chưa mở. Số hiện ngay; ô trống sẽ mở lan thành vùng.</li>
+    <li><strong>Cắm cờ</strong>: chuột phải (hoặc nhấn giữ trên điện thoại) để đánh dấu ô nghi có mìn.</li>
+    <li><strong>Mở dây chuyền</strong>: khi số cờ quanh một con số bằng chính nó, nháy đúp vào con số để mở hết các ô kề còn lại — kỹ thuật tốc độ quan trọng nhất.</li>
+  </ol>
+  <p>
+    Người dùng touchpad hay chuột Apple thường nản vì phải «giữ cả hai phím cùng lúc» — <a href="/">Meathill Minesweeper</a>
+    bỏ hẳn chuột phải: khi số cờ khớp con số, nháy đúp là mở hết, mượt trên cả touchpad Mac và điện thoại.
+  </p>
+
+  <h2>Ba lỗi người mới hay mắc</h2>
+  <ol>
+    <li><strong>Đọc từng con số riêng lẻ</strong>: bản chất nằm ở cách các số giao nhau. Tìm ô có số bằng số ô kề chưa mở (tất cả là mìn), rồi tìm số đã đủ cờ (các ô kề còn lại an toàn).</li>
+    <li><strong>Cắm cờ theo cảm tính</strong>: cờ chưa chắc chắn làm bẩn chính manh mối của bạn. Chỉ cắm cờ vào ô chắc chắn 100%.</li>
+    <li><strong>Do dự quá lâu ở thế 50/50</strong>: vài thế cuối buộc phải đoán. Chọn ô có xác suất tốt hơn rồi đi tiếp — do dự tốn hơn cả rủi ro.</li>
+  </ol>
+
+  <h2>Nâng cao: từ suy luận sang xác suất</h2>
+  <p>Hai mô hình kinh điển giúp tăng tỉ lệ thắng ngay lập tức:</p>
+  <ul>
+    <li><strong>«1-1»</strong>: hai số 1 kề nhau dùng chung các ô chưa mở — mọi ô ngoài vùng dùng chung đó đều an toàn.</li>
+    <li><strong>«1-2-1»</strong>: hàng ngang 1-2-1 — hai ô góc của số 1 chắc chắn là mìn, các ô kề còn lại của số 2 an toàn.</li>
+  </ul>
+  <p>
+    Khi hết mô hình, bạn chơi bằng xác suất — và trực giác sai ở đây nhiều đến bất ngờ: hai ô «trông giống nhau» có thể là 30% và 70%.
+    <a href="/">Chế độ học trong Meathill Minesweeper</a> phủ lên bàn một bản đồ nhiệt xác suất theo thời gian thực, biến mỗi cú bấm
+    thành một quyết định có thể so sánh, xem lại và cải thiện.
+  </p>
+</GuideLayout>

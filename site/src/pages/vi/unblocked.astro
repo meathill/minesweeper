@@ -1,0 +1,73 @@
+---
+import GuideLayout from '../../layouts/GuideLayout.astro';
+import type { FaqItem } from '../../types';
+
+const faq: FaqItem[] = [
+  {
+    question: 'Có phải tải gì về không?',
+    answer:
+      'Không. Trang này chính là trò chơi: mở bằng trình duyệt là chơi — không cài đặt, không tài khoản, không plugin.',
+  },
+  {
+    question: 'Mất mạng giữa ván thì sao?',
+    answer:
+      'Sau khi trang tải xong, trò chơi chạy hoàn toàn trên thiết bị của bạn. Mất mạng chốc lát không ảnh hưởng ván đang chơi; tải lại trang là bắt đầu ván mới.',
+  },
+  {
+    question: 'Cắm cờ trên điện thoại thế nào?',
+    answer:
+      'Nhấn giữ vào ô để cắm cờ. Khi số cờ bằng con số, nháy đúp vào con số sẽ mở hết các ô kề còn lại — không cần chuột phải ở bất kỳ đâu.',
+  },
+  {
+    question: 'Chơi toàn màn hình thế nào?',
+    answer:
+      'Dùng nút «Mở toàn màn hình» bên dưới để chơi trong tab mới, hoặc bấm F11 trên trình duyệt máy tính để vào chế độ toàn màn hình.',
+  },
+];
+---
+
+<GuideLayout
+  lang="vi"
+  title="Dò Mìn online - chơi miễn phí ngay trên trình duyệt - Meathill Minesweeper"
+  heading="Dò Mìn online — chơi không cần cài đặt"
+  description="Chơi Dò Mìn ngay trên trình duyệt: không tải về, không cài đặt, không đăng nhập, không quảng cáo bật lên. Nhấn giữ để cắm cờ, không cần chuột phải, ba độ khó kèm Chế độ học. Bàn chơi nằm ngay trang này."
+  path="/unblocked/"
+  keywords="dò mìn online, chơi dò mìn, game dò mìn web, dò mìn miễn phí"
+  updated="2026-09-03"
+  lede="Đây là Dò Mìn chơi ngay trên trình duyệt: không phải tải, không phải đăng ký, bàn chơi nằm ngay bên dưới — bấm vào là chơi."
+  faq={faq}
+  cta={{ href: '/en/', label: 'Mở toàn màn hình', text: 'Muốn bàn lớn hơn và trải nghiệm đầy đủ? Mở trò chơi trong tab mới.' }}
+>
+  <h2>Dò Mìn online, không cần thiết lập</h2>
+  <ul>
+    <li><strong>Không tải, không cài</strong>: một trang web bình thường chính là trò chơi hoàn chỉnh; không ghi gì xuống thiết bị của bạn.</li>
+    <li><strong>Không quảng cáo bật lên</strong>: không chen ngang, không pop-up; sau khi tải xong mọi thứ chạy cục bộ, thao tác không độ trễ.</li>
+    <li><strong>Thân thiện cảm ứng</strong>: nhấn giữ để cắm cờ, nháy đúp để mở dây chuyền — không cần chuột phải ở bất kỳ đâu.</li>
+    <li><strong>Muốn tiến bộ?</strong> Chế độ học tích hợp: bản đồ nhiệt xác suất trực tiếp, chấm điểm từng quyết định và xem lại toàn bộ ván đấu.</li>
+  </ul>
+
+  <h2>Chơi Dò Mìn online</h2>
+  <iframe
+    class="play-iframe"
+    src="/en/"
+    title="Meathill Minesweeper - trò chơi dò mìn online"
+  ></iframe>
+  <p class="text-sm opacity-60">Trên đây chính là trò chơi: chuột trái để mở, chuột phải hoặc nhấn giữ để cắm cờ, nháy đúp vào số để mở dây chuyền.</p>
+
+  <h2>Mạng nào chơi được?</h2>
+  <p>
+    Đây là một trang HTTPS bình thường, mở được từ mạng gia đình và văn phòng thông thường. Nếu mạng trường học hoặc công ty
+    giới hạn rõ ràng các trang game, hãy tuân theo quy định của mạng đó; khi mất mạng hoàn toàn, trò Dò Mìn có sẵn trong hệ
+    điều hành vẫn chơi được.
+  </p>
+</GuideLayout>
+<style>
+  .play-iframe {
+    display: block;
+    width: 100%;
+    height: clamp(480px, 72vh, 760px);
+    border: 1px solid var(--meathill-rule-strong);
+    border-radius: var(--meathill-radius-large);
+    background: var(--meathill-paper);
+  }
+</style>

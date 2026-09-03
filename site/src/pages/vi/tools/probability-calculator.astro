@@ -1,0 +1,65 @@
+---
+import GuideLayout from '../../../layouts/GuideLayout.astro';
+import Calculator from '../../../components/Calculator.astro';
+import type { FaqItem } from '../../../types';
+
+const faq: FaqItem[] = [
+  {
+    question: 'Máy tính xác suất Dò Mìn chính xác tới đâu?',
+    answer:
+      'Các ô biên (ô chưa mở kề với số) được tính bằng liệt kê chính xác mọi cách rải mìn hợp lệ — đó là xác suất toán học thật. Các ô tách biệt chia phần mìn còn lại đều nhau. Thành phần quá lớn sẽ chuyển sang dò mìn/ô an toàn chắc chắn cộng xấp xỉ, và trang có ghi rõ.',
+  },
+  {
+    question: 'Khác gì với Chế độ học trong game?',
+    answer:
+      'Chế độ học cập nhật trực tiếp trong ván đấu, chấm điểm từng quyết định và cho xem lại sau ván. Máy tính là công cụ phân tích tĩnh cho mọi thế bàn — tái hiện ván thua của bạn hoặc nghiên cứu thế của người khác. Cả hai dùng chung một bộ giải.',
+  },
+  {
+    question: 'Hỗ trợ khung cỡ nào?',
+    answer:
+      'Ba cấu hình sẵn (Dễ 9×9·10, Vừa 16×16·40, Khó 16×30·99) cùng số hàng, cột và mìn tùy chỉnh. Thành phần trên 28 ô chuyển sang xấp xỉ để giữ tốc độ.',
+  },
+  {
+    question: 'Vì sao có ô không hiện phần trăm?',
+    answer:
+      'Thường là thế bàn không hợp lệ — ví dụ số cờ nhiều hơn tổng số mìn. Thanh trạng thái sẽ hiện cảnh báo đỏ; sửa lại là tính toán tiếp tục.',
+  },
+];
+---
+
+<GuideLayout
+  lang="vi"
+  title="Máy tính xác suất Dò Mìn - xác suất chính xác từng ô - Meathill Minesweeper"
+  heading="Máy tính xác suất Dò Mìn"
+  description="Máy tính xác suất Dò Mìn online miễn phí: tái hiện mọi thế bàn và nhận xác suất có mìn chính xác của từng ô chưa mở. Dùng chung bộ giải với Chế độ học trong Meathill Minesweeper."
+  path="/tools/probability-calculator/"
+  keywords="tính xác suất dò mìn, máy tính dò mìn, xác suất có mìn, công cụ dò mìn online"
+  updated="2026-09-03"
+  lede="Tái hiện thế bàn bạn đang thấy — bấm để đánh dấu số và mìn đã biết — và máy tính sẽ tính xác suất có mìn chính xác của từng ô chưa mở, bằng chính bộ giải của Chế độ học trong Meathill Minesweeper."
+  faq={faq}
+>
+  <Calculator lang="vi" />
+
+  <h2>Dùng máy tính thế nào?</h2>
+  <ol>
+    <li>Chọn độ khó sẵn hoặc tự đặt số hàng, cột và tổng số mìn.</li>
+    <li><strong>Bấm vào ô để đổi trạng thái</strong>: ẩn → 🚩 (mìn đã biết) → số 1–8; chuột phải đi ngược lại, đến khi bàn chơi khớp những gì bạn thấy.</li>
+    <li>Mỗi ô chưa mở hiện xác suất có mìn trực tiếp (%), xanh thấp → đỏ cao; «mìn còn lại» đã trừ số cờ của bạn.</li>
+    <li>Bí rồi? Chọn ô có phần trăm thấp nhất — đó là nước có giá trị kỳ vọng tốt nhất.</li>
+  </ol>
+
+  <h2>Xác suất được tính thế nào?</h2>
+  <p>
+    Mỗi số đã mở là một ràng buộc: «giữa các ô kề chưa mở có đúng (số − số cờ) quả mìn». Bộ giải tách các ràng buộc liên quan
+    thành những thành phần độc lập rồi <strong>liệt kê chính xác từng thành phần có cắt tỉa</strong>, đếm xem mỗi ô là mìn bao
+    nhiêu lần trong mọi cách rải hợp lệ; các ô tách biệt chia phần mìn còn lại đều nhau. Thành phần trên 28 ô chuyển sang dò
+    chắc chắn cộng xấp xỉ, có ghi chú trên trang.
+  </p>
+
+  <h2>Dùng khi nào?</h2>
+  <ul>
+    <li><strong>Thế «tung đồng xu»</strong>: trực giác nói «giống nhau», con số nói 30% với 70%.</li>
+    <li><strong>Xem lại ván thua</strong>: tái hiện thế bàn lúc đó, kiểm tra cú bấm ấy có đúng không.</li>
+    <li><strong>Luyện trực giác</strong>: đối chiếu cảm tính với bản đồ nhiệt cho đến khi hai bên khớp nhau.</li>
+  </ul>
+</GuideLayout>
