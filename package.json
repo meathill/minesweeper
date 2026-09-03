@@ -6,7 +6,7 @@
     "dev:site": "pnpm --filter minesweeper-content-site dev",
     "build": "vite build && pnpm --filter minesweeper-content-site build && node scripts/merge-dist.mjs",
     "serve": "vite preview",
-    "test": "node --test src/solver/probability.test.js src/brand-network.test.js"
+    "test": "node --test src/solver/probability.test.js src/brand-network.test.js src/seo-jsonld.test.js"
   },
   "dependencies": {
     "chart.js": "^4.5.1",
