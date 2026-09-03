@@ -1,0 +1,102 @@
+---
+import GuideLayout from '../../../layouts/GuideLayout.astro';
+import type { FaqItem, HowToData } from '../../../types';
+
+const faq: FaqItem[] = [
+  {
+    question: 'Kann der erste Klick eine Mine treffen?',
+    answer:
+      'In der klassischen Zufallsvariante könnte er — aber praktisch jede moderne Implementierung schützt den ersten Klick. Meathill Minesweeper geht weiter: der erste Klick öffnet immer ein leeres Feld, und der 3×3-Bereich darum bleibt minenfrei.',
+  },
+  {
+    question: 'Was bedeuten die Zahlen bei Minesweeper?',
+    answer:
+      'Jede Zahl zählt die Minen in den 8 umliegenden Feldern. Eine „1“ bedeutet genau eine benachbarte Mine, eine „3“ drei — und so weiter.',
+  },
+  {
+    question: 'Wie spielt man ohne Maus? Wie setzt man am Handy Flaggen?',
+    answer:
+      'Auf dem Touchscreen hält man ein Feld gedrückt, um eine Flagge zu setzen. Meathill Minesweeper braucht gar keine rechte Maustaste: Stimmen die Flaggen mit einer Zahl überein, öffnet ein Doppelklick den Rest — ideal für Trackpad und Handy.',
+  },
+  {
+    question: 'Ist Minesweeper nur Ratesachen?',
+    answer:
+      'Nein. Fast jedes Brett lässt sich durch Logik über die Überlappung der Zahlen lösen; nur seltene Endspiele erzwingen einen Rat. Der Lernmodus in Meathill Minesweeper zeigt live die Minenwahrscheinlichkeit jedes Feldes.',
+  },
+  {
+    question: 'Was ist Chording (das Öffnen per Doppelklick)?',
+    answer:
+      'Wenn die Flaggen um eine Zahl genau der Zahl entsprechen, öffnet ein Doppelklick auf sie alle restlichen Nachbarn auf einmal. Die Schlüsseltechnik für schnelles Spiel.',
+  },
+];
+
+const howTo: HowToData = {
+  name: 'Minesweeper spielen',
+  steps: [
+    'Starte ein Spiel und klicke auf ein beliebiges Feld — der erste Klick ist immer sicher.',
+    'Lies die Zahlen: jede zählt die Minen in den 8 Nachbarfeldern.',
+    'Rechtsklick oder langes Drücken setzt Flaggen; stimmen Flaggen mit einer Zahl überein, öffnet ein Doppelklick den Rest.',
+    'Öffne alle sicheren Felder, um zu gewinnen. Festgefahren? Aktiviere den Lernmodus und sieh die Wahrscheinlichkeit jedes Feldes.',
+  ],
+};
+---
+
+<GuideLayout
+  lang="de"
+  title="Minesweeper spielen: Regeln, Tipps & Anleitung für Einsteiger - Meathill Minesweeper"
+  heading="Minesweeper spielen"
+  description="Minesweeper von Grund auf lernen: was die Zahlen bedeuten, Flaggen setzen, Chording, typische Anfängerfehler und das 1-2-1-Muster — plus Antworten auf die häufigsten Fragen."
+  path="/guide/how-to-play/"
+  keywords="minesweeper spielen, minesweeper anleitung, minesweeper regeln, minesweeper tipps, minesweeper für anfänger"
+  updated="2026-09-03"
+  lede="Ziel bei Minesweeper ist es, alle sicheren Felder aufzudecken, ohne auf eine Mine zu klicken: Jede Zahl verrät, wie viele Minen in der Umgebung liegen. Alle Minen markieren, den Rest aufdecken — gewonnen. Das ist alles, was du brauchst, um vom ersten Spiel zu konstanten Siegen zu kommen."
+  faq={faq}
+  howTo={howTo}
+>
+  <h2>Was ist das Ziel bei Minesweeper?</h2>
+  <p>
+    Auf dem Brett liegen verdeckte Minen; alle anderen Felder sind sicher. Deine Aufgabe ist es, <strong>alle sicheren Felder
+    aufzudecken</strong>: Eine Mine beendet das Spiel, der Rest bedeutet Sieg. Minesweeper ist ein Logikrätsel, das Schritt für
+    Schritt vorangeht — jede Zahl ist Information, kein Glück.
+  </p>
+
+  <h2>Welche Regeln gibt es?</h2>
+  <ul>
+    <li><strong>Die Zahlen</strong>: ein geöffnetes Feld zählt die Minen in den 8 Nachbarfeldern. „1“ heißt eine benachbarte Mine, „3“ heißt drei.</li>
+    <li><strong>Flaggen</strong>: markiere Felder, bei denen du sicher bist, damit du sie nicht versehentlich anklickst.</li>
+    <li><strong>Sicherer erster Klick</strong>: moderne Versionen schützen den ersten Klick; Meathill Minesweeper garantiert eine leere Öffnung und einen minenfreien 3×3-Bereich.</li>
+    <li><strong>Gewinnen</strong>: öffne alle Felder ohne Mine; eine Mine bedeutet sofortiges Ausscheiden.</li>
+  </ul>
+
+  <h2>Grundbewegungen: aufdecken, markieren, per Doppelklick öffnen</h2>
+  <p>Drei Aktionen tragen jedes Spiel:</p>
+  <ol>
+    <li><strong>Aufdecken</strong>: Linksklick auf ein verdecktes Feld. Zahlen erscheinen direkt; leere Felder öffnen sich als ganze Region.</li>
+    <li><strong>Markieren</strong>: Rechtsklick (oder langes Drücken am Handy) setzt eine Flagge auf verdächtige Minen.</li>
+    <li><strong>Chording</strong>: Stimmen die Flaggen um eine Zahl mit der Zahl überein, öffnet ein Doppelklick alle restlichen Nachbarn — die zentrale Geschwindigkeitstechnik.</li>
+  </ol>
+  <p>
+    Trackpad- und Apple-Maus-Spieler scheitern oft am „beide Tasten gleichzeitig“ — <a href="/">Meathill Minesweeper</a>
+    verzichtet komplett auf die rechte Maustaste: Stimmen Flaggen mit einer Zahl überein, öffnet ein Doppelklick den Rest,
+    genauso angenehm auf Trackpad und Handy.
+  </p>
+
+  <h2>Drei typische Anfängerfehler</h2>
+  <ol>
+    <li><strong>Zahlen isoliert lesen</strong>: das Spiel lebt von der Überlappung. Suche Felder, wo die Zahl der Anzahl verdeckter Nachbarn entspricht (alle Minen), und Zahlen, die durch Flaggen bereits erfüllt sind (Rest sicher).</li>
+    <li><strong>Auf Verdacht flaggen</strong>: unsichere Flaggen verseuchen deine eigenen Hinweise. Nur 100%-sichere Felder markieren.</li>
+    <li><strong>Zu lange bei 50/50 zögern</strong>: manche Endspiele sind echtes Raten. Nimm die Feld mit der besseren Wahrscheinlichkeit und geh weiter — Zögern kostet mehr als das Risiko.</li>
+  </ol>
+
+  <h2>Weitergehend: von der Deduktion zur Wahrscheinlichkeit</h2>
+  <p>Zwei klassische Muster heben die Gewinnquote sofort:</p>
+  <ul>
+    <li><strong>„1-1“</strong>: zwei benachbarte Einsen mit denselben verdeckten Nachbarn — alles außerhalb ihres gemeinsamen Bereichs ist sicher.</li>
+    <li><strong>„1-2-1“</strong>: ein horizontales 1-2-1 — die äußeren Ecken der Einsen sind Minen, die restlichen Nachbarn der Zwei sind sicher.</li>
+  </ul>
+  <p>
+    Sind die Muster alle, spielt man Wahrscheinlichkeiten — und die Intuition versagt hier erstaunlich oft: zwei „gleich
+    aussehende“ Felder können bei 30 % und 70 % liegen. <a href="/">Der Lernmodus in Meathill Minesweeper</a> legt eine live
+    Wahrscheinlichkeits-Heatmap über das Brett und macht aus jedem Klick eine Entscheidung, die du vergleichen, durchgehen und verbessern kannst.
+  </p>
+</GuideLayout>

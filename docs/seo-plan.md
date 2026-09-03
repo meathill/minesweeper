@@ -64,7 +64,7 @@
 3. Windows 怀旧簇(KD13–35)：`windows xp minesweeper`(30/13)、`windows 95 minesweeper`(30–50/32)、`windows 98 minesweeper`(35)、`old minesweeper`(250/68) → `/guide/windows-minesweeper`。
 4. `daily minesweeper`(60/KD40)：产品加每日挑战 + `/daily` 页，天然复访。
 5. 大棋盘：`minesweeper 1000x1000`(100/69)、`giant minesweeper`——已有 16×30，可写超大棋盘玩法页。
-6. 多语言页：`сапер`(俄)、`buscaminas`(西)、`dò mìn`(越)、`minesweeper spielen`(德)——竞品在俄语市场根基深，非优先。
+6. 多语言页（已上线 2026-09-03）：**es/ru/vi/de** 四语言 × 4 个内容方向（how-to-play、google-minesweeper、probability-calculator、unblocked），hreflang 全量互指；游戏 UI 仍为 zh/en，其它语言页的「开始游戏」落到 /en/。下一波候选：pl（saper，KD52）、nl（mijnenveger，KD20）。
 
 ## 技术 SEO 原则
 

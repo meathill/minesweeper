@@ -35,6 +35,7 @@ A: 新手开颜色建立直觉→进阶只看颜色→高手关学习模式冲�
 ## 链接
 - 游戏：https://minesweeper.meathill.com/
 - 英文版：https://minesweeper.meathill.com/en/
+- 多语言内容页（教程/计算器/在线玩）：/es/ /ru/ /vi/ /de/ 前缀，路径结构与英文版一致（如 https://minesweeper.meathill.com/es/guide/how-to-play/）
 - 教程：扫雷怎么玩 https://minesweeper.meathill.com/guide/how-to-play/ · 英文 https://minesweeper.meathill.com/en/guide/how-to-play/
 - 教程：谷歌扫雷怎么玩 https://minesweeper.meathill.com/guide/google-minesweeper/ · 英文 https://minesweeper.meathill.com/en/guide/google-minesweeper/
 - 工具：扫雷概率计算器 https://minesweeper.meathill.com/tools/probability-calculator/ · 英文 https://minesweeper.meathill.com/en/tools/probability-calculator/

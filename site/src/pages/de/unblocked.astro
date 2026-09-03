@@ -1,0 +1,73 @@
+---
+import GuideLayout from '../../layouts/GuideLayout.astro';
+import type { FaqItem } from '../../types';
+
+const faq: FaqItem[] = [
+  {
+    question: 'Muss ich etwas herunterladen?',
+    answer:
+      'Nein. Diese Seite ist das Spiel selbst: im Browser öffnen und spielen — nichts zu installieren, kein Konto, keine Plugins.',
+  },
+  {
+    question: 'Was, wenn mitten im Spiel die Verbindung abbricht?',
+    answer:
+      'Nach dem Laden der Seite läuft das Spiel komplett auf deinem Gerät. Eine kurze Unterbrechung berührt das laufende Spiel nicht; ein Neuladen startet ein neues.',
+  },
+  {
+    question: 'Wie setzt man am Handy Flaggen?',
+    answer:
+      'Feld gedrückt halten, um eine Flagge zu setzen. Stimmen die Flaggen mit einer Zahl überein, öffnet ein Doppelklick die restlichen Nachbarn — nirgends wird eine rechte Maustaste gebraucht.',
+  },
+  {
+    question: 'Wie spielt man im Vollbild?',
+    answer:
+      'Über die Schaltfläche „Vollbild öffnen“ in einem neuen Tab spielen, oder am Desktop-Browser mit F11 in den Vollbildmodus wechseln.',
+  },
+];
+---
+
+<GuideLayout
+  lang="de"
+  title="Minesweeper online spielen - kostenlos, ohne Download - Meathill Minesweeper"
+  heading="Minesweeper online — sofort spielen"
+  description="Minesweeper direkt im Browser spielen: kein Download, keine Installation, keine Anmeldung, keine Pop-ups. Langes Drücken setzt Flaggen, keine rechte Maustaste, drei Schwierigkeiten plus Lernmodus. Das Brett ist auf dieser Seite."
+  path="/unblocked/"
+  keywords="minesweeper online spielen, minesweeper kostenlos, minesweeper ohne download, minesweeper im browser"
+  updated="2026-09-03"
+  lede="Das ist Minesweeper direkt im Browser: nichts herunterladen, nirgends anmelden, und das Brett steht direkt unten — klicken und losspielen."
+  faq={faq}
+  cta={{ href: '/en/', label: 'Vollbild öffnen', text: 'Du willst das größere Brett und das komplette Erlebnis? Öffne das Spiel in einem neuen Tab.' }}
+>
+  <h2>Online Minesweeper, null Einrichtung</h2>
+  <ul>
+    <li><strong>Kein Download, keine Installation</strong>: eine gewöhnliche Webseite, die das komplette Spiel ist; auf deinem Gerät wird nichts gespeichert.</li>
+    <li><strong>Keine Pop-ups</strong>: keine Interstitials oder Pop-unders; nach dem Laden läuft alles lokal ohne Eingabelag.</li>
+    <li><strong>Touch-freundlich</strong>: langes Drücken setzt Flaggen, Doppelklick öffnet Ketten — nirgends eine rechte Maustaste.</li>
+    <li><strong>Besser werden?</strong> Eingebauter Lernmodus: live Wahrscheinlichkeits-Heatmap, Bewertung jeder Entscheidung und komplette Partiewiederholung.</li>
+  </ul>
+
+  <h2>Minesweeper online spielen</h2>
+  <iframe
+    class="play-iframe"
+    src="/en/"
+    title="Meathill Minesweeper - online Minesweeper"
+  ></iframe>
+  <p class="text-sm opacity-60">Das oben ist das echte Spiel: Linksklick deckt auf, Rechtsklick oder langes Drücken setzt Flaggen, Doppelklick auf Zahlen öffnet Ketten.</p>
+
+  <h2>Aus welchen Netzwerken spielbar?</h2>
+  <p>
+    Diese Seite ist eine normale HTTPS-Website und lädt aus Heim- und üblichen Büronetzwerken. Wenn das Netz deiner Schule oder
+    Firma Spielseiten explizit einschränkt, halte dich an die Regeln dieses Netzes; ganz offline tut es auch das Minesweeper
+    deines Betriebssystems.
+  </p>
+</GuideLayout>
+<style>
+  .play-iframe {
+    display: block;
+    width: 100%;
+    height: clamp(480px, 72vh, 760px);
+    border: 1px solid var(--meathill-rule-strong);
+    border-radius: var(--meathill-radius-large);
+    background: var(--meathill-paper);
+  }
+</style>

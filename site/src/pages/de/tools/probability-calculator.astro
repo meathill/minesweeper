@@ -1,0 +1,65 @@
+---
+import GuideLayout from '../../../layouts/GuideLayout.astro';
+import Calculator from '../../../components/Calculator.astro';
+import type { FaqItem } from '../../../types';
+
+const faq: FaqItem[] = [
+  {
+    question: 'Wie genau ist der Minesweeper Wahrscheinlichkeitsrechner?',
+    answer:
+      'Randfelder (verdeckte Felder neben Zahlen) werden durch exakte Aufzählung aller konsistenten Minenverteilungen berechnet — echte mathematische Wahrscheinlichkeiten. Isolierte Felder teilen sich die restlichen Minen gleichmäßig. Sehr große Komponenten wechseln zu Sicherheitserkennung plus Näherung, und die Seite weist darauf hin.',
+  },
+  {
+    question: 'Was ist der Unterschied zum Lernmodus im Spiel?',
+    answer:
+      'Der Lernmodus aktualisiert sich live während der Partie, bewertet jede Entscheidung und erlaubt eine Wiederholung. Der Rechner ist eine statische Analyse für jedes Brett — die eigene Niederlage nachspielen oder die Position von jemandem studieren. Beide nutzen denselben Solver.',
+  },
+  {
+    question: 'Welche Brettgrößen werden unterstützt?',
+    answer:
+      'Drei Presets (Leicht 9×9·10, Mittel 16×16·40, Schwer 16×30·99) plus eigene Zeilen, Spalten und Minenzahl. Komponenten über 28 Feldern wechseln zur Näherung, um schnell zu bleiben.',
+  },
+  {
+    question: 'Warum zeigen manche Felder keinen Prozentsatz?',
+    answer:
+      'Meist ist die Position ungültig — etwa mehr Flaggen als Minen gesamt. Die Statuszeile zeigt eine rote Warnung; korrigiere sie, und die Berechnung läuft weiter.',
+  },
+];
+---
+
+<GuideLayout
+  lang="de"
+  title="Minesweeper Wahrscheinlichkeitsrechner - exakte Chance pro Feld - Meathill Minesweeper"
+  heading="Minesweeper Wahrscheinlichkeitsrechner"
+  description="Kostenloser online Minesweeper Wahrscheinlichkeitsrechner: Rekonstruiere jede Position und erhalte die exakte Minenwahrscheinlichkeit jedes verdeckten Feldes. Derselbe Solver wie der Lernmodus in Meathill Minesweeper."
+  path="/tools/probability-calculator/"
+  keywords="minesweeper wahrscheinlichkeitsrechner, minesweeper solver, minesweeper wahrscheinlichkeit, minesweeper rechner"
+  updated="2026-09-03"
+  lede="Baue die gesehene Position nach — klicke, um Zahlen und bekannte Minen zu markieren — und der Rechner berechnet die exakte Minenwahrscheinlichkeit jedes verdeckten Feldes, mit demselben Solver wie der Lernmodus in Meathill Minesweeper."
+  faq={faq}
+>
+  <Calculator lang="de" />
+
+  <h2>So benutzt du den Rechner</h2>
+  <ol>
+    <li>Wähle ein Preset oder setze eigene Zeilen, Spalten und Minenzahl.</li>
+    <li><strong>Klicke Felder an, um den Zustand zu wechseln</strong>: verdeckt → 🚩 (bekannte Mine) → Zahl 1–8; Rechtsklick rückwärts, bis das Brett dem Bild entspricht.</li>
+    <li>Jedes verdeckte Feld zeigt live seine Minenwahrscheinlichkeit (%), grün niedrig → rot hoch; „Minen übrig“ rechnet deine Flaggen heraus.</li>
+    <li>Festgefahren? Spiele den niedrigsten Prozentsatz — das ist der Zug mit dem besten Erwartungswert.</li>
+  </ol>
+
+  <h2>Wie die Wahrscheinlichkeiten berechnet werden</h2>
+  <p>
+    Jede offene Zahl ist eine Bedingung: „genau (Zahl − Flaggen) Minen unter meinen verdeckten Nachbarn“. Der Solver teilt
+    verbundene Bedingungen in unabhängige Komponenten und <strong>zählt jede exakt mit Beschneidung durch</strong>, indem er
+    registriert, wie oft ein Feld über alle gültigen Verteilungen hinweg Mine ist; isolierte Felder teilen sich die restlichen
+    Minen gleichmäßig. Komponenten über 28 Feldern wechseln zu Sicherheitserkennung plus Näherung — klar auf der Seite markiert.
+  </p>
+
+  <h2>Wann ist er nützlich?</h2>
+  <ul>
+    <li><strong>50/50-Momente</strong>: die Intuition sagt „ungefähr gleich“, die Zahlen sagen 30 % gegen 70 %.</li>
+    <li><strong>Niederlagen nachbereiten</strong>: die verlorene Position nachbauen und prüfen, ob der Klick richtig war.</li>
+    <li><strong>Intuition trainieren</strong>: das Bauchgefühl mit der Heatmap abgleichen, bis beide übereinstimmen.</li>
+  </ul>
+</GuideLayout>
