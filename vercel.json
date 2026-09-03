@@ -2,7 +2,15 @@
   "buildCommand": "pnpm run build",
   "rewrites": [
     { "source": "/en", "destination": "/index.html" },
-    { "source": "/en/:path*", "destination": "/index.html" }
+    { "source": "/en/:path*", "destination": "/index.html" },
+    { "source": "/es", "destination": "/index.html" },
+    { "source": "/es/:path*", "destination": "/index.html" },
+    { "source": "/ru", "destination": "/index.html" },
+    { "source": "/ru/:path*", "destination": "/index.html" },
+    { "source": "/vi", "destination": "/index.html" },
+    { "source": "/vi/:path*", "destination": "/index.html" },
+    { "source": "/de", "destination": "/index.html" },
+    { "source": "/de/:path*", "destination": "/index.html" }
   ],
   "headers": [
     {

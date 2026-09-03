@@ -1,0 +1,142 @@
+{
+  "brand": {
+    "studio": "Meathill Studio"
+  },
+  "header": {
+    "title": "Meathill Minesweeper",
+    "level": "Schwierigkeit",
+    "levels": {
+      "Easy": "Leicht",
+      "Medium": "Mittel",
+      "Hard": "Schwer",
+      "Custom": "Eigene"
+    }
+  },
+  "toolbar": {
+    "mines": "Minen: {count}",
+    "hint": "Tipp",
+    "learningMode": "Lernmodus",
+    "learningDropdown": {
+      "enableHeatmap": "Heatmap",
+      "showPercent": "% anzeigen",
+      "showFraction": "Bruch anzeigen",
+      "gradient": "0%→100%",
+      "disabledHint": "Zeigt die Minenwahrscheinlichkeit in Echtzeit"
+    }
+  },
+  "game": {
+    "flag": "🚩",
+    "bomb": "💥",
+    "revealedBomb": "💣"
+  },
+  "chart": {
+    "title": "⭐ Leistung & Entscheidungseffizienz (Klicken zum Nachverfolgen)",
+    "openSafe": "Sicher geöffnet",
+    "openExact": "Aufdecken (exakt)",
+    "flag": "Flagge",
+    "flagExact": "Flagge (exakt)",
+    "efficiency": "Effizienz",
+    "mineProb": "Minenwahrsch.",
+    "rpm": "RPM (Züge/min)",
+    "efficiencyAxis": "Effizienz / Minenwahrsch. ×10",
+    "time": "Zeit",
+    "timeMinutes": "Zeit (Min)",
+    "timeSeconds": "Zeit (Sek)",
+    "selected": "Ausgewählt",
+    "cell": "Feld",
+    "clearSelection": "Auswahl aufheben",
+    "clickHint": "Klicke orange/lila Punkte, um das geklickte Feld hervorzuheben",
+    "legendTitle": "Legende · 4 Linien",
+    "legendAria": "Wiederholungs-Legende: sicher öffnen, Flagge, Effizienz, Minenwahrscheinlichkeit",
+    "bucket": "Block",
+    "legendExact": "exakte Zeit",
+    "legendLeftAxis": "Links: Tempo (RPM)",
+    "legendRightAxis": "Rechts: Qualität (0-10)",
+    "legendClickHint": "Klick hebt hervor · rot<5 orange 5-9 grün 10",
+    "exampleAria": "Beispiel: Tal im Orange + Spitze im Lila = riskanter Rat",
+    "exampleBad": "Riskanter Rat · klicken zum Nachverfolgen",
+    "exampleProbHigh": "lila Spitze = hohes Risiko",
+    "exampleEffLow": "oranges Tal = niedrige Punkte",
+    "exampleCaption": "Beispiel: stetige 10 ist optimal; steigt das Lila, während das Orange fällt, hast du auf einem Hight-Prozent-Feld geraten — klicke den Punkt, um das Feld zu markieren.",
+    "lowScoreList": "Schwächste Züge · klappt nicht? Hier klicken",
+    "lowScoreHint": "Nach Punkten <9 sortiert — ein Klick markiert das passende Feld"
+  },
+  "seo": {
+    "whatIsTitle": "Was ist Meathill Minesweeper?",
+    "whatIsDesc": "Ein modernes Minesweeper zum <strong>Lernen beim Spielen</strong>. Klassische Bretter 9×9 / 16×16 / 16×30 mit Flaggen plus ein <strong>Lernmodus</strong>, der in Echtzeit die Minenwahrscheinlichkeit jedes verdeckten Feldes berechnet, eine grün-gelb-rote Heatmap (75 %) überlegt und jeden Zug mit 0-10 gegen die optimale Wahl bewertet. Keine rechte Maustaste nötig — Doppelklick öffnet Ketten, perfekt für Trackpad und Handy.",
+    "howToPlayTitle": "Spielanleitung",
+    "howToPlay": [
+      "<strong>Linksklick</strong> deckt auf. Der erste Klick trifft nie eine Mine; Zahlen zählen die Minen in den 8 Nachbarn.",
+      "<strong>Rechtsklick / langes Drücken</strong> setzt Flaggen. Die Kopfzeile zeigt die restlichen Minen.",
+      "<strong>Doppelklick öffnet Ketten (für Apple / Trackpad optimiert)</strong>: klassisch hält man beide Tasten. Hier gilt: Sind die Flaggen um eine Zahl so viele wie die Zahl, öffnet ein <strong>Doppelklick auf die Zahl</strong> den Rest — ohne rechte Maustaste. Am Desktop funktioniert Links+Rechts weiter, Chording zählt als perfekte 10.",
+      "Öffne alle Felder ohne Mine, um zu gewinnen; eine Mine deckt das Brett auf."
+    ],
+    "learningTitle": "Was ist der Lernmodus?",
+    "heatmapTitle": "Wahrscheinlichkeits-Heatmap: das Risiko sehen",
+    "heatmapDesc": "Mit aktivem Lernmodus baut der Solver aus offenen Zahlen Bedingungen <code>rest = Zahl - Flaggen</code>, teilt Randfelder in Komponenten und zählt sie durch, während isolierte Felder die restlichen Minen gleichmäßig teilen. Jedes Feld erhält <code>P(Mine) 0-1</code>: <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#22c55e\"></span> grün (0 %) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#eab308\"></span> gelb (50 %) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#ef4444\"></span> rot (100 %) mit 75 % Deckung. <code>%</code> und <code>Bruch</code> lassen sich einzeln abschalten — Farbe allein trainiert die Intuition.",
+    "efficiencyTitle": "Entscheidungseffizienz: Wie gut war der Zug?",
+    "efficiencyDesc": "Es gibt keine absoluten 10 — nur <strong>relativ zum Brett</strong>. Aufdecken: <code>Punkte=(1-p)/(1-pMin)*10</code>, pMin ist das aktuell sicherste Feld; Flagge: <code>Punkte=p/pMax*10</code>. Das im Moment sicherste/richtigste Feld gibt <strong>10</strong>; 50 % wählen, obwohl 0 % verfügbar ist, gibt ~5. Chording zählt immer <strong>10</strong>. Die Punkte teilen den Solver — die Aufzeichnung läuft auch bei ausgeschalteter Heatmap weiter.",
+    "chartTitle": "Das Wiederholungsdiagramm lesen",
+    "chartDesc": "Es erscheint automatisch am Partieende. Die X-Achse ist die <strong>Zeit</strong>, links steht Tempo, rechts Qualität — 4 Linien, zwei Rhythmen:",
+    "chartBullets": [
+      "<strong class=\"text-[#4bc0c0]\">Sicher öffnen (türkis · links)</strong>: RPM-Hintergrund in 6-Sekunden-Blöcken — Rohgeschwindigkeit und Öffnungsketten.",
+      "<strong class=\"text-[#FF6B6B]\">Flaggen (rot · links)</strong>: ebenfalls RPM-Hintergrund in 6-Sekunden-Blöcken — wann du markiert hast.",
+      "<strong class=\"text-[#f59e0b]\">Effizienz (orange Punkte + Linie · rechts 0-10)</strong>: <strong>zum exakten Klickzeitpunkt eingetragen</strong>. 10 = optimal in dem Moment; <5 rot, 5-9 orange, 10 grün. <strong>Ein Klick auf einen Punkt markiert das Feld auf dem Brett</strong> und verfolgt die niedrige Punktzahl.",
+      "<strong class=\"text-[#a855f7]\">Minenwahrscheinlichkeit (lilane Dreiecke, gestrichelt · rechts 0-10 = Wahrsch.×10)</strong>: nur für Aufdecken/Ketten — die P(Mine) des Feldes in diesem Moment. Über das Orange legen: lila hoch + orange tief = riskanter Rat."
+    ],
+    "chartHint": "<strong>So benutzt du es:</strong> suche Täler im Orange und prüfe, ob das Lila gleichzeitig ausschlägt — das ist der Zug zum Durchgehen. Klick den Punkt, das Brett markiert das Feld; nächstes Mal das grünere wählen.",
+    "progressTitle": "Vom Anfänger zum Experten",
+    "progressSteps": [
+      "Spiele zuerst mit Heatmap und baue die Intuition „grün = öffnen, rot = markieren“ auf;",
+      "Schalte %/Bruch aus, entscheide nur nach Farbe und prüfe in der Wiederholung, ob es noch 10 ist;",
+      "Schließlich den Lernmodus aus und Schwer 16×30 fordern — RPM stabil, orange ≥9."
+    ],
+    "guides": [
+      { "label": "Minesweeper spielen: Regeln, Tipps & Anleitung", "href": "/de/guide/how-to-play/" },
+      { "label": "Google Minesweeper: öffnen, Flaggen, Regeln", "href": "/de/guide/google-minesweeper/" },
+      { "label": "Minesweeper Wahrscheinlichkeitsrechner", "href": "/de/tools/probability-calculator/" },
+      { "label": "Minesweeper online — sofort spielen", "href": "/de/unblocked/" }
+    ],
+    "guidesTitle": "Anleitungen & Werkzeuge",
+    "keywords": "Schlüsselwörter: Meathill Minesweeper · lernen beim Spielen · Minenwahrscheinlichkeit · Minesweeper Tipps · Anleitung · ohne rechte Maustaste · Trackpad · Lernmodus · Entscheidungseffizienz"
+  },
+  "faq": {
+    "title": "Häufige Fragen",
+    "items": [
+      {
+        "q": "Was ist Meathill Minesweeper?",
+        "a": "Meathill Minesweeper (minesweeper.meathill.com) ist ein Minesweeper zum Lernen beim Spielen: Bretter 9×9/16×16/16×30, ohne rechte Maustaste, Chording per Doppelklick und Lernmodus: live Wahrscheinlichkeits-Heatmap, Punktbewertung und Partiewiederholung."
+      },
+      {
+        "q": "Wie wird die Wahrscheinlichkeit berechnet?",
+        "a": "Bedingungen „rest = Zahl - Flaggen“ auf den Randfeldern werden in Komponenten geteilt und exakt durchgezählt; isolierte Felder teilen sich die restlichen Minen gleichmäßig. Ergebnis: P(Mine) 0-1 als grün→gelb→rot-Überlagerung mit 75 %. Der Solver läuft immer, um Züge zu bewerten."
+      },
+      {
+        "q": "Was bedeutet Effizienz 0-10?",
+        "a": "Relativ, nicht absolut. Aufdecken: (1-p)/(1-pMin)*10; Flagge: p/pMax*10; Chording immer 10. Das im Moment sicherste Feld gibt 10; 50 % wählen, obwohl 0 % verfügbar ist, gibt ~5. Jeder orange Punkt in der Wiederholung ist eine Bewertung — klicken, um das Feld zu markieren."
+      },
+      {
+        "q": "Chording mit Apple / Trackpad?",
+        "a": "Optimiert: ohne beide Tasten — Doppelklick auf jede offene Zahl, deren Flaggen der Zahl entsprechen, öffnet den Rest. Rechtsklick, langes Drücken und Trackpad funktionieren, dazu mobile Geräte."
+      },
+      {
+        "q": "Wie liest man das Wiederholungsdiagramm?",
+        "a": "Linke Achse = Tempo, rechte = Qualität. X ist die Zeit; zwei RPM-Linien (türkis = öffnen, rot = Flaggen) als 6-Sekunden-Hintergrund; zwei Punktdiagramme (orange = Effizienz 0-10, lila = Minenwahrsch.×10) zum exakten Klickzeitpunkt. Stabile 9+ in Orange ist optimal; klicke ein Tal — schlägt dort Lila aus, war es ein riskanter Rat auf genau dem markierten Feld."
+      },
+      {
+        "q": "Für wen ist das?",
+        "a": "Anfänger nutzen die Heatmap für Intuition, Fortgeschrittene nur die Farben, Experten spielen mit ausgeschaltetem Lernmodus um den Schwer-Titel. Jede Partie ist nachbereitbar.<br/>Web: <a class=\"link\" href=\"https://minesweeper.meathill.com/\">https://minesweeper.meathill.com/</a> · Studio: <a class=\"link\" href=\"https://meathill.com\">Meathill Studio</a>"
+      }
+    ]
+  },
+  "footer": {
+    "rights": "Lernen beim Spielen."
+  },
+  "meta": {
+    "title": "Meathill Minesweeper - Minesweeper zum Lernen beim Spielen | Heatmap & Effizienz",
+    "description": "Modernes Minesweeper zum Lernen beim Spielen: keine rechte Maustaste, Chording per Doppelklick (Apple/Trackpad optimiert), live Minenwahrscheinlichkeits-Heatmap und 0-10-Effizienzbewertung. Leicht/Mittel/Schwer + Wiederholung.",
+    "ogTitle": "Meathill Minesweeper - Minesweeper zum Lernen beim Spielen",
+    "ogDescription": "Der Lernmodus zeigt eine grün-gelb-rote Heatmap (75 %) pro Feld und zeichnet RPM und Effizienz auf — ohne rechte Maustaste, Chording per Doppelklick (Apple/Trackpad optimiert).",
+    "twitterDescription": "Sieh die Wahrscheinlichkeit jedes Feldes, bewerte jeden Zug — Minesweeper, von dem du wirklich lernst."
+  }
+}

@@ -44,7 +44,8 @@ const contentPaths = collectPagePaths(contentDistDir).sort();
 const lastmod = new Date().toISOString().slice(0, 10);
 const urls = [
   { loc: '/', priority: '1.0' },
-  { loc: '/en/', priority: '0.8' },
+  // 游戏多语言首页由 Vercel rewrite 提供，不在静态产物里，需手动列出
+  ...['/en/', '/es/', '/ru/', '/vi/', '/de/'].map((loc) => ({ loc, priority: '0.8' })),
   ...contentPaths.map((loc) => ({ loc, priority: '0.6' })),
 ];
 

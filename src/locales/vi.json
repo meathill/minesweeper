@@ -1,0 +1,142 @@
+{
+  "brand": {
+    "studio": "Meathill Studio"
+  },
+  "header": {
+    "title": "Meathill Minesweeper",
+    "level": "Độ khó",
+    "levels": {
+      "Easy": "Dễ",
+      "Medium": "Vừa",
+      "Hard": "Khó",
+      "Custom": "Tùy chỉnh"
+    }
+  },
+  "toolbar": {
+    "mines": "Mìn: {count}",
+    "hint": "Gợi ý",
+    "learningMode": "Chế độ học",
+    "learningDropdown": {
+      "enableHeatmap": "Bản đồ nhiệt",
+      "showPercent": "Hiện %",
+      "showFraction": "Hiện phân số",
+      "gradient": "0%→100%",
+      "disabledHint": "Hiện xác suất có mìn theo thời gian thực"
+    }
+  },
+  "game": {
+    "flag": "🚩",
+    "bomb": "💥",
+    "revealedBomb": "💣"
+  },
+  "chart": {
+    "title": "⭐ Hiệu suất và hiệu quả quyết định (bấm để xem lại)",
+    "openSafe": "Mở ô an toàn",
+    "openExact": "Mở (chính xác)",
+    "flag": "Cắm cờ",
+    "flagExact": "Cắm cờ (chính xác)",
+    "efficiency": "Hiệu quả",
+    "mineProb": "Xác suất mìn",
+    "rpm": "RPM (thao tác/phút)",
+    "efficiencyAxis": "Hiệu quả / Xác suất mìn ×10",
+    "time": "Thời gian",
+    "timeMinutes": "Thời gian (phút)",
+    "timeSeconds": "Thời gian (giây)",
+    "selected": "Đang chọn",
+    "cell": "Ô",
+    "clearSelection": "Bỏ làm nổi bật",
+    "clickHint": "Bấm vào điểm cam/tím để làm nổi bật ô bạn đã bấm",
+    "legendTitle": "Chú giải · 4 đường",
+    "legendAria": "Chú giải bản xem lại: mở an toàn, cắm cờ, hiệu quả, xác suất mìn",
+    "bucket": "khối",
+    "legendExact": "đúng thời điểm",
+    "legendLeftAxis": "Trái: tốc độ (RPM)",
+    "legendRightAxis": "Phải: chất lượng (0-10)",
+    "legendClickHint": "Bấm để làm nổi · đỏ<5 cam 5-9 xanh 10",
+    "exampleAria": "Ví dụ: đáy cam + đỉnh tím = phỏng đoán rủi ro",
+    "exampleBad": "Phỏng đoán rủi ro · bấm để xem lại",
+    "exampleProbHigh": "đỉnh tím = rủi ro cao",
+    "exampleEffLow": "đáy cam = điểm thấp",
+    "exampleCaption": "Ví dụ: đều 10 là tối ưu; khi tím vọt lên và cam lao xuống cùng lúc, bạn đã đoán trên ô có xác suất cao — bấm vào điểm đó để làm nổi ô ấy.",
+    "lowScoreList": "Các nước điểm thấp · không bấm được? Bấm vào đây",
+    "lowScoreHint": "Sắp xếp theo điểm <9 — bấm nút để làm nổi ô tương ứng"
+  },
+  "seo": {
+    "whatIsTitle": "Meathill Minesweeper là gì?",
+    "whatIsDesc": "Trò Dò Mìn hiện đại <strong>vừa chơi vừa học</strong>. Bàn cổ điển 9×9 / 16×16 / 16×30 đầy đủ cắm cờ, cộng <strong>Chế độ học</strong> tính thời gian thực xác suất có mìn của từng ô chưa mở, phủ bản đồ nhiệt xanh-vàng-đỏ 75% và chấm từng nước từ 0-10 so với lựa chọn tối ưu. Không cần chuột phải — nháy đúp để mở dây chuyền, mượt trên touchpad và điện thoại.",
+    "howToPlayTitle": "Cách chơi",
+    "howToPlay": [
+      "<strong>Chuột trái</strong> để mở. Lần bấm đầu không bao giờ trúng mìn; số đếm mìn trong 8 ô kề.",
+      "<strong>Chuột phải / nhấn giữ</strong> để cắm cờ. Phần hiển thị trên cùng cho biết mìn còn lại.",
+      "<strong>Nháy đúp để mở dây chuyền (tối ưu cho Apple / touchpad)</strong>: cách cổ điển phải giữ cả hai phím. Ở đây, nếu số cờ quanh một con số bằng chính nó, <strong>nháy đúp vào con số</strong> là mở hết phần còn lại — không cần chuột phải. Trên máy tính, giữ trái+phải vẫn hoạt động và mở dây chuyền được tính 10 điểm tuyệt đối.",
+      "Mở hết mọi ô không mìn để thắng; dẫm mìn là bàn chơi được lật ngược."
+    ],
+    "learningTitle": "Chế độ học là gì?",
+    "heatmapTitle": "Bản đồ nhiệt xác suất: nhìn thấy rủi ro",
+    "heatmapDesc": "Khi bật Chế độ học, bộ giải xây ràng buộc <code>cần = số - cờ</code> từ các số đã mở, tách các ô biên thành thành phần và liệt kê, còn các ô tách biệt chia phần mìn còn lại đều nhau. Mỗi ô nhận <code>P(có mìn) 0-1</code>, hiển thị <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#22c55e\"></span> xanh (0%) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#eab308\"></span> vàng (50%) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#ef4444\"></span> đỏ (100%) với độ phủ 75%. Có thể bật/tắt riêng <code>%</code> và <code>phân số</code> — chỉ màu thôi cũng đủ luyện trực giác.",
+    "efficiencyTitle": "Hiệu quả quyết định: nước đó đáng mấy điểm?",
+    "efficiencyDesc": "Không có điểm 10 tuyệt đối — chỉ có <strong>tương đối với thế bàn</strong>. Mở ô: <code>điểm=(1-p)/(1-pMin)*10</code>, pMin là ô an toàn nhất lúc đó; cắm cờ: <code>điểm=p/pMax*10</code>. Chọn ô an toàn nhất/đáng cắm nhất trong khoảnh khắc là <strong>10 điểm</strong>; chọn ô 50% khi có ô 0% chỉ được khoảng 5. Mở dây chuyền luôn được <strong>10</strong>. Điểm dùng chung bộ giải nên tắt bản đồ nhiệt vẫn ghi để xem lại.",
+    "chartTitle": "Đọc biểu đồ xem lại thế nào",
+    "chartDesc": "Tự động hiện khi ván kết thúc. Trục X là <strong>thời gian</strong>, trục trái là tốc độ, trục phải là chất lượng — 4 đường, hai nhịp:",
+    "chartBullets": [
+      "<strong class=\"text-[#4bc0c0]\">Mở ô an toàn (xanh ngọc · trái)</strong>: nền RPM chia khối 6 giây — tốc độ thô và những chuỗi mở liên hoàn.",
+      "<strong class=\"text-[#FF6B6B]\">Cắm cờ (đỏ · trái)</strong>: cũng nền RPM khối 6 giây — lúc nào bạn đang đánh dấu.",
+      "<strong class=\"text-[#f59e0b]\">Hiệu quả (điểm cam + đường nối · phải 0-10)</strong>: <strong>đặt đúng thời điểm thực của từng cú bấm</strong>. 10 = tối ưu lúc đó; <5 đỏ, 5-9 cam, 10 xanh. <strong>Bấm vào bất kỳ điểm cam để làm nổi ô đó trên bàn</strong> và xem lại nước điểm thấp.",
+      "<strong class=\"text-[#a855f7]\">Xác suất mìn (tam giác tím, nét đứt · phải 0-10 = xác suất×10)</strong>: chỉ ghi khi mở/dây chuyền — P(có mìn) của ô đó lúc đó. Xếp chồng với màu cam: tím cao + cam thấp = phỏng đoán rủi ro."
+    ],
+    "chartHint": "<strong>Cách dùng:</strong> tìm đáy cam rồi xem tím có vọt lên cùng lúc không — đó là nước cần xem lại. Bấm vào điểm, bàn chơi làm nổi ô ấy; lần sau hãy chọn ô xanh hơn.",
+    "progressTitle": "Từ tân binh đến cao thủ",
+    "progressSteps": [
+      "Chơi với bản đồ nhiệt trước để có trực giác «xanh = mở, đỏ = đánh dấu»;",
+      "Tắt %/phân số, quyết định chỉ bằng màu, đối chiếu bản xem lại xem có vẫn 10 không;",
+      "Tắt Chế độ học và thử sức Khó 16×30 — giữ RPM ổn định và màu cam từ 9 trở lên."
+    ],
+    "guides": [
+      { "label": "Cách chơi Dò Mìn: luật, mẹo và hướng dẫn", "href": "/vi/guide/how-to-play/" },
+      { "label": "Dò Mìn trên Google: mở, cắm cờ, luật chơi", "href": "/vi/guide/google-minesweeper/" },
+      { "label": "Máy tính xác suất Dò Mìn", "href": "/vi/tools/probability-calculator/" },
+      { "label": "Dò Mìn online — chơi không cần cài đặt", "href": "/vi/unblocked/" }
+    ],
+    "guidesTitle": "Hướng dẫn & công cụ",
+    "keywords": "Từ khóa: Meathill Minesweeper · vừa chơi vừa học · xác suất có mìn · mẹo dò mìn · hướng dẫn · không cần chuột phải · touchpad · Chế độ học · hiệu quả quyết định"
+  },
+  "faq": {
+    "title": "Câu hỏi thường gặp",
+    "items": [
+      {
+        "q": "Meathill Minesweeper là gì?",
+        "a": "Meathill Minesweeper (minesweeper.meathill.com) là trò Dò Mìn vừa chơi vừa học: bàn 9×9/16×16/16×30, không cần chuột phải, nháy đúp mở dây chuyền, và Chế độ học: bản đồ nhiệt xác suất trực tiếp, chấm điểm hiệu quả và xem lại ván đấu."
+      },
+      {
+        "q": "Xác suất được tính thế nào?",
+        "a": "Ràng buộc cần = số - cờ trên các ô biên được tách thành phần và liệt kê chính xác; ô tách biệt chia phần mìn còn lại đều nhau, cho ra P(có mìn) 0-1 phủ xanh→vàng→đỏ 75%. Bộ giải luôn chạy để chấm điểm."
+      },
+      {
+        "q": "Hiệu quả 0-10 nghĩa là gì?",
+        "a": "Điểm tương đối, không tuyệt đối. Mở ô: (1-p)/(1-pMin)*10; cắm cờ: p/pMax*10; dây chuyền luôn 10. Chọn ô an toàn nhất lúc đó là 10; chọn ô 50% khi có ô 0% chỉ được khoảng 5. Mỗi điểm cam trong bản xem lại là một lần chấm — bấm vào để làm nổi ô ấy."
+      },
+      {
+        "q": "Mở dây chuyền trên Apple / touchpad thế nào?",
+        "a": "Đã tối ưu: không cần giữ hai phím — nháy đúp vào số đã mở mà số cờ bằng chính nó là mở hết phần còn lại. Chuột phải, nhấn giữ và touchpad đều hoạt động, kể cả điện thoại."
+      },
+      {
+        "q": "Đọc biểu đồ xem lại thế nào?",
+        "a": "Trục trái = tốc độ, trục phải = chất lượng. X là thời gian; hai đường RPM (xanh ngọc=mở, đỏ=cắm cờ) là nền chia khối 6 giây; hai đường điểm (cam=hiệu quả 0-10, tím=xác suất mìn×10) đặt đúng thời điểm bấm. Cam duy trì 9+ là tối ưu; bấm vào chỗ trũng — nếu tím vọt lên đó, đó là phỏng đoán rủi ro trên chính ô được làm nổi."
+      },
+      {
+        "q": "Phù hợp với ai?",
+        "a": "Người mới dùng bản đồ nhiệt để có trực giác; trung cấp chỉ dùng màu; cao thủ tắt Chế độ học để chinh phục độ Khó. Mọi ván đều xem lại được.<br/>Trang chủ: <a class=\"link\" href=\"https://minesweeper.meathill.com/\">https://minesweeper.meathill.com/</a> · Studio: <a class=\"link\" href=\"https://meathill.com\">Meathill Studio</a>"
+      }
+    ]
+  },
+  "footer": {
+    "rights": "Vừa chơi vừa học."
+  },
+  "meta": {
+    "title": "Meathill Minesweeper - Dò Mìn vừa chơi vừa học | Bản đồ nhiệt & hiệu quả",
+    "description": "Dò Mìn hiện đại vừa chơi vừa học: không cần chuột phải, nháy đúp mở dây chuyền (tối ưu Apple/touchpad), bản đồ nhiệt xác suất mìn trực tiếp và chấm điểm hiệu quả 0-10. Dễ/Vừa/Khó + xem lại ván đấu.",
+    "ogTitle": "Meathill Minesweeper - Dò Mìn vừa chơi vừa học",
+    "ogDescription": "Chế độ học hiển thị bản đồ nhiệt xanh-vàng-đỏ 75% cho từng ô, ghi RPM và hiệu quả — không cần chuột phải, nháy đúp mở dây chuyền (tối ưu Apple/touchpad).",
+    "twitterDescription": "Thấy xác suất từng ô, chấm điểm từng quyết định — Dò Mìn mà bạn thật sự học được."
+  }
+}

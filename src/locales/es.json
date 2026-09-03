@@ -1,0 +1,142 @@
+{
+  "brand": {
+    "studio": "Meathill Studio"
+  },
+  "header": {
+    "title": "Meathill Minesweeper",
+    "level": "Nivel",
+    "levels": {
+      "Easy": "Fácil",
+      "Medium": "Medio",
+      "Hard": "Difícil",
+      "Custom": "Personalizado"
+    }
+  },
+  "toolbar": {
+    "mines": "Minas: {count}",
+    "hint": "Pista",
+    "learningMode": "Modo Aprendizaje",
+    "learningDropdown": {
+      "enableHeatmap": "Mapa de calor",
+      "showPercent": "Mostrar %",
+      "showFraction": "Mostrar fracción",
+      "gradient": "0%→100%",
+      "disabledHint": "Muestra la probabilidad de mina en tiempo real"
+    }
+  },
+  "game": {
+    "flag": "🚩",
+    "bomb": "💥",
+    "revealedBomb": "💣"
+  },
+  "chart": {
+    "title": "⭐ Rendimiento y eficiencia de decisión (clic para rastrear)",
+    "openSafe": "Abrir seguro",
+    "openExact": "Abrir (exacto)",
+    "flag": "Bandera",
+    "flagExact": "Bandera (exacta)",
+    "efficiency": "Eficiencia",
+    "mineProb": "Prob. de mina",
+    "rpm": "RPM (operaciones/min)",
+    "efficiencyAxis": "Eficiencia / Prob. de mina ×10",
+    "time": "Tiempo",
+    "timeMinutes": "Tiempo (min)",
+    "timeSeconds": "Tiempo (s)",
+    "selected": "Seleccionada",
+    "cell": "Casilla",
+    "clearSelection": "Quitar resaltado",
+    "clickHint": "Haz clic en los puntos naranjas/morados para resaltar la casilla que pulsaste",
+    "legendTitle": "Leyenda · 4 líneas",
+    "legendAria": "Leyenda de repetición: abrir seguro, bandera, eficiencia, probabilidad de mina",
+    "bucket": "bloque",
+    "legendExact": "tiempo exacto",
+    "legendLeftAxis": "Izq: velocidad (RPM)",
+    "legendRightAxis": "Der: calidad (0-10)",
+    "legendClickHint": "Clic para resaltar · rojo<5 naranja 5-9 verde 10",
+    "exampleAria": "Ejemplo: valle naranja + pico morado = apuesta arriesgada",
+    "exampleBad": "Apuesta arriesgada · clic para rastrear",
+    "exampleProbHigh": "pico morado = riesgo alto",
+    "exampleEffLow": "valle naranja = puntuación baja",
+    "exampleCaption": "Ejemplo: un 10 constante es lo óptimo; cuando el morado sube y el naranja cae a la vez, adivinaste sobre una casilla de alta probabilidad — clic en el punto para resaltarla.",
+    "lowScoreList": "Peores puntuaciones · ¿no se puede hacer clic? Pulsa aquí",
+    "lowScoreHint": "Ordenadas por puntuación <9 — pulsa un botón para resaltar esa casilla"
+  },
+  "seo": {
+    "whatIsTitle": "¿Qué es Meathill Minesweeper?",
+    "whatIsDesc": "Un Buscaminas moderno <strong>para aprender jugando</strong>. Tableros clásicos de 9×9 / 16×16 / 16×30 con banderas, más un <strong>Modo Aprendizaje</strong> que calcula en tiempo real la probabilidad de mina de cada casilla cerrada, superpone un mapa de calor verde-amarillo-rojo al 75% y puntúa cada movimiento de 0 a 10 frente a la opción óptima. Sin clic derecho — doble clic para abrir en cadena, perfecto para trackpad y móvil.",
+    "howToPlayTitle": "Cómo jugar",
+    "howToPlay": [
+      "<strong>Clic izquierdo</strong> para abrir. El primer clic nunca toca una mina; los números cuentan las minas en las 8 vecinas.",
+      "<strong>Clic derecho / pulsación larga</strong> para poner banderas. La cabecera muestra las minas restantes.",
+      "<strong>Doble clic para abrir en cadena (optimizado para Apple / trackpad)</strong>: el chording clásico exige pulsar izquierda+derecha. Aquí, si las banderas alrededor de un número igualan al número, <strong>doble clic sobre el número</strong> abre el resto — sin clic derecho. En escritorio izquierda+derecha sigue funcionando, y el chording puntúa un 10 perfecto.",
+      "Abre todas las casillas sin mina para ganar; si pisas una mina, el tablero se revela."
+    ],
+    "learningTitle": "¿Qué es el Modo Aprendizaje?",
+    "heatmapTitle": "Mapa de calor de probabilidad: ver el riesgo",
+    "heatmapDesc": "Con el Modo Aprendizaje activo, el solver construye restricciones <code>restante = número - banderas</code> a partir de los números abiertos, divide las casillas de frontera en componentes y las enumera, mientras las casillas aisladas reparten las minas restantes a partes iguales. Cada casilla recibe <code>P(mina) 0-1</code>, mostrado como <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#22c55e\"></span> verde (0%) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#eab308\"></span> amarillo (50%) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#ef4444\"></span> rojo (100%) al 75% de opacidad. Puedes activar o desactivar <code>%</code> y <code>fracción</code> por separado — el color solo ya entrena la intuición.",
+    "efficiencyTitle": "Eficiencia de decisión: ¿cuánto valió esa jugada?",
+    "efficiencyDesc": "No hay un 10 absoluto — solo <strong>relativo al tablero</strong>. Abrir: <code>puntuación=(1-p)/(1-pMin)*10</code>, donde pMin es la casilla más segura del momento; bandera: <code>puntuación=p/pMax*10</code>. Elegir la más segura / más segura de marcar en ese instante es un <strong>10</strong>; elegir un 50% cuando hay un 0% disponible ronda el 5. El chording siempre es <strong>10</strong>. Las puntuaciones comparten el solver, así que cerrar el mapa de calor sigue registrando para la repetición.",
+    "chartTitle": "Cómo leer el gráfico de repetición",
+    "chartDesc": "Aparece al terminar la partida. El eje X es el <strong>tiempo</strong>; el eje izquierdo mide velocidad y el derecho calidad — 4 líneas, dos ritmos:",
+    "chartBullets": [
+      "<strong class=\"text-[#4bc0c0]\">Abrir seguro (turquesa · izquierda)</strong>: fondo RPM en bloques de 6 s — velocidad bruta y rachas de apertura.",
+      "<strong class=\"text-[#FF6B6B]\">Bandera (rojo · izquierda)</strong>: fondo RPM también en bloques de 6 s — cuándo estabas marcando.",
+      "<strong class=\"text-[#f59e0b]\">Eficiencia (puntos naranjas + línea · derecha 0-10)</strong>: <strong>trazada en el instante exacto de cada clic</strong>. 10 = óptimo en ese momento; <5 rojo, 5-9 naranja, 10 verde. <strong>Haz clic en cualquier punto para resaltar esa casilla en el tablero</strong> y rastrear la baja puntuación.",
+      "<strong class=\"text-[#a855f7]\">Prob. de mina (triángulos morados, discontinua · derecha 0-10 = prob×10)</strong>: solo para abrir/encadenar, la P(mina) de esa casilla en ese momento. Súponla al naranja — morado alto + naranja bajo = apuesta arriesgada."
+    ],
+    "chartHint": "<strong>Cómo usarlo:</strong> busca los valles naranjas y comprueba si el morado sube a la vez — ese es el movimiento a repasar. Pulsa el punto, el tablero resalta la casilla; la próxima, elige una más verde.",
+    "progressTitle": "De novato a experto",
+    "progressSteps": [
+      "Empieza con el mapa de calor activo y crea la intuición verde=abrir, rojo=marcar;",
+      "Apaga %/fracción, decide solo con el color y comprueba en la repetición si sigues logrando 10;",
+      "Apaga el Modo Aprendizaje y desafía el Difícil 16×30 — RPM estable y naranja ≥9."
+    ],
+    "guides": [
+      { "label": "Cómo jugar al Buscaminas: reglas, trucos y guía", "href": "/es/guide/how-to-play/" },
+      { "label": "Buscaminas de Google: abrirlo, banderas y reglas", "href": "/es/guide/google-minesweeper/" },
+      { "label": "Calculadora de probabilidad del Buscaminas", "href": "/es/tools/probability-calculator/" },
+      { "label": "Buscaminas online — jugar sin descargar", "href": "/es/unblocked/" }
+    ],
+    "guidesTitle": "Guías y herramientas",
+    "keywords": "Palabras clave: Meathill Minesweeper · aprender jugando · probabilidad de mina · trucos buscaminas · tutorial · sin clic derecho · trackpad · Modo Aprendizaje · eficiencia de decisión"
+  },
+  "faq": {
+    "title": "Preguntas frecuentes",
+    "items": [
+      {
+        "q": "¿Qué es Meathill Minesweeper?",
+        "a": "Meathill Minesweeper (minesweeper.meathill.com) es un Buscaminas para aprender jugando: tableros 9×9/16×16/16×30, sin clic derecho, apertura en cadena con doble clic y Modo Aprendizaje: mapa de calor de probabilidad en vivo, puntuación de eficiencia y repetición de la partida."
+      },
+      {
+        "q": "¿Cómo se calcula la probabilidad?",
+        "a": "Restricciones restante = número - banderas en las casillas de frontera, divididas en componentes y enumeradas con exactitud; las casillas aisladas reparten las minas restantes a partes iguales, dando P(mina) 0-1 como capa verde→amarilla→roja al 75%. El solver siempre corre para puntuar."
+      },
+      {
+        "q": "¿Qué significa la eficiencia de 0 a 10?",
+        "a": "Relativa, no absoluta. Abrir: (1-p)/(1-pMin)*10; bandera: p/pMax*10; encadenar siempre 10. Elegir la casilla más segura en ese momento es un 10; elegir un 50% cuando hay un 0% ronda el 5. Cada punto naranja de la repetición es una puntuación — pulsa para resaltar la casilla."
+      },
+      {
+        "q": "¿Cómo se encadena con Apple / trackpad?",
+        "a": "Optimizado: sin izquierda+derecha — doble clic sobre cualquier número abierto con banderas == número para abrir el resto. Clic derecho, pulsación larga y trackpad funcionan, además del móvil."
+      },
+      {
+        "q": "¿Cómo se lee el gráfico de repetición?",
+        "a": "Eje izquierdo = velocidad, derecho = calidad. X es tiempo; dos líneas RPM (turquesa=abrir, rojo=bandera) de fondo en bloques de 6 s; dos nubes de puntos (naranja=eficiencia 0-10, morado=prob. de mina×10) trazadas en el instante exacto del clic. Un naranja sostenido en 9+ es óptimo; pulsa un valle — si el morado sube ahí, fue una apuesta arriesgada sobre esa casilla resaltada."
+      },
+      {
+        "q": "¿Para quién es?",
+        "a": "Principiantes usan el mapa de calor para criar intuición; intermedios solo color; expertos apagan el Modo Aprendizaje para el Difícil. Toda partida es repasable.<br/>Sitio: <a class=\"link\" href=\"https://minesweeper.meathill.com/\">https://minesweeper.meathill.com/</a> · Estudio: <a class=\"link\" href=\"https://meathill.com\">Meathill Studio</a>"
+      }
+    ]
+  },
+  "footer": {
+    "rights": "Aprende jugando."
+  },
+  "meta": {
+    "title": "Meathill Minesweeper - Buscaminas para aprender jugando | Mapa de calor y eficiencia",
+    "description": "Buscaminas moderno para aprender jugando: sin clic derecho, apertura en cadena con doble clic (optimizado para Apple/trackpad), mapa de calor de probabilidad de mina en vivo y puntuación de eficiencia 0-10. Fácil/Medio/Difícil + repetición.",
+    "ogTitle": "Meathill Minesweeper - Buscaminas para aprender jugando",
+    "ogDescription": "El Modo Aprendizaje muestra un mapa de calor 75% verde-amarillo-rojo por casilla y registra RPM y eficiencia — sin clic derecho, doble clic para encadenar (Apple/trackpad optimizado).",
+    "twitterDescription": "Ve la probabilidad de cada casilla, puntúa cada decisión — un Buscaminas del que de verdad aprendes."
+  }
+}

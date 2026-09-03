@@ -26,39 +26,47 @@ function trackEvent(name, params = {}) {
 }
 
 // locale -> URL + SEO sync
-function toggleLocale() {
-  const next = locale.value === 'en' ? 'zh' : 'en'
-  setLocale(next)
-  const target = next === 'en' ? '/en/' : '/'
+const LOCALES = [
+  { code: 'zh', label: '中文', path: '/' },
+  { code: 'en', label: 'English', path: '/en/' },
+  { code: 'es', label: 'Español', path: '/es/' },
+  { code: 'ru', label: 'Русский', path: '/ru/' },
+  { code: 'vi', label: 'Tiếng Việt', path: '/vi/' },
+  { code: 'de', label: 'Deutsch', path: '/de/' },
+]
+const HTML_LANG = { zh: 'zh-CN', en: 'en', es: 'es', ru: 'ru', vi: 'vi', de: 'de' }
+
+function switchLocale(code) {
+  if (code === locale.value) return
+  setLocale(code)
+  const target = LOCALES.find((item) => item.code === code)?.path ?? '/'
   if (location.pathname !== target) {
     history.pushState(null, '', target)
   }
-  updateSeoMeta(next)
-  trackEvent('locale_switch', { to_locale: next })
+  updateSeoMeta(code)
+  trackEvent('locale_switch', { to_locale: code })
 }
 // 学习模式开关埋点
 watch(() => learningStore.showProbability, (v) => trackEvent('learn_mode_toggle', { enabled: v }))
 watch(() => learningStore.showPercent, (v) => trackEvent('learn_show_percent', { enabled: v }))
 watch(() => learningStore.showFraction, (v) => trackEvent('learn_show_fraction', { enabled: v }))
 function updateSeoMeta(loc) {
-  const isEn = loc === 'en'
-  document.title = isEn ? t('meta.title') : '肉山扫雷 - 边玩边学的扫雷 | 概率热力图·决策效率'
+  document.title = t('meta.title')
   const desc = t('meta.description')
   document.querySelector('meta[name="description"]')?.setAttribute('content', desc)
   document.querySelector('meta[property="og:title"]')?.setAttribute('content', t('meta.ogTitle'))
   document.querySelector('meta[property="og:description"]')?.setAttribute('content', t('meta.ogDescription'))
   document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', t('meta.ogTitle'))
   document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', t('meta.twitterDescription'))
-  document.documentElement.lang = isEn ? 'en' : 'zh-CN'
-  // hreflang
-  let linkEn = document.querySelector('link[hreflang="en"]')
-  let linkZh = document.querySelector('link[hreflang="zh"]')
-  if (!linkEn) { linkEn = document.createElement('link'); linkEn.rel='alternate'; linkEn.hreflang='en'; document.head.appendChild(linkEn) }
-  if (!linkZh) { linkZh = document.createElement('link'); linkZh.rel='alternate'; linkZh.hreflang='zh'; document.head.appendChild(linkZh) }
-  linkEn.href = 'https://minesweeper.meathill.com/en/'
-  linkZh.href = 'https://minesweeper.meathill.com/'
+  document.documentElement.lang = HTML_LANG[loc] ?? 'zh-CN'
+  // hreflang 全语言互指
+  for (const { code, path } of LOCALES) {
+    let link = document.querySelector(`link[hreflang="${code}"]`)
+    if (!link) { link = document.createElement('link'); link.rel = 'alternate'; link.hreflang = code; document.head.appendChild(link) }
+    link.href = `https://minesweeper.meathill.com${path}`
+  }
   let linkX = document.querySelector('link[hreflang="x-default"]')
-  if (!linkX) { linkX = document.createElement('link'); linkX.rel='alternate'; linkX.hreflang='x-default'; document.head.appendChild(linkX) }
+  if (!linkX) { linkX = document.createElement('link'); linkX.rel = 'alternate'; linkX.hreflang = 'x-default'; document.head.appendChild(linkX) }
   linkX.href = 'https://minesweeper.meathill.com/'
 }
 // init SEO on mount (in case locale is en on /en/)
@@ -436,7 +444,27 @@ function onBeforeUnload(event) {
         <span class="text-xs opacity-60 whitespace-nowrap shrink-0">v{{version}}</span>
       </div>
       <div class="flex items-center gap-2 flex-wrap justify-end shrink-0">
-        <button class="btn btn-ghost btn-xs" @click="toggleLocale" :title="locale === 'en' ? '切换到中文' : 'Switch to English'">{{ locale === 'en' ? '中文' : 'EN' }}</button>
+        <details class="brand-switcher">
+          <summary>{{ t('seo.guidesTitle') }}</summary>
+          <div class="brand-switcher-panel">
+            <a v-for="(item, idx) in seoGuideLinks" :key="idx" :href="item.href">{{ item.label }}</a>
+          </div>
+        </details>
+        <details class="brand-switcher">
+          <summary>{{ LOCALES.find((item) => item.code === locale)?.label }}</summary>
+          <div class="brand-switcher-panel">
+            <a
+              v-for="item in LOCALES"
+              :key="item.code"
+              :href="item.path"
+              :aria-current="item.code === locale ? 'page' : undefined"
+              @click.prevent="switchLocale(item.code)"
+            >
+              {{ item.label }}
+              <small v-if="item.code === locale">✓</small>
+            </a>
+          </div>
+        </details>
         <BrandSiteSwitcher />
         <div class="dropdown dropdown-end">
           <label tabindex="0" class="btn btn-ghost btn-sm px-2">
@@ -567,7 +595,7 @@ function onBeforeUnload(event) {
     <ul class="list-disc ps-5 text-sm leading-7 opacity-80 mb-6">
       <li v-for="(item, idx) in seoChartBullets" :key="idx" v-html="item"></li>
     </ul>
-    <p class="text-sm leading-7 opacity-80 mb-6">{{ t('seo.chartHint') }}</p>
+    <p class="text-sm leading-7 opacity-80 mb-6" v-html="t('seo.chartHint')"></p>
 
     <h2 class="text-xl font-bold mt-8 mb-3">{{ t('seo.progressTitle') }}</h2>
     <ol class="list-decimal ps-5 text-sm leading-7 opacity-80 mb-6">
