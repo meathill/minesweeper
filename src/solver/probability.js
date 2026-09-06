@@ -82,17 +82,29 @@ const CALL_NODE_BUDGET = 100000
 // 跳过昂贵的完整证明。sat 结论是可靠的（真找到了解），只有 unknown 才走完整检查。
 const QUICK_CHECK_NODES = 200
 
-// O(n) 约束传播：need==0 → 全安全；need==len → 全雷；代入后迭代至不动点。
-// 定死的格子直接从约束中排除（连带 need 扣减），剩下的约束变小、分量分裂，
-// 后续枚举/SAT 只需要处理真正模糊的核。真实对局里这一步能消掉大量平凡格。
-// 脏约束（need 越界，真实对局不可能出现）按既有语义丢弃。
+// O(n) 约束传播 + 子集规则，迭代至不动点：
+//  1. 代入已定格：need==0 → 全安全；need==len → 全雷；
+//  2. 子集规则：vars(A)⊂vars(B) → 派生 (B\A, needB-needA)，1-2-1 这类模式无需搜索直接解。
+// 定死的格子直接从约束中排除，剩下的约束变小、分量分裂，后续搜索只处理真正模糊的核。
+// 脏约束（need 越界，真实对局不可能出现）按既有语义丢弃并标记 contradiction。
+// 规模保护：约束太多时跳过子集派生（O(c²)，留给搜索处理）；轮次封顶防 pathological。
+const PROPAGATE_MAX_ROUNDS = 20
+const SUBSET_MAX_CONSTRAINTS = 500
+function constraintKey(vars, need) {
+  return [...vars].sort((a, b) => a - b).join(',') + ':' + need
+}
 function propagateConstraints(constraints) {
   const decided = new Map() // var -> 0/1（逻辑蕴含，与精确搜索结论一致）
   let contradiction = false // 出现过矛盾约束（真实对局不可能；脏盘面时调用方应标近似）
   let active = constraints.map(c => ({ vars: [...c.vars], need: c.need }))
+  const seen = new Set(active.map(c => constraintKey(c.vars, c.need)))
+  const needByVars = new Map() // 变量集key -> need，用于 O(1) 发现同集异 need（矛盾）
+  for (const c of active) needByVars.set([...c.vars].sort((a, b) => a - b).join(','), c.need)
   let changed = true
-  while (changed) {
+  let rounds = 0
+  while (changed && rounds++ < PROPAGATE_MAX_ROUNDS) {
     changed = false
+    // --- 代入已定格并化简 ---
     const next = []
     for (const c of active) {
       const vars = []
@@ -112,6 +124,39 @@ function propagateConstraints(constraints) {
       }
     }
     active = next
+    // --- 子集规则派生新约束 ---
+    if (active.length > 1 && active.length <= SUBSET_MAX_CONSTRAINTS) {
+      const sets = active.map(c => new Set(c.vars))
+      const m = active.length // 本轮只看快照；新派生的下轮参与，保证 sets 下标有效
+      let derived = 0
+      for (let i = 0; i < m; i++) {
+        const A = active[i]
+        for (let j = 0; j < m; j++) {
+          if (i === j) continue
+          const B = active[j]
+          if (A.vars.length >= B.vars.length) continue
+          const setB = sets[j]
+          let isSubset = true
+          for (const v of A.vars) if (!setB.has(v)) { isSubset = false; break }
+          if (!isSubset) continue
+          const setA = sets[i]
+          const rest = B.vars.filter(v => !setA.has(v))
+          const need = B.need - A.need
+          if (rest.length === 0) { if (need !== 0) contradiction = true; continue }
+          if (need < 0 || need > rest.length) { contradiction = true; continue }
+          const sortedKey = rest.slice().sort((a, b) => a - b).join(',')
+          const prev = needByVars.get(sortedKey)
+          if (prev !== undefined && prev !== need) { contradiction = true; continue }
+          const key = sortedKey + ':' + need
+          if (seen.has(key)) continue
+          seen.add(key)
+          needByVars.set(sortedKey, need)
+          active.push({ vars: rest, need })
+          derived++
+        }
+      }
+      if (derived) changed = true
+    }
   }
   return { decided, constraints: active, contradiction }
 }
@@ -344,7 +389,9 @@ export function createForcedRefiner(grid, row, column, skipSet = new Set()) {
   jobs.sort((a, b) => b.pending.length - a.pending.length) // 大分量先算
   let jobIdx = 0
   let deliveredProp = false
-  const total = fresh.size + jobs.reduce((a, j) => a + j.pending.length, 0)
+  // total 只计需搜索的格子：传播是 O(n) 免费午餐，首步即交付，不占 idle 预算；
+  // 且同步 map 里本来就有这些值，这里的 fresh 只是补给 skipSet 不全的调用方。
+  const total = jobs.reduce((a, j) => a + j.pending.length, 0)
   function pendingCount() {
     let n = 0
     for (let j = jobIdx; j < jobs.length; j++) n += jobs[j].pending.length - jobs[j].cursor

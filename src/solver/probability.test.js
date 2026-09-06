@@ -356,10 +356,11 @@ describe('getBestProbs / scoreForAction（固定差距扣分）', () => {
 })
 
 describe('computeProbabilities - 大分量性能与 forced 回归', () => {
-  it('大分量（>28）中的 1-2-1 必雷/必安全仍被检出，不会被平均抹掉', () => {
+  it('子集规则直接解掉大分量链条：无需搜索，无平均，无近似标记', () => {
     // 2x33：顶行全开，0-2 列为 1-2-1，后面全是 1（松散链），底行 33 个未知连成一个大分量
     // 1-2-1 本体强制 b0=1,b1=0,b2=1；链条被 b2=1 钉住后每隔 3 格又钉一个必雷（b5,b8,…b32）
     // 注意列数必须 ≡0 mod 3，否则链条在右边界无解（整盘矛盾，只能回退近似）
+    // 子集规则下整条链被传播直接解掉：分量归零，isApproximate 为 false（以前靠 forced 检查）
     const col = 33
     const g = makeGrid(2, col, (grid) => {
       for (let c = 0; c < col; c++) { grid[idx(0, c, col)].isOpen = true }
@@ -369,12 +370,13 @@ describe('computeProbabilities - 大分量性能与 forced 回归', () => {
       for (let c = 3; c < col; c++) grid[idx(0, c, col)].count = 1
       for (let c = 0; c < col; c++) grid[idx(1, c, col)].isOpen = false
     })
-    const { map, isApproximate } = computeProbabilities(g, 2, col, 20)
-    assert.equal(isApproximate, true)
+    const { map, isApproximate, decidedSet, frontierSet } = computeProbabilities(g, 2, col, 20)
+    assert.equal(isApproximate, false)
     assert.equal(map.get(idx(1, 0, col)), 1)
     assert.equal(map.get(idx(1, 1, col)), 0)
     assert.equal(map.get(idx(1, 2, col)), 1)
     assert.equal(map.get(idx(1, 5, col)), 1)
+    assert.equal(decidedSet.size, frontierSet.size) // 整条链全定死
   })
 
   it('Hard 中残局（含错旗）限时完成：无界搜索曾卡死十几秒', () => {
@@ -429,32 +431,34 @@ describe('createForcedRefiner - 后台精算', () => {
     })
   }
 
-  it('空 skip 下能找回 1-2-1 的 forced（含链条远端的 b5）', () => {
+  it('传播能解的盘无需搜索：total 为 0，首步即交付全部 forced', () => {
     const col = 33
     const g = largeBoard()
     const r = createForcedRefiner(g, 2, col, new Set())
-    assert.equal(r.total, 33)
-    let merged = new Map()
-    let guard = 0
-    while (guard++ < 100) {
-      const { newly, done } = r.step({ fuelNodes: 80000, wallMs: 1000 })
-      for (const [k, v] of newly) merged.set(k, v)
-      if (done) break
-    }
-    assert.equal(merged.get(idx(1, 0, col)), 1)
-    assert.equal(merged.get(idx(1, 1, col)), 0)
-    assert.equal(merged.get(idx(1, 2, col)), 1)
-    assert.equal(merged.get(idx(1, 5, col)), 1)
+    assert.equal(r.total, 0) // 整条链被传播吃掉，无搜索作业
+    const { newly, done } = r.step({ fuelNodes: 80000, wallMs: 1000 })
+    assert.equal(done, true)
+    assert.equal(newly.get(idx(1, 0, col)), 1)
+    assert.equal(newly.get(idx(1, 1, col)), 0)
+    assert.equal(newly.get(idx(1, 2, col)), 1)
+    assert.equal(newly.get(idx(1, 5, col)), 1)
   })
 
   it('分片推进与一次跑完结果一致（cursor 纪律）', () => {
-    const col = 33
+    // 3x36：中行 1/2 交替。col ≤ 32 会被传播一路吃光；36 时剩 34 格真模糊核
+    // （同步 approx），正好测分片搜索，且耗时毫秒级。
+    const col = 36
+    const loose = makeGrid(3, col, (grid) => {
+      for (let c = 0; c < col; c++) { grid[idx(1, c, col)].isOpen = true; grid[idx(1, c, col)].count = (c % 2 === 0) ? 1 : 2 }
+      for (let c = 0; c < col; c++) { grid[idx(0, c, col)].isOpen = false; grid[idx(2, c, col)].isOpen = false }
+    })
     const drain = (fuel) => {
-      const r = createForcedRefiner(largeBoard(), 2, col, new Set())
+      const r = createForcedRefiner(loose, 3, col, new Set())
+      assert.ok(r.total > 0)
       const merged = new Map()
       let guard = 0
       let lastDone = false
-      while (guard++ < 200) {
+      while (guard++ < 500) {
         const { newly, done } = r.step({ fuelNodes: fuel, wallMs: 60_000 })
         for (const [k, v] of newly) merged.set(k, v)
         lastDone = done
