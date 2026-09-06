@@ -73,7 +73,7 @@
     ],
     "learningTitle": "What is Learn Mode?",
     "heatmapTitle": "Probability heatmap: see the risk",
-    "heatmapDesc": "With Learn Mode on, a solver builds constraints <code>need = number - flags</code> from opened numbers, splits frontier cells into components and enumerates, while isolated cells share the remaining mines evenly. Each cell gets <code>P(mine) 0-1</code>, shown as <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#22c55e\"></span> green (0%) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#eab308\"></span> yellow (50%) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#ef4444\"></span> red (100%) at 75% opacity. Toggle <code>%</code> and <code>fraction</code> independently — color alone trains intuition.",
+    "heatmapDesc": "With Learn Mode on, a solver builds constraints from opened numbers (<code>exactly that many mines among the hidden neighbors</code>; flags are only your own guesses and are ignored), splits frontier cells into components and enumerates, while isolated cells share the remaining mines evenly. Each cell gets <code>P(mine) 0-1</code>, shown as <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#22c55e\"></span> green (0%) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#eab308\"></span> yellow (50%) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#ef4444\"></span> red (100%) at 75% opacity. Toggle <code>%</code> and <code>fraction</code> independently — color alone trains intuition.",
     "efficiencyTitle": "Decision efficiency: how good was that move?",
     "efficiencyDesc": "Fixed-gap scoring: it only measures how far your move was from the <strong>best option at that moment</strong> — <code>score = 10 × (1 − |chosen prob − best prob| ÷ 0.5)</code>. Open is compared against the current lowest mine probability <code>pMin</code>, flag against <code>pMax</code>, unflag in reverse (the safer the cell you unflag, the higher the score). A 5-point gap costs only 1 point, so <strong>easy boards never punish you</strong>; a full 50-point gap drops to 0. Chording is always <strong>10</strong>. Scores share the solver, so closing the heatmap still records for the post-game chart.",
     "chartTitle": "How to read the replay chart",
@@ -109,7 +109,7 @@
       },
       {
         "q": "How is the probability computed?",
-        "a": "Constraints need = number - flags on frontier cells, split into components and enumerated exactly, isolated cells share remaining mines evenly, yielding P(mine) 0-1 as green→yellow→red 75% overlay. Solver always runs for scoring."
+        "a": "Constraints come only from opened numbers (each says: exactly N mines among my hidden neighbors — flags are ignored, since they may be wrong) on frontier cells, split into components and enumerated exactly, isolated cells share remaining mines evenly, yielding P(mine) 0-1 as green→yellow→red 75% overlay. Solver always runs for scoring."
       },
       {
         "q": "What does 0-10 efficiency mean?",

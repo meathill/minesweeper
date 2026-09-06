@@ -73,7 +73,7 @@
     ],
     "learningTitle": "¿Qué es el Modo Aprendizaje?",
     "heatmapTitle": "Mapa de calor de probabilidad: ver el riesgo",
-    "heatmapDesc": "Con el Modo Aprendizaje activo, el solver construye restricciones <code>restante = número - banderas</code> a partir de los números abiertos, divide las casillas de frontera en componentes y las enumera, mientras las casillas aisladas reparten las minas restantes a partes iguales. Cada casilla recibe <code>P(mina) 0-1</code>, mostrado como <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#22c55e\"></span> verde (0%) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#eab308\"></span> amarillo (50%) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#ef4444\"></span> rojo (100%) al 75% de opacidad. Puedes activar o desactivar <code>%</code> y <code>fracción</code> por separado — el color solo ya entrena la intuición.",
+    "heatmapDesc": "Con el Modo Aprendizaje activo, el solver construye restricciones a partir de los números abiertos (<code>exactamente esa cantidad de minas entre las vecinas cerradas</code>; las banderas son suposiciones tuyas y se ignoran), divide las casillas de frontera en componentes y las enumera, mientras las casillas aisladas reparten las minas restantes a partes iguales. Cada casilla recibe <code>P(mina) 0-1</code>, mostrado como <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#22c55e\"></span> verde (0%) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#eab308\"></span> amarillo (50%) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#ef4444\"></span> rojo (100%) al 75% de opacidad. Puedes activar o desactivar <code>%</code> y <code>fracción</code> por separado — el color solo ya entrena la intuición.",
     "efficiencyTitle": "Eficiencia de decisión: ¿cuánto valió esa jugada?",
     "efficiencyDesc": "Puntuación por diferencia fija: solo mide cuánto te alejaste de la <strong>mejor opción de ese momento</strong> — <code>puntuación = 10 × (1 − |prob. elegida − prob. óptima| ÷ 0,5)</code>. Abrir se compara con la probabilidad mínima <code>pMin</code>, bandera con <code>pMax</code>, quitar bandera al revés (cuanto más segura la casilla, más puntos). Una diferencia de 5 puntos solo cuesta 1 punto: <strong>las partidas fáciles no se penalizan</strong>; con 50 puntos de diferencia llega a 0. Doble clic para abrir en grupo cuenta como <strong>10</strong>.",
     "chartTitle": "Cómo leer el gráfico de repetición",
@@ -121,7 +121,7 @@
       },
       {
         "q": "¿Cómo se calcula la probabilidad?",
-        "a": "Restricciones restante = número - banderas en las casillas de frontera, divididas en componentes y enumeradas con exactitud; las casillas aisladas reparten las minas restantes a partes iguales, dando P(mina) 0-1 como capa verde→amarilla→roja al 75%. El solver siempre corre para puntuar."
+        "a": "Las restricciones provienen solo de los números abiertos (cada número exige exactamente N minas entre sus vecinas cerradas; las banderas se ignoran porque pueden estar mal) en las casillas de frontera, divididas en componentes y enumeradas con exactitud; las casillas aisladas reparten las minas restantes a partes iguales, dando P(mina) 0-1 como capa verde→amarilla→roja al 75%. El solver siempre corre para puntuar."
       },
       {
         "q": "¿Qué significa la eficiencia de 0 a 10?",

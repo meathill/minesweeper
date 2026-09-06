@@ -73,7 +73,7 @@
     ],
     "learningTitle": "什么是学习模式",
     "heatmapTitle": "概率热力图：看见每一格的风险",
-    "heatmapDesc": "开启学习模式后，求解器会在后台基于<strong>已翻开数字 + 已插旗</strong>构建约束（<code>周围雷数 - 已标旗 = 剩余雷数</code>），对“前沿格”（与数字相邻的未开格）做分量拆分与回溯枚举，孤立格按 <code>剩余雷数/孤立格数</code> 均摊。每格得到 <code>P(是雷) 0-1</code>，用 <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#22c55e\"></span> 绿（0%）→ <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#eab308\"></span> 黄（50%）→ <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#ef4444\"></span> 红（100%）75% 透明度叠在未开格上。 header 的复选框可独立开关 <code>%</code> 与 <code>分数</code> 文本，只看颜色也能训练直觉。",
+    "heatmapDesc": "开启学习模式后，求解器会在后台基于<strong>已翻开的数字</strong>构建约束（<code>该数字周围恰好有这么多个雷</code>；旗只是你的猜测、可能插错，因此不参与概率计算），对“前沿格”（与数字相邻的未开格）做分量拆分与回溯枚举，孤立格按 <code>剩余雷数/孤立格数</code> 均摊。每格得到 <code>P(是雷) 0-1</code>，用 <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#22c55e\"></span> 绿（0%）→ <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#eab308\"></span> 黄（50%）→ <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#ef4444\"></span> 红（100%）75% 透明度叠在未开格上。 header 的复选框可独立开关 <code>%</code> 与 <code>分数</code> 文本，只看颜色也能训练直觉。",
     "efficiencyTitle": "决策效率：你的每一步打几分",
     "efficiencyDesc": "固定差距扣分：只看你这一步与<strong>当时最优选项</strong>差了多大把握——<code>得分 = 10 × (1 − |所选概率 − 最优概率| ÷ 0.5)</code>。翻开看与当时 <code>pMin（全场最低雷概率）</code>的差距，插旗看与 <code>pMax</code> 的差距，拔旗方向相反（拔得越安全分越高）。差 5 个百分点只扣 1 分，所以<strong>局面越顺利、选项越接近，越不会误伤</strong>；差距满 50 个百分点才扣到 0。双击批量打开视为“已判定安全”，固定 <strong>10 分</strong>。分数与热力图共用同一求解器，关闭学习模式也会在后台计分，不影响复盘。",
     "chartTitle": "如何读懂复盘图表",
@@ -109,7 +109,7 @@
       },
       {
         "q": "学习模式的概率是怎么算的？",
-        "a": "基于已翻开数字与已插旗构建约束 need = 数字 - 已标旗，对前沿格分量拆分回溯枚举，孤立格按剩余雷数均摊，得到每格 P(是雷) 0-1，用绿→黄→红 75% 叠加。求解器后台始终运行，即使关闭显隐也会用于决策评分。"
+        "a": "只基于已翻开的数字构建约束（每个数字周围恰好有这么多个雷；旗可能是错的，完全不参与计算），对前沿格分量拆分回溯枚举，孤立格按剩余雷数均摊，得到每格 P(是雷) 0-1，用绿→黄→红 75% 叠加。求解器后台始终运行，即使关闭显隐也会用于决策评分。"
       },
       {
         "q": "决策效率 0-10 分是什么意思？",

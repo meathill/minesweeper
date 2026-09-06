@@ -73,7 +73,7 @@
     ],
     "learningTitle": "Was ist der Lernmodus?",
     "heatmapTitle": "Wahrscheinlichkeits-Heatmap: das Risiko sehen",
-    "heatmapDesc": "Mit aktivem Lernmodus baut der Solver aus offenen Zahlen Bedingungen <code>rest = Zahl - Flaggen</code>, teilt Randfelder in Komponenten und zählt sie durch, während isolierte Felder die restlichen Minen gleichmäßig teilen. Jedes Feld erhält <code>P(Mine) 0-1</code>: <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#22c55e\"></span> grün (0 %) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#eab308\"></span> gelb (50 %) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#ef4444\"></span> rot (100 %) mit 75 % Deckung. <code>%</code> und <code>Bruch</code> lassen sich einzeln abschalten — Farbe allein trainiert die Intuition.",
+    "heatmapDesc": "Mit aktivem Lernmodus baut der Solver aus offenen Zahlen Bedingungen (<code>genau so viele Minen unter den verdeckten Nachbarn</code>; Flaggen sind nur deine Vermutungen und zählen nicht), teilt Randfelder in Komponenten und zählt sie durch, während isolierte Felder die restlichen Minen gleichmäßig teilen. Jedes Feld erhält <code>P(Mine) 0-1</code>: <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#22c55e\"></span> grün (0 %) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#eab308\"></span> gelb (50 %) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#ef4444\"></span> rot (100 %) mit 75 % Deckung. <code>%</code> und <code>Bruch</code> lassen sich einzeln abschalten — Farbe allein trainiert die Intuition.",
     "efficiencyTitle": "Entscheidungseffizienz: Wie gut war der Zug?",
     "efficiencyDesc": "Feste Abzugsregel: Es zählt nur der Abstand zum <strong>besten Zug dieses Moments</strong> — <code>Punkte = 10 × (1 − |gewählte − optimale Wahrscheinlichkeit| ÷ 0,5)</code>. Öffnen wird mit dem Minimum <code>pMin</code> verglichen, Flaggen mit <code>pMax</code>, Entfernen umgekehrt (je sicherer das Feld, desto mehr Punkte). 5 Punkte Abstand kosten nur 1 Punkt: <strong>einfache Partien werden nicht bestraft</strong>; erst bei 50 Punkten Abstand gibt es 0. Doppelklick-Sammelöffnung zählt immer <strong>10</strong>.",
     "chartTitle": "Das Wiederholungsdiagramm lesen",
@@ -121,7 +121,7 @@
       },
       {
         "q": "Wie wird die Wahrscheinlichkeit berechnet?",
-        "a": "Bedingungen „rest = Zahl - Flaggen“ auf den Randfeldern werden in Komponenten geteilt und exakt durchgezählt; isolierte Felder teilen sich die restlichen Minen gleichmäßig. Ergebnis: P(Mine) 0-1 als grün→gelb→rot-Überlagerung mit 75 %. Der Solver läuft immer, um Züge zu bewerten."
+        "a": "Bedingungen kommen nur aus geöffneten Zahlen (genau N Minen unter den verdeckten Nachbarn; Flaggen werden ignoriert, da sie falsch sein können) auf den Randfeldern werden in Komponenten geteilt und exakt durchgezählt; isolierte Felder teilen sich die restlichen Minen gleichmäßig. Ergebnis: P(Mine) 0-1 als grün→gelb→rot-Überlagerung mit 75 %. Der Solver läuft immer, um Züge zu bewerten."
       },
       {
         "q": "Was bedeutet Effizienz 0-10?",

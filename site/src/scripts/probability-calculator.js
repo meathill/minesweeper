@@ -71,23 +71,20 @@ if (root) {
     grid.forEach((_, i) => renderCell(i));
     const { row, column, mines } = readConfig();
     const flagged = grid.filter((c) => c.isFlag).length;
-    const remaining = mines - flagged;
     flagsEl.textContent = String(flagged);
-    remainingEl.textContent = String(remaining);
-    warnEl.hidden = remaining >= 0;
+    // 旗只是玩家标记、可能插错，不参与概率计算，剩余雷数仅作记账显示
+    remainingEl.textContent = String(mines - flagged);
+    warnEl.hidden = mines - flagged >= 0;
 
-    let result = null;
-    if (remaining >= 0) {
-      result = computeProbabilities(grid, row, column, mines);
-    }
-    approxEl.hidden = !(result && result.isApproximate);
+    const result = computeProbabilities(grid, row, column, mines);
+    approxEl.hidden = !result.isApproximate;
 
     grid.forEach((cell, i) => {
-      if (cell.isOpen || cell.isFlag || !result) return;
+      if (cell.isOpen || !result.map.has(i)) return;
       const p = result.map.get(i);
-      if (p == null) return;
       const el = cellEls[i];
-      el.textContent = String(Math.round(p * 100));
+      // 旗格也显示概率：直接对照“我以为这是雷，求解器认为有多少把握”
+      el.textContent = (cell.isFlag ? '🚩' : '') + String(Math.round(p * 100));
       el.classList.add(PROB_CLASS(p));
     });
   }

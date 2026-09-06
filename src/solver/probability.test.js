@@ -34,29 +34,40 @@ describe('computeProbabilities - deterministic', () => {
       grid[4].count = 0 // 中心 0，周围已开两个未知需为 0
       // 其余也为 0
     })
-    // 此时中心 0 不产生约束，frontier 为空 -> isolated 均摊
-    // 构造更直接：中心 1 但已有一个 flag 满足
-    const g2 = makeGrid(3, 3, (grid) => {
+    // 中心 0 不产生约束，frontier 为空 -> isolated 均摊（雷数 0）
+    const g0 = makeGrid(3, 3, (grid) => {
+      for (let i = 0; i < 9; i++) grid[i].isOpen = true
+      grid[0].isOpen = false
+    })
+    const { map } = computeProbabilities(g, 3, 3, 0)
+    assert.equal(map.get(0), 0)
+    const { map: map0 } = computeProbabilities(g0, 3, 3, 0)
+    assert.equal(map0.get(0), 0)
+  })
+
+  it('旗不被信任：数字 1 旁的旗格与未开格各 50%（错旗场景回归）', () => {
+    // 旧算法把旗当确定的雷：need=1-1=0 => 未开格被判 0% 安全，
+    // 玩家若据此点开真雷格就炸。旗可能插错，概率必须完全无视旗。
+    const g = makeGrid(3, 3, (grid) => {
       for (let i = 0; i < 9; i++) grid[i].isOpen = true
       grid[0].isOpen = false
       grid[1].isFlag = true; grid[1].isOpen = false
       grid[4].isOpen = true; grid[4].count = 1
-      grid[4].count = 1
     })
-    const { map } = computeProbabilities(g2, 3, 3, 1)
-    // 未知 0 需要为 0
-    assert.equal(map.get(0), 0)
+    const { map } = computeProbabilities(g, 3, 3, 1)
+    assert.ok(approxEqual(map.get(0), 0.5))
+    assert.ok(approxEqual(map.get(1), 0.5))
   })
 
-  it('已标记满足约束 => 剩余未知 0%', () => {
-    const g = makeGrid(2, 2, (grid, row, col) => {
-      grid[idx(0, 0, col)].isOpen = true; grid[idx(0, 0, col)].count = 1
-      grid[idx(0, 1, col)].isFlag = true
-      grid[idx(1, 0, col)].isOpen = false // 未知
-      grid[idx(1, 1, col)].isOpen = true; grid[idx(1, 1, col)].count = 0
+  it('旗格本身也参与推理：唯一未开格（带旗）由数字判定 100%', () => {
+    const g = makeGrid(3, 3, (grid) => {
+      for (let i = 0; i < 9; i++) grid[i].isOpen = true
+      grid[0].isOpen = false; grid[0].isFlag = true
+      grid[4].isOpen = true; grid[4].count = 1
+      for (let i = 0; i < 9; i++) if (i !== 4) grid[i].count = 0
     })
-    const { map } = computeProbabilities(g, 2, 2, 1)
-    assert.equal(map.get(idx(1, 0, 2)), 0)
+    const { map } = computeProbabilities(g, 3, 3, 1)
+    assert.equal(map.get(0), 1)
   })
 })
 
@@ -161,24 +172,27 @@ describe('computeProbabilities - 多分量与孤立格', () => {
     for (let i = 0; i < 9; i++) assert.ok(approxEqual(map.get(i), 2 / 9))
   })
 
-  it('已全部标满 => 空 map', () => {
+  it('全部格子插旗仍参与推理（旗不影响均摊）', () => {
     const g = makeGrid(2, 2, (grid) => {
       for (let i = 0; i < 4; i++) { grid[i].isFlag = true; grid[i].isOpen = false }
     })
     const { map } = computeProbabilities(g, 2, 2, 4)
-    assert.equal(map.size, 0)
+    // 无任何数字约束：4 个未开格（即使全插了旗）均摊 4 雷
+    assert.equal(map.size, 4)
+    for (let i = 0; i < 4; i++) assert.ok(approxEqual(map.get(i), 1))
   })
 })
 
 describe('computeProbabilities - 边界与近似', () => {
-  it('flag 超过 bombNumber 时 remainingMines 钳到 0', () => {
+  it('旗数超过雷数不影响概率（旗不参与计算）', () => {
     const g = makeGrid(3, 3, (grid) => {
       for (let i = 0; i < 9; i++) grid[i].isFlag = true
       grid[0].isFlag = true; grid[1].isFlag = true
     })
     const { map } = computeProbabilities(g, 3, 3, 1)
-    // flagged 9 > bomb 1 => remaining 0, isolated 空，所以 map 空或 0
-    assert.equal(map.size, 0)
+    // 无数字约束：9 个未开格均摊 1 雷，插再多旗也不改变结果
+    assert.equal(map.size, 9)
+    for (let i = 0; i < 9; i++) assert.ok(approxEqual(map.get(i), 1 / 9))
   })
 
   it('超大分量 >25 触发近似', () => {

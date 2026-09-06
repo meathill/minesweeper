@@ -1,6 +1,7 @@
 // 扫雷概率求解器：基于约束枚举 + 分量拆分 + 孤立格均摊
 // 输入的 grid 为 App.vue 的 grid.value 数组，元素含 {isOpen,isFlag,count}
-// 不依赖 isBomb（玩家视角），remainingMines 由 bombNumber - flagged 推导
+// 不依赖 isBomb（玩家视角）。旗只是玩家的猜测、可能插错，因此不参与概率计算：
+// 约束只看已打开的数字，剩余雷数恒为 bombNumber，所有未开格（含插旗/问号）都参与推理。
 
 function getNeighbors(index, row, column) {
   const x = index % column
@@ -22,14 +23,12 @@ function buildConstraints(grid, row, column) {
     if (!cell.isOpen || cell.count === 0) continue
     const neighbors = getNeighbors(idx, row, column)
     const unknown = []
-    let flagged = 0
     for (const n of neighbors) {
-      const c = grid[n]
-      if (c.isFlag) flagged++
-      else if (!c.isOpen) unknown.push(n)
+      // 旗可能是错的：未开格（无论有无旗/问号）都是未知变量
+      if (!grid[n].isOpen) unknown.push(n)
     }
     if (unknown.length === 0) continue
-    const need = cell.count - flagged
+    const need = cell.count
     if (need < 0 || need > unknown.length) continue // 脏数据，跳过
     constraints.push({ vars: unknown, need })
   }
@@ -241,8 +240,8 @@ function solveLargeComponent(vars, constraints) {
  * @returns {{map: Map<number, number>, isApproximate: boolean}}
  */
 export function computeProbabilities(grid, row, column, bombNumber) {
-  const flaggedTotal = grid.filter(c => c.isFlag).length
-  const remainingMines = Math.max(0, bombNumber - flaggedTotal)
+  // 旗不参与计算：剩余雷数恒为总雷数，未开格（含插旗/问号）全部视为未知
+  const remainingMines = bombNumber
   const constraints = buildConstraints(grid, row, column)
 
   const frontierSet = new Set()
@@ -250,8 +249,7 @@ export function computeProbabilities(grid, row, column, bombNumber) {
 
   const isolated = []
   for (let i = 0; i < grid.length; i++) {
-    const c = grid[i]
-    if (!c.isOpen && !c.isFlag && !frontierSet.has(i)) isolated.push(i)
+    if (!grid[i].isOpen && !frontierSet.has(i)) isolated.push(i)
   }
 
   const result = new Map()

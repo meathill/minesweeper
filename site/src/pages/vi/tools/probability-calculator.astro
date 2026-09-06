@@ -20,9 +20,9 @@ const faq: FaqItem[] = [
       'Ba cấu hình sẵn (Dễ 9×9·10, Vừa 16×16·40, Khó 16×30·99) cùng số hàng, cột và mìn tùy chỉnh. Thành phần trên 28 ô chuyển sang xấp xỉ để giữ tốc độ.',
   },
   {
-    question: 'Vì sao có ô không hiện phần trăm?',
+    question: 'Cờ có ảnh hưởng đến phép tính không?',
     answer:
-      'Thường là thế bàn không hợp lệ — ví dụ số cờ nhiều hơn tổng số mìn. Thanh trạng thái sẽ hiện cảnh báo đỏ; sửa lại là tính toán tiếp tục.',
+      'Không. Cờ chỉ là dấu đánh dấu của bạn và có thể sai, nên bộ giải bỏ qua hoàn toàn: mỗi ô chưa mở — có cờ hay không — đều có xác suất tính thuần từ các số đã mở và tổng số mìn. Cờ sai không bao giờ làm hỏng kết quả, và ô có cờ hiện xác suất ngay bên cạnh cờ.',
   },
 ];
 ---
@@ -35,7 +35,7 @@ const faq: FaqItem[] = [
   path="/tools/probability-calculator/"
   keywords="tính xác suất dò mìn, máy tính dò mìn, xác suất có mìn, công cụ dò mìn online"
   updated="2026-09-03"
-  lede="Tái hiện thế bàn bạn đang thấy — bấm để đánh dấu số và mìn đã biết — và máy tính sẽ tính xác suất có mìn chính xác của từng ô chưa mở, bằng chính bộ giải của Chế độ học trong Meathill Minesweeper."
+  lede="Tái hiện thế bàn bạn đang thấy — bấm để đánh dấu số và cắm cờ — và máy tính sẽ tính xác suất có mìn chính xác của từng ô chưa mở, bằng chính bộ giải của Chế độ học trong Meathill Minesweeper. Cờ chỉ được coi là phán đoán của bạn, không phải sự thật."
   faq={faq}
 >
   <Calculator lang="vi" />
@@ -43,14 +43,14 @@ const faq: FaqItem[] = [
   <h2>Dùng máy tính thế nào?</h2>
   <ol>
     <li>Chọn độ khó sẵn hoặc tự đặt số hàng, cột và tổng số mìn.</li>
-    <li><strong>Bấm vào ô để đổi trạng thái</strong>: ẩn → 🚩 (mìn đã biết) → số 1–8; chuột phải đi ngược lại, đến khi bàn chơi khớp những gì bạn thấy.</li>
-    <li>Mỗi ô chưa mở hiện xác suất có mìn trực tiếp (%), xanh thấp → đỏ cao; «mìn còn lại» đã trừ số cờ của bạn.</li>
+    <li><strong>Bấm vào ô để đổi trạng thái</strong>: ẩn → 🚩 (cờ của bạn) → số 1–8; chuột phải đi ngược lại, đến khi bàn chơi khớp những gì bạn thấy.</li>
+    <li>Mỗi ô chưa mở — có cờ hay không — đều hiện xác suất có mìn trực tiếp (%), xanh thấp → đỏ cao. Cờ không bao giờ thay đổi xác suất; chúng chỉ đánh dấu nơi bạn <em>nghĩ</em> có mìn.</li>
     <li>Bí rồi? Chọn ô có phần trăm thấp nhất — đó là nước có giá trị kỳ vọng tốt nhất.</li>
   </ol>
 
   <h2>Xác suất được tính thế nào?</h2>
   <p>
-    Mỗi số đã mở là một ràng buộc: «giữa các ô kề chưa mở có đúng (số − số cờ) quả mìn». Bộ giải tách các ràng buộc liên quan
+    Mỗi số đã mở là một ràng buộc: «giữa các ô kề chưa mở có đúng <code>số</code> quả mìn». Cờ bị bỏ qua — chúng có thể sai, tin vào chúng sẽ làm hỏng kết quả. Bộ giải tách các ràng buộc liên quan
     thành những thành phần độc lập rồi <strong>liệt kê chính xác từng thành phần có cắt tỉa</strong>, đếm xem mỗi ô là mìn bao
     nhiêu lần trong mọi cách rải hợp lệ; các ô tách biệt chia phần mìn còn lại đều nhau. Thành phần trên 28 ô chuyển sang dò
     chắc chắn cộng xấp xỉ, có ghi chú trên trang.
