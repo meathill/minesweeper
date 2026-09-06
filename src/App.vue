@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, defineAsyncComponent, watch } from 'vue';
+import { computed, onMounted, defineAsyncComponent, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { version } from '../package.json';
 import GridItem from './grid-item.vue';
@@ -23,8 +23,6 @@ const operationStore = useOperationRecordsStore();
 const learningStore = useLearningStore();
 const game = useGameStore();
 const prob = useProbabilityStore();
-// 子组件实例数组（模板 ref）：操作 UI 的 action 由 App 持有并传入 store
-const gridItems = ref();
 
 function switchLocale(code) {
   if (code === locale.value) return;
@@ -58,7 +56,7 @@ const seoGuideLinks = computed(() => tm('seo.guides'));
 const faqItems = computed(() => tm('faq.items'));
 
 onMounted(() => {
-  game.doStart(null, gridItems);
+  game.doStart(null);
   updateSeoMeta(locale.value, t);
 });
 </script>
@@ -112,7 +110,7 @@ onMounted(() => {
                   v-model="game.level"
                   :value="key"
                   :disabled="key === 'Custom'"
-                  @change="game.onLevelChange(key, gridItems)"
+                  @change="game.onLevelChange(key)"
                 />
                 <span>
                 <i class="bi mr-2" :class="game.level === key ? 'bi-check-lg' : 'bi-blank'" /> {{ t(`header.levels.${key}`) }}
@@ -132,7 +130,7 @@ onMounted(() => {
           <button
             type="button"
             class="btn btn-sm btn-outline bg-white text-slate-800 border-slate-300 start-button"
-            @click="(e) => game.doStart(e, gridItems)"
+            @click="(e) => game.doStart(e)"
           >
             <template v-if="game.isSuccess">😊</template>
             <template v-else-if="game.isFailed">😭</template>
@@ -174,7 +172,7 @@ onMounted(() => {
   <div v-if="game.grid" id="stage" :class="{'pointer-events-none': !game.isStart}" :style="game.gridStyle" @contextmenu.stop.prevent>
     <grid-item
       v-for="(item, index) in game.grid"
-      ref="gridItems"
+      :ref="(el) => game.setGridItemRef(el, index)"
       :key="index"
       :count="item.count"
       :is-bomb="item.isBomb"
@@ -189,15 +187,15 @@ onMounted(() => {
       :columns="game.column"
       :is-selected="operationStore.selectedIndex === index"
       @mark-state="game.onMarkState(index, $event)"
-      @open="game.onOpen(item, index, $event, gridItems)"
-      @open-all="game.onOpenAll(item, index, gridItems)"
+      @open="game.onOpen(item, index, $event)"
+      @open-all="game.onOpenAll(item, index)"
     />
   </div>
   <div v-if="operationStore.isShowChart" class="flex items-center justify-center my-4">
     <Suspense>
       <template #default>
         <operation-chart
-          @replay="(snap) => game.restoreToSnapshot(snap, gridItems)"
+          @replay="game.restoreToSnapshot"
           @download="() => game.handleDownloadReplay(version)"
         />
       </template>

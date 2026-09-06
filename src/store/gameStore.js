@@ -11,7 +11,8 @@ import { useProbabilityStore } from './probabilityStore.js';
 
 // 棋盘状态 + 对局流程：布雷、点开/插旗/双击、计时、快照、结算。
 // 概率读数经 useProbabilityStore 懒获取（action 内调用，避免与 probabilityStore 循环初始化）。
-// gridItems 是子组件实例数组（模板 ref），由 App.vue 持有并作为参数传入需要操作 UI 的 action。
+// 子组件实例由模板函数 ref 按下标注册进 gridItemRefs，不经过模板传参：
+// 模板表达式会自动解包 ref，把 ref 对象当参数传会拿到裸数组（曾导致级联展开全灭的回归）。
 export const REVEAL_STEP_MS = 25; // 批量展开时每层涟漪的延迟
 
 let interval = null;
@@ -51,6 +52,14 @@ export const useGameStore = defineStore('game', () => {
   });
   const grid = ref(null);
 
+  // grid-item 组件实例注册表：模板用 :ref="(el) => setGridItemRef(el, index)" 收集，
+  // action 直接读 gridItemRefs.value。函数 ref 在卸载时以 null 调用，守卫保留旧引用
+  // （开局/切换难度时 doStart 仍需操作上一局的实例做 reset，与重构前闭包语义一致）。
+  const gridItemRefs = ref([]);
+  function setGridItemRef(el, index) {
+    if (el) gridItemRefs.value[index] = el;
+  }
+
   function getRowCol(index) {
     return { row: Math.floor(index / column.value), col: index % column.value };
   }
@@ -74,11 +83,11 @@ export const useGameStore = defineStore('game', () => {
     }, 0);
   }
   // 回放：棋盘完整回到快照时刻（含旗数/开格数/计时器显示）
-  function restoreToSnapshot(snap, gridItems) {
+  function restoreToSnapshot(snap) {
     if (!snap || !grid.value) return;
-    applySnapshot(grid.value, gridItems?.value, snap);
+    applySnapshot(grid.value, gridItemRefs.value, snap);
     if (snap.result === 'lose') {
-      for (const gridItem of gridItems.value) {
+      for (const gridItem of gridItemRefs.value) {
         gridItem.uncover();
       }
     }
@@ -112,7 +121,7 @@ export const useGameStore = defineStore('game', () => {
     });
   }
 
-  function doStart(event, gridItems) {
+  function doStart(event) {
     clearInterval(interval);
     isRealStart.value = false;
     isFailed.value = isSuccess.value = null;
@@ -139,7 +148,7 @@ export const useGameStore = defineStore('game', () => {
     });
     isStart.value = true;
     if (event) {
-      for (const gridItem of gridItems.value) {
+      for (const gridItem of gridItemRefs.value) {
         gridItem.reset();
       }
     }
@@ -221,7 +230,7 @@ export const useGameStore = defineStore('game', () => {
     addEventListener('beforeunload', onBeforeUnload);
   }
 
-  function doStop(success = false, failIndex = null, gridItems) {
+  function doStop(success = false, failIndex = null) {
     clearInterval(interval);
     isFailed.value = !success;
     isSuccess.value = success;
@@ -244,7 +253,7 @@ export const useGameStore = defineStore('game', () => {
           cell.isQuestion = false;
         }
       }
-      for (const gridItem of gridItems.value) {
+      for (const gridItem of gridItemRefs.value) {
         gridItem.markAsFlag();
       }
       trackEvent('game_win', {
@@ -256,7 +265,7 @@ export const useGameStore = defineStore('game', () => {
       if (failIndex != null && grid.value[failIndex]) {
         grid.value[failIndex].isOpen = true; // 踩雷格数据层同步为已开，与 UI 一致
       }
-      for (const gridItem of gridItems.value) {
+      for (const gridItem of gridItemRefs.value) {
         gridItem.uncover();
       }
       trackEvent('game_lose', {
@@ -329,14 +338,14 @@ export const useGameStore = defineStore('game', () => {
     );
   }
 
-  async function onOpen(item, index, delayMs = 0, gridItems) {
+  async function onOpen(item, index, delayMs = 0) {
     const prob = useProbabilityStore();
     if (!isRealStart.value) {
       doRealStart(index);
       // 开始记录每分钟操作
       operationStore.onUpdateOperateRecords('');
       await nextTick();
-      onOpen(grid.value[index], index, 0, gridItems);
+      onOpen(grid.value[index], index);
       return;
     }
 
@@ -396,7 +405,7 @@ export const useGameStore = defineStore('game', () => {
 
     if (item.isBomb) {
       prob.clearHintIfOpened(index);
-      return doStop(false, index, gridItems);
+      return doStop(false, index);
     }
     // 同步到 grid 供概率计算使用
     if (grid.value[index] && !grid.value[index].isOpen)
@@ -404,16 +413,16 @@ export const useGameStore = defineStore('game', () => {
     prob.clearHintIfOpened(index);
     opened.value += 1;
     if (opened.value >= total.value - bombNumber.value) {
-      return doStop(true, null, gridItems);
+      return doStop(true, null);
     }
     // 如果点开的节点为 0，则点开附近的节点
-    openGridItem(item, index, delayMs, gridItems);
+    openGridItem(item, index, delayMs);
     if (isUserAction) scheduleSnapshot('open', index);
     // 玩家手势结束、棋盘已稳定：旧精算作废，为新盘面重排（级联展开是同步的，到这里已全部完成）
     if (isUserAction) prob.bumpBoardVersion();
   }
 
-  function onOpenAll(item, index, gridItems) {
+  function onOpenAll(item, index) {
     const prob = useProbabilityStore();
     if (item.count === 0) {
       return;
@@ -427,7 +436,7 @@ export const useGameStore = defineStore('game', () => {
       for (let j = Math.max(0, x - 1); j < Math.min(x + 2, column.value); j++) {
         if (i === y && j === x) continue;
         const idx = i * column.value + j;
-        const gridItem = gridItems.value[idx];
+        const gridItem = gridItemRefs.value[idx];
         if (gridItem.isFlag) {
           count++;
         } else {
@@ -470,16 +479,16 @@ export const useGameStore = defineStore('game', () => {
     }
   }
 
-  function onLevelChange(newLevel, gridItems) {
+  function onLevelChange(newLevel) {
     localStorage.setItem('level', newLevel);
     level.value = newLevel;
     row.value = Levels[newLevel].row;
     column.value = Levels[newLevel].column;
-    doStart(true, gridItems);
+    doStart(true);
     trackEvent('level_change', { new_level: newLevel, level: newLevel });
   }
 
-  function openGridItem(item, index, delayMs = 0, gridItems) {
+  function openGridItem(item, index, delayMs = 0) {
     if (item.count) {
       return;
     }
@@ -490,7 +499,7 @@ export const useGameStore = defineStore('game', () => {
         if (i === y && j === x) {
           continue;
         }
-        const gridItem = gridItems.value[i * column.value + j];
+        const gridItem = gridItemRefs.value[i * column.value + j];
         gridItem.open(false, delayMs + REVEAL_STEP_MS);
       }
     }
@@ -516,6 +525,8 @@ export const useGameStore = defineStore('game', () => {
     bombNumber,
     gridStyle,
     grid,
+    gridItemRefs,
+    setGridItemRef,
     getRowCol,
     scheduleSnapshot,
     restoreToSnapshot,

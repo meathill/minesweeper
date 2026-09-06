@@ -29,6 +29,7 @@
 
 ## 框架坑
 
+- **ref 不要穿过模板边界**：模板表达式会自动解包 ref，把 ref 对象当参数传给函数拿到的是裸值。子组件实例注册表放 store 里、用 `:ref="(el) => setGridItemRef(el, index)"` 函数 ref 收集（2026-09 曾因此导致空白级联全灭的回归）。
 - `operation-chart.vue` 用 `defineAsyncComponent` 懒加载，避免首屏拉起 chart.js。
 - GA 的 `gtag` 调用全部经 `trackEvent` 包一层 try/catch，无痕模式/屏蔽插件下不抛错。
 - `index.html` 内联的 `aria-hidden` MutationObserver 是为了修复 Google Vignette 误标 body，具体见行内注释，勿删。
