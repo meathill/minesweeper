@@ -340,14 +340,22 @@ export function getBestProbs(map) {
 }
 
 // 便捷：计算单次操作的效率分（0-1）
-export function scoreForAction(prob, pBest, action) {
-  if (pBest == null || prob == null) return null
+// 固定差距扣分：只看所选格与当时最优选项的绝对概率差，差满 SCORE_GAP_FULL 扣到 0。
+// 与全盘分布解耦——顺利局（全盘概率都低）不再被系统性打低分。
+export const SCORE_GAP_FULL = 0.5
+
+export function scoreForAction({ prob, pMin, pMax, action }) {
+  if (prob == null || pMin == null || pMax == null) return null
+  let gap
   if (action === 'flag') {
-    if (pBest === 0) return prob === 0 ? 1 : 0
-    return Math.max(0, Math.min(1, prob / pBest))
+    // 插旗：越接近全盘最高概率雷越好
+    gap = pMax - prob
+  } else if (action === 'unflag') {
+    // 拔旗：拔掉的格子越安全越好
+    gap = prob - pMin
+  } else {
+    // open：点得越安全越好（chord/首步在调用侧固定满分，不经此函数）
+    gap = prob - pMin
   }
-  // open / chord
-  const denom = 1 - pBest
-  if (denom <= 1e-9) return prob === 1 ? 0 : 1 // pBest=1 意味着没有安全格
-  return Math.max(0, Math.min(1, (1 - prob) / denom))
+  return Math.max(0, Math.min(1, 1 - gap / SCORE_GAP_FULL))
 }

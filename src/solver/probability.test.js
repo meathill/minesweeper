@@ -219,7 +219,7 @@ describe('computeProbabilities - 边界与近似', () => {
   })
 })
 
-describe('getBestProbs / scoreForAction', () => {
+describe('getBestProbs / scoreForAction（固定差距扣分）', () => {
   it('空 map 返回 null', () => {
     assert.deepEqual(getBestProbs(new Map()), { pMin: null, pMax: null })
     assert.deepEqual(getBestProbs(null), { pMin: null, pMax: null })
@@ -230,27 +230,45 @@ describe('getBestProbs / scoreForAction', () => {
     assert.deepEqual(getBestProbs(m), { pMin: 0.2, pMax: 0.8 })
   })
 
-  it('你的示例：场上有 100% 雷，点 50% => 得分 5/10', () => {
-    // score 返回 0-1，*10 后为 5
-    const s = scoreForAction(0.5, 1, 'flag')
-    assert.ok(approxEqual(s, 0.5))
-    assert.equal(Math.round(s * 10), 5)
-    // open 场景同样
-    assert.ok(approxEqual(scoreForAction(0.5, 0, 'open'), 0.5))
+  it('顺利局（全盘概率都低）不再被系统性打低分', () => {
+    // pMin=0, pMax=0.15：插一面 prob=0.05 的旗，旧公式 0.33，新公式 0.8
+    assert.ok(approxEqual(scoreForAction({ prob: 0.05, pMin: 0, pMax: 0.15, action: 'flag' }), 0.8))
+    // 插在 prob=0 的格子上（几乎不可能有雷），扣分封顶也只到 0.7
+    assert.ok(approxEqual(scoreForAction({ prob: 0, pMin: 0, pMax: 0.15, action: 'flag' }), 0.7))
+    // 点 prob=0.1 的格子
+    assert.ok(approxEqual(scoreForAction({ prob: 0.1, pMin: 0, pMax: 0.15, action: 'open' }), 0.8))
+  })
+
+  it('危险局点明显更差的格子仍然得低分', () => {
+    // pMin=0.3, pMax=0.9：放着 0.3 的格子不点，去点 0.6 => 0.4
+    assert.ok(approxEqual(scoreForAction({ prob: 0.6, pMin: 0.3, pMax: 0.9, action: 'open' }), 0.4))
+    // 有必雷格（0.9）不插，插在最安全的 0.3 上 => 0 分
+    assert.equal(scoreForAction({ prob: 0.3, pMin: 0.3, pMax: 0.9, action: 'flag' }), 0)
+    // 拔掉几乎必雷的旗 => 0 分；拔掉最安全的旗 => 满分
+    assert.equal(scoreForAction({ prob: 0.9, pMin: 0.3, pMax: 0.9, action: 'unflag' }), 0)
+    assert.equal(scoreForAction({ prob: 0.3, pMin: 0.3, pMax: 0.9, action: 'unflag' }), 1)
+  })
+
+  it('等价局（所有选项概率相同）不扣分', () => {
+    assert.equal(scoreForAction({ prob: 0.5, pMin: 0.5, pMax: 0.5, action: 'open' }), 1)
+    assert.equal(scoreForAction({ prob: 0.5, pMin: 0.5, pMax: 0.5, action: 'flag' }), 1)
+  })
+
+  it('与最优差距满 0.5 扣满，超出 clamp 到 0', () => {
+    // open：prob - pMin = 0.5 => 0 分
+    assert.equal(scoreForAction({ prob: 0.6, pMin: 0.1, pMax: 1, action: 'open' }), 0)
+    // flag：pMax - prob = 0.8 => clamp 0
+    assert.equal(scoreForAction({ prob: 0.2, pMin: 0, pMax: 1, action: 'flag' }), 0)
   })
 
   it('最优本身得满分', () => {
-    assert.equal(scoreForAction(1, 1, 'flag'), 1)
-    assert.equal(scoreForAction(0, 0, 'open'), 1)
-  })
-
-  it('无安全格时 pMin=1 的边界', () => {
-    assert.equal(scoreForAction(1, 1, 'open'), 0)
-    assert.equal(scoreForAction(0.5, 1, 'open'), 1) // 1-0.5 / 0 => 按实现返回 1
+    assert.equal(scoreForAction({ prob: 1, pMin: 0, pMax: 1, action: 'flag' }), 1)
+    assert.equal(scoreForAction({ prob: 0, pMin: 0, pMax: 1, action: 'open' }), 1)
   })
 
   it('非法输入返回 null', () => {
-    assert.equal(scoreForAction(null, 0, 'open'), null)
-    assert.equal(scoreForAction(0.5, null, 'flag'), null)
+    assert.equal(scoreForAction({ prob: null, pMin: 0, pMax: 1, action: 'open' }), null)
+    assert.equal(scoreForAction({ prob: 0.5, pMin: null, pMax: 1, action: 'flag' }), null)
+    assert.equal(scoreForAction({ prob: 0.5, pMin: 0, pMax: null, action: 'flag' }), null)
   })
 })
