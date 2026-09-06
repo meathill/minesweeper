@@ -4,8 +4,10 @@
  * 所有文案在组件内按语言渲染；脚本只更新数字与棋盘，保证 zh/en 共用同一个 bundle。
  * 样式用 is:global：棋盘格子由脚本动态创建，拿不到 Astro 的 scoped 标记；类名统一 calc- 前缀防冲突。
  */
+import type { SiteLang } from '../i18n';
+
 interface Props {
-  lang: 'zh' | 'en';
+  lang: SiteLang;
 }
 
 const { lang } = Astro.props;
@@ -22,7 +24,8 @@ const labels: Record<string, Record<string, string>> = {
     flagged: '已标雷',
     remaining: '剩余雷数',
     warn: '已标雷超过总雷数，请调整。',
-    legend: '点击格子循环：未翻开 → 🚩 → 数字 1–8；右键反向循环。未翻开格上的百分比即该格是雷的概率（绿低红高）。',
+    legend:
+      '点击格子循环：未翻开 → 🚩 → 数字 1–8；右键反向循环。未翻开格上的百分比即该格是雷的概率（绿低红高）。',
     approx: '* 大分量区域为近似值（必雷/必安全格仍然精确）。',
     labelTemplate: '格子 {x},{y}',
   },
@@ -38,8 +41,10 @@ const labels: Record<string, Record<string, string>> = {
     flagged: 'Flagged',
     remaining: 'Mines left',
     warn: 'Flagged mines exceed the total — adjust the count.',
-    legend: 'Click a cell to cycle: hidden → 🚩 → number 1–8; right-click cycles backwards. The percentage on each hidden cell is its mine probability (green low → red high).',
-    approx: '* Large regions are approximate (forced mines / safe cells stay exact).',
+    legend:
+      'Click a cell to cycle: hidden → 🚩 → number 1–8; right-click cycles backwards. The percentage on each hidden cell is its mine probability (green low → red high).',
+    approx:
+      '* Large regions are approximate (forced mines / safe cells stay exact).',
     labelTemplate: 'Cell {x},{y}',
   },
   es: {
@@ -54,8 +59,10 @@ const labels: Record<string, Record<string, string>> = {
     flagged: 'Banderas',
     remaining: 'Minas restantes',
     warn: 'Hay más banderas que minas totales: ajusta el número.',
-    legend: 'Haz clic en una casilla para ciclar: oculta → 🚩 → número 1–8; el clic derecho cicla al revés. El porcentaje es la probabilidad de mina (verde bajo → rojo alto).',
-    approx: '* Las regiones grandes son aproximadas (las minas y casillas seguras forzadas siguen siendo exactas).',
+    legend:
+      'Haz clic en una casilla para ciclar: oculta → 🚩 → número 1–8; el clic derecho cicla al revés. El porcentaje es la probabilidad de mina (verde bajo → rojo alto).',
+    approx:
+      '* Las regiones grandes son aproximadas (las minas y casillas seguras forzadas siguen siendo exactas).',
     labelTemplate: 'Casilla {x},{y}',
   },
   ru: {
@@ -70,8 +77,10 @@ const labels: Record<string, Record<string, string>> = {
     flagged: 'Отмечено',
     remaining: 'Осталось мин',
     warn: 'Флажков больше, чем всего мин: исправьте число.',
-    legend: 'Клик по клетке меняет состояние: закрыта → 🚩 → цифра 1–8; правый клик — в обратную сторону. Процент — вероятность мины (зелёный низкий → красный высокий).',
-    approx: '* Большие области считаются приближённо (гарантированные мины и безопасные клетки — точно).',
+    legend:
+      'Клик по клетке меняет состояние: закрыта → 🚩 → цифра 1–8; правый клик — в обратную сторону. Процент — вероятность мины (зелёный низкий → красный высокий).',
+    approx:
+      '* Большие области считаются приближённо (гарантированные мины и безопасные клетки — точно).',
     labelTemplate: 'Клетка {x},{y}',
   },
   vi: {
@@ -86,8 +95,10 @@ const labels: Record<string, Record<string, string>> = {
     flagged: 'Đã cắm cờ',
     remaining: 'Mìn còn lại',
     warn: 'Số cờ vượt tổng số mìn, hãy điều chỉnh.',
-    legend: 'Nhấp vào ô để đổi: ẩn → 🚩 → số 1–8; nhấp chuột phải đi ngược lại. Phần trăm là xác suất có mìn (xanh thấp → đỏ cao).',
-    approx: '* Vùng lớn được tính xấp xỉ (ô chắc chắn có/không mìn vẫn chính xác).',
+    legend:
+      'Nhấp vào ô để đổi: ẩn → 🚩 → số 1–8; nhấp chuột phải đi ngược lại. Phần trăm là xác suất có mìn (xanh thấp → đỏ cao).',
+    approx:
+      '* Vùng lớn được tính xấp xỉ (ô chắc chắn có/không mìn vẫn chính xác).',
     labelTemplate: 'Ô {x},{y}',
   },
   de: {
@@ -102,8 +113,10 @@ const labels: Record<string, Record<string, string>> = {
     flagged: 'Flaggen',
     remaining: 'Minen übrig',
     warn: 'Mehr Flaggen als Minen gesamt — bitte anpassen.',
-    legend: 'Klick auf ein Feld wechselt: verdeckt → 🚩 → Zahl 1–8; Rechtsklick rückwärts. Der Prozentwert ist die Minenwahrscheinlichkeit (grün niedrig → rot hoch).',
-    approx: '* Große Bereiche sind genähert (sichere Minen/Felder bleiben exakt).',
+    legend:
+      'Klick auf ein Feld wechselt: verdeckt → 🚩 → Zahl 1–8; Rechtsklick rückwärts. Der Prozentwert ist die Minenwahrscheinlichkeit (grün niedrig → rot hoch).',
+    approx:
+      '* Große Bereiche sind genähert (sichere Minen/Felder bleiben exakt).',
     labelTemplate: 'Feld {x},{y}',
   },
 };

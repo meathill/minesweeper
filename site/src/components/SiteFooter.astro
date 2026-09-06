@@ -1,8 +1,9 @@
 ---
 import { brandCatalog, getBrandNetworkLinks } from 'meathill-brand';
+import type { SiteLang } from '../i18n';
 
 interface Props {
-  lang: 'zh' | 'en';
+  lang: SiteLang;
 }
 
 const { lang } = Astro.props;
@@ -11,19 +12,23 @@ const isEn = lang !== 'zh';
 const productLinks = getBrandNetworkLinks('minesweeper');
 const legalLinks = isEn
   ? [
-    { href: 'https://meathill.com/privacy', label: 'Privacy Policy' },
-    { href: 'https://meathill.com/terms', label: 'Terms of Service' },
-    { href: 'https://meathill.com/about', label: 'About' },
-    { href: 'https://meathill.com/contact', label: 'Contact' },
-  ]
+      { href: 'https://meathill.com/privacy', label: 'Privacy Policy' },
+      { href: 'https://meathill.com/terms', label: 'Terms of Service' },
+      { href: 'https://meathill.com/about', label: 'About' },
+      { href: 'https://meathill.com/contact', label: 'Contact' },
+    ]
   : [
-    { href: 'https://meathill.com/privacy', label: '隐私政策' },
-    { href: 'https://meathill.com/terms', label: '服务条款' },
-    { href: 'https://meathill.com/about', label: '关于我们' },
-    { href: 'https://meathill.com/contact', label: '联系方式' },
-  ];
+      { href: 'https://meathill.com/privacy', label: '隐私政策' },
+      { href: 'https://meathill.com/terms', label: '服务条款' },
+      { href: 'https://meathill.com/about', label: '关于我们' },
+      { href: 'https://meathill.com/contact', label: '联系方式' },
+    ];
 const copy = isEn
-  ? { tagline: 'Learn while playing.', allProducts: 'All Products', navLabel: 'Product network' }
+  ? {
+      tagline: 'Learn while playing.',
+      allProducts: 'All Products',
+      navLabel: 'Product network',
+    }
   : { tagline: '边玩边学。', allProducts: '全部产品', navLabel: '产品网络' };
 ---
 

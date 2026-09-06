@@ -2,12 +2,13 @@
 import '../styles/global.css';
 import SeoHead from '../components/SeoHead.astro';
 import type { FaqItem, HowToData } from '../types';
+import type { SiteLang } from '../i18n';
 import SiteNav from '../components/SiteNav.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import { getLocaleMeta } from '../i18n';
 
 interface Props {
-  lang: string;
+  lang: SiteLang;
   title: string;
   description: string;
   /** 语言中立路径（含尾斜杠），如 '/guide/how-to-play/' */

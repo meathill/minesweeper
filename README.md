@@ -36,8 +36,8 @@
 环境配置
 --------
 
-1. [Node.js](https://nodejs.org/) >= 16
-2. [pnpm](https://pnpm.io) >= 7
+1. [Node.js](https://nodejs.org/) >= 24（可直接执行 `.ts`）
+2. [pnpm](https://pnpm.io) >= 10
 3. 现代化浏览器，Chrome、Edge 等
 4. [Git](https://git-scm.com)
 
@@ -47,8 +47,11 @@
 
 1. clone 本项目到 `/path/to/minesweeper`
 2. 安装依赖 `pnpm i`
-3. 启动开发环境 `pnpm run serve`
-4. 打开浏览器访问 `http://localhost:5173`
+3. 启动游戏开发环境 `pnpm dev`（http://localhost:5173）
+4. 启动内容子站预览 `pnpm dev:site`（http://localhost:4321）
+5. 完整构建 `pnpm build`（游戏 → 内容子站 → 合并产物并重生成 sitemap）
+6. 运行测试 `pnpm test`
+7. 代码格式化 `pnpm run format`（biome），类型检查 `pnpm run typecheck`
 
 
 内容子站（SEO）

@@ -11,15 +11,54 @@ export interface LocaleMeta {
 }
 
 export const LOCALES: LocaleMeta[] = [
-  { code: 'zh', prefix: '', htmlLang: 'zh-CN', name: '中文', ogLocale: 'zh_CN' },
-  { code: 'en', prefix: '/en', htmlLang: 'en', name: 'English', ogLocale: 'en_US' },
-  { code: 'es', prefix: '/es', htmlLang: 'es', name: 'Español', ogLocale: 'es_ES' },
-  { code: 'ru', prefix: '/ru', htmlLang: 'ru', name: 'Русский', ogLocale: 'ru_RU' },
-  { code: 'vi', prefix: '/vi', htmlLang: 'vi', name: 'Tiếng Việt', ogLocale: 'vi_VN' },
-  { code: 'de', prefix: '/de', htmlLang: 'de', name: 'Deutsch', ogLocale: 'de_DE' },
+  {
+    code: 'zh',
+    prefix: '',
+    htmlLang: 'zh-CN',
+    name: '中文',
+    ogLocale: 'zh_CN',
+  },
+  {
+    code: 'en',
+    prefix: '/en',
+    htmlLang: 'en',
+    name: 'English',
+    ogLocale: 'en_US',
+  },
+  {
+    code: 'es',
+    prefix: '/es',
+    htmlLang: 'es',
+    name: 'Español',
+    ogLocale: 'es_ES',
+  },
+  {
+    code: 'ru',
+    prefix: '/ru',
+    htmlLang: 'ru',
+    name: 'Русский',
+    ogLocale: 'ru_RU',
+  },
+  {
+    code: 'vi',
+    prefix: '/vi',
+    htmlLang: 'vi',
+    name: 'Tiếng Việt',
+    ogLocale: 'vi_VN',
+  },
+  {
+    code: 'de',
+    prefix: '/de',
+    htmlLang: 'de',
+    name: 'Deutsch',
+    ogLocale: 'de_DE',
+  },
 ];
 
 export type LocaleCode = (typeof LOCALES)[number]['code'];
+
+/** 内容子站语言联合类型（新增语言时同步改这里 + LOCALES）：组件 Props 只认它，不用 string */
+export type SiteLang = 'zh' | 'en' | 'es' | 'ru' | 'vi' | 'de';
 
 export function getLocaleMeta(code: string): LocaleMeta {
   return LOCALES.find((locale) => locale.code === code) ?? LOCALES[0];

@@ -6,7 +6,10 @@
     "dev:site": "pnpm --filter minesweeper-content-site dev",
     "build": "vite build && pnpm --filter minesweeper-content-site build && node scripts/merge-dist.mjs",
     "serve": "vite preview",
-    "test": "node --test src/solver/probability.test.js src/board-replay.test.js src/chart-data.test.js src/replay-export.test.js src/brand-network.test.js src/seo-jsonld.test.js"
+    "test": "node --test src/solver/probability.test.js src/board-replay.test.js src/chart-data.test.js src/replay-export.test.js src/brand-network.test.js src/seo-jsonld.test.js src/operation-records.test.js src/game-board.test.js",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "typecheck": "pnpm --filter minesweeper-content-site exec astro check"
   },
   "dependencies": {
     "chart.js": "^4.5.1",
@@ -19,6 +22,7 @@
     "vue-i18n": "9"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.5.12",
     "@tailwindcss/vite": "^4.3.3",
     "@vitejs/plugin-vue": "^6.0.8",
     "@vue/compiler-sfc": "^3.5.42",
