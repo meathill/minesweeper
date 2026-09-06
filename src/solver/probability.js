@@ -82,6 +82,40 @@ const CALL_NODE_BUDGET = 100000
 // 跳过昂贵的完整证明。sat 结论是可靠的（真找到了解），只有 unknown 才走完整检查。
 const QUICK_CHECK_NODES = 200
 
+// O(n) 约束传播：need==0 → 全安全；need==len → 全雷；代入后迭代至不动点。
+// 定死的格子直接从约束中排除（连带 need 扣减），剩下的约束变小、分量分裂，
+// 后续枚举/SAT 只需要处理真正模糊的核。真实对局里这一步能消掉大量平凡格。
+// 脏约束（need 越界，真实对局不可能出现）按既有语义丢弃。
+function propagateConstraints(constraints) {
+  const decided = new Map() // var -> 0/1（逻辑蕴含，与精确搜索结论一致）
+  let contradiction = false // 出现过矛盾约束（真实对局不可能；脏盘面时调用方应标近似）
+  let active = constraints.map(c => ({ vars: [...c.vars], need: c.need }))
+  let changed = true
+  while (changed) {
+    changed = false
+    const next = []
+    for (const c of active) {
+      const vars = []
+      let need = c.need
+      for (const v of c.vars) {
+        if (decided.has(v)) { if (decided.get(v) === 1) need-- }
+        else vars.push(v)
+      }
+      if (need < 0 || need > vars.length) { contradiction = true; continue } // 脏约束，丢弃
+      if (vars.length === 0) continue // 恒真，丢弃
+      if (need === 0) {
+        for (const v of vars) if (!decided.has(v)) { decided.set(v, 0); changed = true }
+      } else if (need === vars.length) {
+        for (const v of vars) if (!decided.has(v)) { decided.set(v, 1); changed = true }
+      } else {
+        next.push({ vars, need })
+      }
+    }
+    active = next
+  }
+  return { decided, constraints: active, contradiction }
+}
+
 // 按参与约束数降序排列变量：高度数变量先赋值，剪枝更早生效
 function orderByDegree(vars, constraints) {
   const varPos = new Map()
@@ -293,17 +327,24 @@ const REFINE_QUICK_NODES = 1000
  * @returns {{ total: number, step: (opts?: {fuelNodes?: number, wallMs?: number}) => { newly: Map<number, 0|1>, done: boolean } }}
  */
 export function createForcedRefiner(grid, row, column, skipSet = new Set()) {
-  const constraints = buildConstraints(grid, row, column)
+  const rawConstraints = buildConstraints(grid, row, column)
+  // 传播先行：O(n) 定死的格子第一步就交付，不占用搜索预算
+  const { decided: propDecided, constraints: simplified } = propagateConstraints(rawConstraints)
+  const fresh = new Map()
+  for (const [v, val] of propDecided) if (!skipSet.has(v)) fresh.set(v, val)
+  const skipAll = new Set(skipSet)
+  for (const v of propDecided.keys()) skipAll.add(v)
   const jobs = []
-  for (const comp of splitComponents(constraints)) {
+  for (const comp of splitComponents(simplified)) {
     if (comp.vars.length <= 28) continue // 小分量同步已精确枚举，无需精算
     const order = orderByDegree(comp.vars, comp.constraints)
-    const pending = order.filter(i => !skipSet.has(comp.vars[i]))
+    const pending = order.filter(i => !skipAll.has(comp.vars[i]))
     if (pending.length) jobs.push({ vars: comp.vars, constraints: comp.constraints, pending, cursor: 0 })
   }
   jobs.sort((a, b) => b.pending.length - a.pending.length) // 大分量先算
   let jobIdx = 0
-  const total = jobs.reduce((a, j) => a + j.pending.length, 0)
+  let deliveredProp = false
+  const total = fresh.size + jobs.reduce((a, j) => a + j.pending.length, 0)
   function pendingCount() {
     let n = 0
     for (let j = jobIdx; j < jobs.length; j++) n += jobs[j].pending.length - jobs[j].cursor
@@ -313,7 +354,12 @@ export function createForcedRefiner(grid, row, column, skipSet = new Set()) {
     total,
     get pending() { return pendingCount() },
     step({ fuelNodes = 80000, wallMs = 24 } = {}) {
-      const t0 = performance.now()
+      // 传播定死的格子第一步就交付（O(n) 已算完，不耗预算）
+      if (!deliveredProp) {
+        deliveredProp = true
+        const doneNow = jobIdx >= jobs.length
+        return { newly: new Map(fresh), done: doneNow }
+      }      const t0 = performance.now()
       const fuel = { remaining: fuelNodes }
       const newly = new Map()
       let progressed = false
@@ -362,10 +408,10 @@ export function createForcedRefiner(grid, row, column, skipSet = new Set()) {
 export function computeProbabilities(grid, row, column, bombNumber) {
   // 旗不参与计算：剩余雷数恒为总雷数，未开格（含插旗/问号）全部视为未知
   const remainingMines = bombNumber
-  const constraints = buildConstraints(grid, row, column)
+  const rawConstraints = buildConstraints(grid, row, column)
 
   const frontierSet = new Set()
-  for (const c of constraints) for (const v of c.vars) frontierSet.add(v)
+  for (const c of rawConstraints) for (const v of c.vars) frontierSet.add(v)
 
   const isolated = []
   for (let i = 0; i < grid.length; i++) {
@@ -374,10 +420,18 @@ export function computeProbabilities(grid, row, column, bombNumber) {
 
   const result = new Map()
   let isApproximate = false
-  // 已确定格（精确枚举的分量全体 + proven forced）：供后台精算跳过，调用方也可用它判断热力可信度
+  // 已确定格（精确枚举的分量全体 + 传播/SAT 定死的 forced）
   const decidedSet = new Set()
   // 整局共享一份搜索预算：多个大分量叠加也不会卡死主线程
   const budget = { remaining: CALL_NODE_BUDGET }
+
+  // O(n) 传播先行：定死的格子直接落子（与精确搜索结论一致），剩下的约束变小、分量分裂
+  const { decided: propDecided, constraints, contradiction } = propagateConstraints(rawConstraints)
+  if (contradiction) isApproximate = true // 脏盘面（真实对局不可能）：精确性无从谈起
+  for (const [v, val] of propDecided) {
+    result.set(v, val)
+    decidedSet.add(v)
+  }
 
   if (frontierSet.size === 0) {
     if (isolated.length > 0) {
@@ -390,8 +444,9 @@ export function computeProbabilities(grid, row, column, bombNumber) {
 
   const components = splitComponents(constraints)
 
-  // 统计 frontier 期望雷数
+  // 统计 frontier 期望雷数（含传播已定死的雷，孤立格均摊才准）
   let expectedFrontierMines = 0
+  for (const [, val] of propDecided) if (val === 1) expectedFrontierMines += 1
   const frontierProbs = new Map()
 
   for (const comp of components) {
