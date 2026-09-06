@@ -10,3 +10,7 @@ node_modules
 dist
 dist-content
 .astro
+
+# e2e
+test-results
+playwright-report

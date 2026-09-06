@@ -51,7 +51,8 @@
 4. 启动内容子站预览 `pnpm dev:site`（http://localhost:4321）
 5. 完整构建 `pnpm build`（游戏 → 内容子站 → 合并产物并重生成 sitemap）
 6. 运行测试 `pnpm test`
-7. 代码格式化 `pnpm run format`（biome），类型检查 `pnpm run typecheck`
+7. 运行端到端测试 `pnpm test:e2e`（Playwright + Chromium，首次需 `pnpm exec playwright install chromium`；覆盖首击洪水展开、插旗、重开）
+8. 代码格式化 `pnpm run format`（biome），类型检查 `pnpm run typecheck`
 
 
 内容子站（SEO）
