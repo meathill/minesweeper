@@ -9,7 +9,7 @@ import BrandSiteSwitcher from './brand-site-switcher.vue';
 import {Levels} from './data';
 import { useOperationRecordsStore } from './store/operationRecords';
 import { useLearningStore } from './store/learningStore';
-import { computeProbabilities, getBestProbs, scoreForAction } from './solver/probability.js';
+import { computeProbabilities, getBestProbs, scoreForAction, createForcedRefiner } from './solver/probability.js';
 import { encodeGridState, applySnapshot } from './board-replay.js';
 import { buildReplayJson, downloadReplayJson } from './replay-export.js';
 import { setLocale } from './i18n.js';
@@ -113,17 +113,77 @@ const grid = ref(null);
 const gridItems = ref();
 
 // 概率计算（玩家视角，不使用 isBomb）——始终计算用于评分，显隐仅由 showProbability 控制
+// 注意：概率只与“哪些格子已开”有关。旗只是玩家标记、不参与约束（见 solver 注释），
+// 因此插旗/拔旗不再触发重算——之前每次点旗都会触发一次全盘枚举，是卡顿的来源之一。
 const probResult = computed(() => {
   if (!isRealStart.value || !grid.value) return { map: new Map(), isApproximate: false }
-  const _flagDep = flagged.value
   const _openDep = opened.value
-  grid.value.forEach(c => c.isOpen + c.isFlag)
-  void _flagDep; void _openDep
+  grid.value.forEach(c => c.isOpen)
+  void _openDep
   return computeProbabilities(grid.value, row.value, column.value, bombNumber.value)
 })
 const probabilities = computed(() => probResult.value.map)
 const isApproximate = computed(() => probResult.value.isApproximate)
-const bestProbs = computed(() => getBestProbs(probabilities.value))
+// 后台精算：同步只给了近似值的大分量，在 idle 时补找 forced，找到就覆盖显示。
+// refinedMap 只对当前 boardVersion 有效；任何开格变化都会使其作废（见 bumpBoardVersion）。
+// 插旗/拔旗不改变约束，无需作废——与 probResult 去旗依赖保持一致。
+const boardVersion = ref(0)
+const refinedMap = ref(new Map())
+let refiner = null
+let refineScheduled = false
+const displayedProbs = computed(() => {
+  if (refinedMap.value.size === 0) return probabilities.value
+  const merged = new Map(probabilities.value)
+  for (const [k, v] of refinedMap.value) merged.set(k, v)
+  return merged
+})
+const bestProbs = computed(() => getBestProbs(displayedProbs.value))
+
+function idleCallback(fn) {
+  if (typeof window !== 'undefined' && typeof window.requestIdleCallback === 'function') {
+    return window.requestIdleCallback(fn, { timeout: 1500 })
+  }
+  // Safari 老版本没有 requestIdleCallback：退化为 setTimeout
+  return setTimeout(() => fn({ timeRemaining: () => 10, didTimeout: false }), 0)
+}
+// 开格变化 => 旧精算作废；对局进行中则为新盘面安排精算
+function bumpBoardVersion() {
+  boardVersion.value++
+  refinedMap.value = new Map()
+  refiner = null
+  scheduleRefine()
+}
+function scheduleRefine() {
+  if (refineScheduled || !isRealStart.value || !grid.value) return
+  const snap = probResult.value
+  if (!snap.isApproximate) return // 全精确，无需精算
+  refiner = createForcedRefiner(grid.value, row.value, column.value, snap.decidedSet)
+  if (refiner.total === 0) { refiner = null; return }
+  refineScheduled = true
+  const myVersion = boardVersion.value
+  idleCallback((deadline) => runRefineSlice(deadline, myVersion))
+}
+function runRefineSlice(deadline, myVersion) {
+  refineScheduled = false
+  // 调度后盘面变了：旧快照整体丢弃，为新版重排（自愈，保证 chord 等多 bump 手势最终一定有精算在跑）
+  if (myVersion !== boardVersion.value) { refiner = null; scheduleRefine(); return }
+  if (!refiner || !isRealStart.value || !grid.value) { refiner = null; return }
+  const wallMs = Math.min(24, deadline?.timeRemaining?.() ?? 16)
+  const { newly, done } = refiner.step({ fuelNodes: 80000, wallMs })
+  // 切片执行期间若有新交互（版本号变了）：直接丢弃本次结果并为新版重排
+  if (myVersion !== boardVersion.value) { refiner = null; scheduleRefine(); return }
+  if (newly.size) {
+    const m = new Map(refinedMap.value)
+    for (const [k, v] of newly) m.set(k, v)
+    refinedMap.value = m
+  }
+  if (!done && isRealStart.value) {
+    refineScheduled = true
+    idleCallback((deadline) => runRefineSlice(deadline, myVersion))
+  } else {
+    refiner = null
+  }
+}
 
 // 提示：最低概率格（优先有推断的前沿格，0% 绝对安全最优先）
 const hintIndex = ref(null)
@@ -133,7 +193,7 @@ function handleHint() {
   const frontierSet = probResult.value.frontierSet || new Set()
   let candidates = []
   let minP = Infinity
-  for (const [idx, p] of probabilities.value) {
+  for (const [idx, p] of displayedProbs.value) {
     const cell = grid.value[idx]
     if (!cell || cell.isOpen || cell.isFlag) continue
     if (p < minP - 1e-9) {
@@ -150,7 +210,7 @@ function handleHint() {
   const pick = finalCandidates[Math.floor(Math.random() * finalCandidates.length)]
   hintIndex.value = pick
   hintFlashKey.value++
-  trackEvent('hint_click', { hint_prob: probabilities.value.get(pick), hint_index: pick })
+  trackEvent('hint_click', { hint_prob: displayedProbs.value.get(pick), hint_index: pick })
 }
 
 function clearHintIfOpened(idx) {
@@ -192,6 +252,7 @@ function restoreToSnapshot(snap) {
   flagged.value = snap.flaggedCount
   opened.value = snap.openedCount
   timeCount.value = snap.clockSec
+  bumpBoardVersion() // 回放跳格：旧精算作废（终局后 isRealStart 为 false，不会重排）
 }
 // 导出本局完整数据（雷区 + 事件流 + 快照），便于复盘与 debug
 function handleDownloadReplay() {
@@ -214,7 +275,7 @@ function handleDownloadReplay() {
   trackEvent('replay_download', { ops: operationStore.operationRecords.operationEvents.length })
 }
 function getProbability(index) {
-  return probabilities.value.get(index) ?? null
+  return displayedProbs.value.get(index) ?? null
 }
 
 onMounted(() => {
@@ -252,6 +313,7 @@ function doStart(event) {
   }
   // 刷新记录每分钟操作
   operationStore.onFreshOperateRecords()
+  bumpBoardVersion() // 新局：精算状态清空（isRealStart 为 false，不会重排）
 }
 
 function doRealStart(clickedIndex) {
@@ -359,6 +421,7 @@ function doStop(success = false, failIndex = null) {
   scheduleSnapshot('final', failIndex, { result: success ? 'win' : 'lose' })
   operationStore.onStopOperateRecords()
   trackEvent(success ? 'game_complete_win' : 'game_complete_lose', { time_seconds: timeCount.value })
+  bumpBoardVersion() // 终局：精算状态清空（isRealStart 为 false，不会重排）
 }
 
 function onMarkState(index, state) {
@@ -370,7 +433,7 @@ function onMarkState(index, state) {
   // 插旗/拔旗评分（问号切换不评分，只记录操作节奏）
   if (isRealStart.value && (state === 'flag' || prevFlag)) {
     const { row: r, col: c } = getRowCol(index)
-    const prob = probabilities.value.get(index)
+    const prob = displayedProbs.value.get(index)
     const { pMin, pMax } = bestProbs.value
     const action = state === 'flag' ? 'flag' : 'unflag'
     if (prob != null && pMin != null && pMax != null) {
@@ -406,7 +469,7 @@ async function onOpen(item, index, delayMs = 0) {
     if (opened.value === 0 && flagged.value === 0) {
       operationStore.onRecordEfficiency({ index, row, col, prob: 0, pMin: 0, pMax: 0, score: 1, action: 'open' })
     } else {
-      const prob = probabilities.value.get(index)
+      const prob = displayedProbs.value.get(index)
       const { pMin, pMax } = bestProbs.value
       if (prob != null && pMin != null && pMax != null) {
         const score = scoreForAction({ prob, pMin, pMax, action: 'open' })
@@ -433,6 +496,8 @@ async function onOpen(item, index, delayMs = 0) {
   // 如果点开的节点为 0，则点开附近的节点
   openGridItem(item, index, delayMs);
   if (isUserAction) scheduleSnapshot('open', index)
+  // 玩家手势结束、棋盘已稳定：旧精算作废，为新盘面重排（级联展开是同步的，到这里已全部完成）
+  if (isUserAction) bumpBoardVersion()
 }
 
 function onOpenAll(item, index) {
@@ -461,7 +526,7 @@ function onOpenAll(item, index) {
     // 双击批量打开视为绝对安全决策，固定满分 10（评分始终记录）
     if (targetIndices.length) {
       const { pMin, pMax } = bestProbs.value
-      const avgProb = targetIndices.reduce((a, ti) => a + (probabilities.value.get(ti) ?? 0), 0) / targetIndices.length
+      const avgProb = targetIndices.reduce((a, ti) => a + (displayedProbs.value.get(ti) ?? 0), 0) / targetIndices.length
       const { row, col } = getRowCol(index)
       operationStore.onRecordEfficiency({ index, row, col, prob: avgProb, pMin: pMin ?? 0, pMax: pMax ?? 0, score: 1, action: 'chord' })
       trackEvent('chord_open', { center_index: index, opened_count: targetIndices.length })

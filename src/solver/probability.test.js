@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
-import { computeProbabilities, getBestProbs, scoreForAction } from './probability.js'
+import { computeProbabilities, getBestProbs, scoreForAction, createForcedRefiner } from './probability.js'
 
 // helper: row*col grid, callback to setup
 function makeGrid(row, col, setup) {
@@ -11,6 +11,75 @@ function makeGrid(row, col, setup) {
 const idx = (r, c, col) => r * col + c
 function approxEqual(a, b, eps = 1e-9) {
   return Math.abs(a - b) < eps
+}
+
+// 固定种子复现线上卡死盘面：16x30/99 雷，中盘 + 40 旗（含错旗）
+function buildHardMidBoard() {
+  function mulberry32(seed) {
+    let a = seed >>> 0
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0
+      let t = Math.imul(a ^ (a >>> 15), 1 | a)
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+    }
+  }
+  const row = 16, col = 30, bombs = 99, seed = 42
+  const rand = mulberry32(seed)
+  const total = row * col
+  const neigh = (i) => {
+    const x = i % col, y = (i / col) >> 0, out = []
+    for (let r = Math.max(0, y - 1); r < Math.min(y + 2, row); r++)
+      for (let c = Math.max(0, x - 1); c < Math.min(x + 2, col); c++) {
+        if (r === y && c === x) continue
+        out.push(r * col + c)
+      }
+    return out
+  }
+  const clicked = Math.floor(rand() * total)
+  const cx = clicked % col, cy = (clicked / col) >> 0
+  const forbidden = new Set()
+  for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+    const nx = cx + dx, ny = cy + dy
+    if (nx < 0 || nx >= col || ny < 0 || ny >= row) continue
+    forbidden.add(ny * col + nx)
+  }
+  const candidates = []
+  for (let i = 0; i < total; i++) if (!forbidden.has(i)) candidates.push(i)
+  const shuffle = (arr) => { for (let i = arr.length - 1; i > 0; i--) { const j = (rand() * (i + 1)) >> 0;[arr[i], arr[j]] = [arr[j], arr[i]] } }
+  shuffle(candidates)
+  const isBomb = new Array(total).fill(false)
+  for (let i = 0; i < bombs; i++) isBomb[candidates[i]] = true
+  const grid = []
+  for (let i = 0; i < total; i++) {
+    let c = 0
+    if (!isBomb[i]) for (const n of neigh(i)) if (isBomb[n]) c++
+    grid.push({ isOpen: false, isFlag: false, isQuestion: false, count: c })
+  }
+  const queue = [clicked], seen = new Set([clicked])
+  while (queue.length) {
+    const cur = queue.pop()
+    if (isBomb[cur]) continue
+    grid[cur].isOpen = true
+    if (grid[cur].count === 0) for (const n of neigh(cur)) if (!seen.has(n)) { seen.add(n); queue.push(n) }
+  }
+  const safes = []
+  for (let i = 0; i < total; i++) if (!isBomb[i] && !grid[i].isOpen) safes.push(i)
+  shuffle(safes)
+  for (let i = 0; i < Math.min(100, safes.length); i++) grid[safes[i]].isOpen = true
+  const unopened = []
+  for (let i = 0; i < total; i++) if (!grid[i].isOpen) unopened.push(i)
+  shuffle(unopened)
+  let placed = 0
+  for (const i of unopened) {
+    if (placed >= 40) break
+    const wantWrong = rand() < 0.3
+    if (wantWrong && isBomb[i]) continue
+    if (!wantWrong && !isBomb[i]) continue
+    grid[i].isFlag = true
+    placed++
+  }
+  return { grid, row, col, bombs }
 }
 
 // ------------------------------------------------------------------
@@ -219,8 +288,7 @@ describe('computeProbabilities - 边界与近似', () => {
     assert.equal(isApproximate, true)
   })
 
-  it('矛盾盘面（无解）回退近似不崩', () => {
-    // 1 周围 1 个未知但 count=2 矛盾 => buildConstraints 会跳过该约束（need>vars），则 frontier 空
+  it('矛盾盘面（无解）回退近似不崩', () => {    // 1 周围 1 个未知但 count=2 矛盾 => buildConstraints 会跳过该约束（need>vars），则 frontier 空
     const g = makeGrid(2, 2, (grid, col) => {
       grid[idx(0, 0, 2)].isOpen = true; grid[idx(0, 0, 2)].count = 2
       grid[idx(0, 1, 2)].isOpen = false // 仅 1 未知但 need 2
@@ -284,5 +352,134 @@ describe('getBestProbs / scoreForAction（固定差距扣分）', () => {
     assert.equal(scoreForAction({ prob: null, pMin: 0, pMax: 1, action: 'open' }), null)
     assert.equal(scoreForAction({ prob: 0.5, pMin: null, pMax: 1, action: 'flag' }), null)
     assert.equal(scoreForAction({ prob: 0.5, pMin: 0, pMax: null, action: 'flag' }), null)
+  })
+})
+
+describe('computeProbabilities - 大分量性能与 forced 回归', () => {
+  it('大分量（>28）中的 1-2-1 必雷/必安全仍被检出，不会被平均抹掉', () => {
+    // 2x33：顶行全开，0-2 列为 1-2-1，后面全是 1（松散链），底行 33 个未知连成一个大分量
+    // 1-2-1 本体强制 b0=1,b1=0,b2=1；链条被 b2=1 钉住后每隔 3 格又钉一个必雷（b5,b8,…b32）
+    // 注意列数必须 ≡0 mod 3，否则链条在右边界无解（整盘矛盾，只能回退近似）
+    const col = 33
+    const g = makeGrid(2, col, (grid) => {
+      for (let c = 0; c < col; c++) { grid[idx(0, c, col)].isOpen = true }
+      grid[idx(0, 0, col)].count = 1
+      grid[idx(0, 1, col)].count = 2
+      grid[idx(0, 2, col)].count = 1
+      for (let c = 3; c < col; c++) grid[idx(0, c, col)].count = 1
+      for (let c = 0; c < col; c++) grid[idx(1, c, col)].isOpen = false
+    })
+    const { map, isApproximate } = computeProbabilities(g, 2, col, 20)
+    assert.equal(isApproximate, true)
+    assert.equal(map.get(idx(1, 0, col)), 1)
+    assert.equal(map.get(idx(1, 1, col)), 0)
+    assert.equal(map.get(idx(1, 2, col)), 1)
+    assert.equal(map.get(idx(1, 5, col)), 1)
+  })
+
+  it('Hard 中残局（含错旗）限时完成：无界搜索曾卡死十几秒', () => {
+    // 用固定种子复现线上卡死盘面：16x30/99 雷，中盘 + 40 旗（含错旗）
+    const { grid, row, col, bombs } = buildHardMidBoard()
+    const t0 = Date.now()
+    const { map } = computeProbabilities(grid, row, col, bombs)
+    const elapsed = Date.now() - t0
+    // 修复前该盘面耗时约 13.5s；限 5s，实测约 0.1s，留足 CI 余量
+    assert.ok(elapsed < 5000, `超时：${elapsed}ms`)
+    assert.ok(map.size > 0)
+  })
+
+  it('decidedSet：精确格与 proven forced 在列，近似格不在列', () => {
+    const col = 33
+    const g = makeGrid(2, col, (grid) => {
+      for (let c = 0; c < col; c++) { grid[idx(0, c, col)].isOpen = true }
+      grid[idx(0, 0, col)].count = 1
+      grid[idx(0, 1, col)].count = 2
+      grid[idx(0, 2, col)].count = 1
+      for (let c = 3; c < col; c++) grid[idx(0, c, col)].count = 1
+      for (let c = 0; c < col; c++) grid[idx(1, c, col)].isOpen = false
+    })
+    const { decidedSet, frontierSet } = computeProbabilities(g, 2, col, 20)
+    // 1-2-1 的三格是 proven forced
+    assert.ok(decidedSet.has(idx(1, 0, col)))
+    assert.ok(decidedSet.has(idx(1, 1, col)))
+    assert.ok(decidedSet.has(idx(1, 2, col)))
+    // decided ⊆ frontier（该盘整条链都被钉死，decided 可能等于 frontier， Libra 才断言子集）
+    for (const v of decidedSet) assert.ok(frontierSet.has(v))
+  })
+
+  it('decidedSet 在真实 Hard 盘上是真子集（近似格不在列）', () => {
+    const { grid, row, col, bombs } = buildHardMidBoard()
+    const { decidedSet, frontierSet } = computeProbabilities(grid, row, col, bombs)
+    assert.ok(decidedSet.size > 0)
+    assert.ok(decidedSet.size < frontierSet.size)
+    for (const v of decidedSet) assert.ok(frontierSet.has(v))
+  })
+})
+
+describe('createForcedRefiner - 后台精算', () => {
+  function largeBoard() {
+    const col = 33
+    return makeGrid(2, col, (grid) => {
+      for (let c = 0; c < col; c++) { grid[idx(0, c, col)].isOpen = true }
+      grid[idx(0, 0, col)].count = 1
+      grid[idx(0, 1, col)].count = 2
+      grid[idx(0, 2, col)].count = 1
+      for (let c = 3; c < col; c++) grid[idx(0, c, col)].count = 1
+      for (let c = 0; c < col; c++) grid[idx(1, c, col)].isOpen = false
+    })
+  }
+
+  it('空 skip 下能找回 1-2-1 的 forced（含链条远端的 b5）', () => {
+    const col = 33
+    const g = largeBoard()
+    const r = createForcedRefiner(g, 2, col, new Set())
+    assert.equal(r.total, 33)
+    let merged = new Map()
+    let guard = 0
+    while (guard++ < 100) {
+      const { newly, done } = r.step({ fuelNodes: 80000, wallMs: 1000 })
+      for (const [k, v] of newly) merged.set(k, v)
+      if (done) break
+    }
+    assert.equal(merged.get(idx(1, 0, col)), 1)
+    assert.equal(merged.get(idx(1, 1, col)), 0)
+    assert.equal(merged.get(idx(1, 2, col)), 1)
+    assert.equal(merged.get(idx(1, 5, col)), 1)
+  })
+
+  it('分片推进与一次跑完结果一致（cursor 纪律）', () => {
+    const col = 33
+    const drain = (fuel) => {
+      const r = createForcedRefiner(largeBoard(), 2, col, new Set())
+      const merged = new Map()
+      let guard = 0
+      let lastDone = false
+      while (guard++ < 200) {
+        const { newly, done } = r.step({ fuelNodes: fuel, wallMs: 60_000 })
+        for (const [k, v] of newly) merged.set(k, v)
+        lastDone = done
+        if (done) break
+      }
+      assert.ok(lastDone)
+      return merged
+    }
+    const tiny = drain(5000) // 小 fuel，多次切片
+    const huge = drain(10_000_000) // 一次跑完
+    assert.deepEqual([...tiny.entries()].sort((a, b) => a[0] - b[0]), [...huge.entries()].sort((a, b) => a[0] - b[0]))
+  })
+
+  it('小分量无需精算（total 为 0），skipSet 能跳过已定格', () => {
+    const col = 33
+    const g = largeBoard()
+    const { decidedSet } = computeProbabilities(g, 2, col, 20)
+    const r = createForcedRefiner(g, 2, col, decidedSet)
+    assert.ok(r.total < 33) // 同步已定的不再排队
+    // 2x3 小盘：分量 ≤28，直接 total 0
+    const small = makeGrid(2, 3, (grid) => {
+      grid[idx(0, 0, 3)].isOpen = true; grid[idx(0, 0, 3)].count = 1
+      grid[idx(0, 1, 3)].isOpen = true; grid[idx(0, 1, 3)].count = 2
+      grid[idx(0, 2, 3)].isOpen = true; grid[idx(0, 2, 3)].count = 1
+    })
+    assert.equal(createForcedRefiner(small, 2, 3, new Set()).total, 0)
   })
 })
