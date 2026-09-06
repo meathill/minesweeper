@@ -10,6 +10,8 @@ import {Levels} from './data';
 import { useOperationRecordsStore } from './store/operationRecords';
 import { useLearningStore } from './store/learningStore';
 import { computeProbabilities, getBestProbs, scoreForAction } from './solver/probability.js';
+import { encodeGridState, applySnapshot } from './board-replay.js';
+import { buildReplayJson, downloadReplayJson } from './replay-export.js';
 import { setLocale } from './i18n.js';
 
 const { t, tm, locale } = useI18n()
@@ -160,16 +162,56 @@ function clearHintIfOpened(idx) {
 function getRowCol(index) {
   return { row: Math.floor(index / column.value), col: index % column.value }
 }
-function recordEfficiency(index, action) {
-  const prob = probabilities.value.get(index)
-  if (prob == null) return
-  const { pMin, pMax } = bestProbs.value
-  const pBest = action === 'flag' ? pMax : pMin
-  if (pBest == null) return
-  const score = scoreForAction(prob, pBest, action)
-  if (score == null) return
-  const { row: r, col: c } = getRowCol(index)
-  operationStore.onRecordEfficiency({ index, row: r, col: c, prob, pBest, score, action })
+// 玩家动作完成后记录棋盘快照（setTimeout 确保同步连开链已结束）
+function scheduleSnapshot(action, cellIndex = null, extra = {}) {
+  setTimeout(() => {
+    if (!grid.value) return
+    operationStore.appendSnapshot({
+      action,
+      cellIndex,
+      ...encodeGridState(grid.value),
+      flaggedCount: flagged.value,
+      openedCount: opened.value,
+      clockSec: timeCount.value,
+      row: row.value,
+      column: column.value,
+      bombNumber: bombNumber.value,
+      ...extra,
+    })
+  }, 0)
+}
+// 回放：棋盘完整回到快照时刻（含旗数/开格数/计时器显示）
+function restoreToSnapshot(snap) {
+  if (!snap || !grid.value) return
+  applySnapshot(grid.value, gridItems.value, snap)
+  if (snap.result === 'lose') {
+    for (const gridItem of gridItems.value) {
+      gridItem.uncover();
+    }
+  }
+  flagged.value = snap.flaggedCount
+  opened.value = snap.openedCount
+  timeCount.value = snap.clockSec
+}
+// 导出本局完整数据（雷区 + 事件流 + 快照），便于复盘与 debug
+function handleDownloadReplay() {
+  const final = operationStore.findFinalSnapshot()
+  const data = buildReplayJson({
+    version,
+    level: level.value,
+    grid: grid.value,
+    row: row.value,
+    column: column.value,
+    bombNumber: bombNumber.value,
+    result: isSuccess.value ? 'win' : 'lose',
+    startTimeStamp: operationStore.operationRecords.startTimeStamp,
+    endTimeStamp: final?.clickTimestamp ?? Date.now(),
+    operationEvents: operationStore.operationRecords.operationEvents,
+    efficiencyEvents: operationStore.efficiencyEvents,
+    snapshots: operationStore.snapshots,
+  })
+  downloadReplayJson(data)
+  trackEvent('replay_download', { ops: operationStore.operationRecords.operationEvents.length })
 }
 function getProbability(index) {
   return probabilities.value.get(index) ?? null
@@ -198,6 +240,7 @@ function doStart(event) {
       count: 0,
       isOpen: false,
       isFlag: false,
+      isQuestion: false,
       isUncovered: false,
     };
   });
@@ -261,11 +304,23 @@ function doRealStart(clickedIndex) {
   interval = setInterval(() => {
     timeCount.value += 1;
   }, 1000);
+  // 布雷完成、首格未开时的初始快照（同步记录，早于首格打开）
+  operationStore.appendSnapshot({
+    action: 'start',
+    cellIndex: clickedIndex,
+    ...encodeGridState(grid.value),
+    flaggedCount: 0,
+    openedCount: 0,
+    clockSec: 0,
+    row: row.value,
+    column: column.value,
+    bombNumber: bombNumber.value,
+  });
   // 防止用户错误离开
   addEventListener('beforeunload', onBeforeUnload);
 }
 
-function doStop(success = false) {
+function doStop(success = false, failIndex = null) {
   clearInterval(interval);
   isFailed.value = !success;
   isSuccess.value = success;
@@ -281,37 +336,54 @@ function doStop(success = false) {
     jsConfetti.addConfetti({
       confettiNumber: 500,
     });
+    // 胜利：所有未开格（即全部雷位）统一标为旗，grid 数据与组件 UI 同步
+    for (const cell of grid.value) {
+      if (!cell.isOpen) {
+        cell.isFlag = true;
+        cell.isQuestion = false;
+      }
+    }
     for (const gridItem of gridItems.value) {
-      gridItem.addFlag(true);
+      gridItem.markAsFlag();
     }
     trackEvent('game_win', { time_seconds: timeCount.value, avg_efficiency: avgEff })
   } else {
+    if (failIndex != null && grid.value[failIndex]) {
+      grid.value[failIndex].isOpen = true; // 踩雷格数据层同步为已开，与 UI 一致
+    }
     for (const gridItem of gridItems.value) {
       gridItem.uncover();
     }
     trackEvent('game_lose', { time_seconds: timeCount.value, avg_efficiency: avgEff })
   }
+  scheduleSnapshot('final', failIndex, { result: success ? 'win' : 'lose' })
   operationStore.onStopOperateRecords()
   trackEvent(success ? 'game_complete_win' : 'game_complete_lose', { time_seconds: timeCount.value })
 }
 
-function onFlag(index, flag) {
-  // 在状态变更前快照效率（评分始终记录，显隐不影响）
-  if (isRealStart.value) {
-    const { row, col } = getRowCol(index)
+function onMarkState(index, state) {
+  const cell = grid.value?.[index]
+  if (!cell || cell.isOpen) return
+  const prevFlag = cell.isFlag
+  cell.isFlag = state === 'flag'
+  cell.isQuestion = state === 'question'
+  // 插旗/拔旗评分（问号切换不评分，只记录操作节奏）
+  if (isRealStart.value && (state === 'flag' || prevFlag)) {
+    const { row: r, col: c } = getRowCol(index)
     const prob = probabilities.value.get(index)
-    const { pMax } = bestProbs.value
-    if (prob != null && pMax != null) {
-      const score = scoreForAction(prob, pMax, 'flag')
-      if (score != null) operationStore.onRecordEfficiency({ index, row, col, prob, pBest: pMax, score, action: 'flag' })
-    } else if (prob == null && pMax == null) {
+    const { pMin, pMax } = bestProbs.value
+    const action = state === 'flag' ? 'flag' : 'unflag'
+    if (prob != null && pMin != null && pMax != null) {
+      const score = scoreForAction({ prob, pMin, pMax, action })
+      if (score != null) operationStore.onRecordEfficiency({ index, row: r, col: c, prob, pMin, pMax, score, action })
+    } else {
       // 孤立或首步旗标，无约束时视为最优
-      operationStore.onRecordEfficiency({ index, row, col, prob: prob ?? 0, pBest: 0, score: 1, action: 'flag' })
+      operationStore.onRecordEfficiency({ index, row: r, col: c, prob: prob ?? 0, pMin: pMin ?? 0, pMax: pMax ?? 0, score: 1, action })
     }
   }
-  flagged.value += flag ? 1 : -1;
-  if (grid.value && grid.value[index]) grid.value[index].isFlag = flag
-  trackEvent(flag ? 'flag_set' : 'flag_unset', { index })
+  flagged.value += (state === 'flag' ? 1 : 0) - (prevFlag ? 1 : 0);
+  trackEvent(state === 'flag' ? 'flag_set' : state === 'question' ? 'flag_question' : 'flag_unset', { index })
+  scheduleSnapshot(state === 'flag' ? 'flag' : prevFlag ? 'unflag' : 'question', index)
 }
 
 const REVEAL_STEP_MS = 25; // 批量展开时每层涟漪的延迟
@@ -332,16 +404,16 @@ async function onOpen(item, index, delayMs = 0) {
     const { row, col } = getRowCol(index)
     // 首步必定安全（规避地雷），或孤立无约束时直接满分
     if (opened.value === 0 && flagged.value === 0) {
-      operationStore.onRecordEfficiency({ index, row, col, prob: 0, pBest: 0, score: 1, action: 'open' })
+      operationStore.onRecordEfficiency({ index, row, col, prob: 0, pMin: 0, pMax: 0, score: 1, action: 'open' })
     } else {
       const prob = probabilities.value.get(index)
-      const { pMin } = bestProbs.value
-      if (prob != null && pMin != null) {
-        const score = scoreForAction(prob, pMin, 'open')
-        if (score != null) operationStore.onRecordEfficiency({ index, row, col, prob, pBest: pMin, score, action: 'open' })
+      const { pMin, pMax } = bestProbs.value
+      if (prob != null && pMin != null && pMax != null) {
+        const score = scoreForAction({ prob, pMin, pMax, action: 'open' })
+        if (score != null) operationStore.onRecordEfficiency({ index, row, col, prob, pMin, pMax, score, action: 'open' })
       } else {
         // 无约束或概率缺失时视为最优（与当前最低一致）
-        operationStore.onRecordEfficiency({ index, row, col, prob: prob ?? 0, pBest: pMin ?? 0, score: 1, action: 'open' })
+        operationStore.onRecordEfficiency({ index, row, col, prob: prob ?? 0, pMin: pMin ?? 0, pMax: pMax ?? 0, score: 1, action: 'open' })
       }
     }
     if (delayMs === 0) trackEvent('open_cell', { index, is_bomb: !!item.isBomb })
@@ -349,7 +421,7 @@ async function onOpen(item, index, delayMs = 0) {
 
   if (item.isBomb) {
     clearHintIfOpened(index)
-    return doStop();
+    return doStop(false, index);
   }
   // 同步到 grid 供概率计算使用
   if (grid.value[index] && !grid.value[index].isOpen) grid.value[index].isOpen = true
@@ -360,6 +432,7 @@ async function onOpen(item, index, delayMs = 0) {
   }
   // 如果点开的节点为 0，则点开附近的节点
   openGridItem(item, index, delayMs);
+  if (isUserAction) scheduleSnapshot('open', index)
 }
 
 function onOpenAll(item, index) {
@@ -387,16 +460,17 @@ function onOpenAll(item, index) {
   if (count === item.count) {
     // 双击批量打开视为绝对安全决策，固定满分 10（评分始终记录）
     if (targetIndices.length) {
-      const pMin = bestProbs.value.pMin
+      const { pMin, pMax } = bestProbs.value
       const avgProb = targetIndices.reduce((a, ti) => a + (probabilities.value.get(ti) ?? 0), 0) / targetIndices.length
       const { row, col } = getRowCol(index)
-      operationStore.onRecordEfficiency({ index, row, col, prob: avgProb, pBest: pMin ?? 0, score: 1, action: 'chord' })
+      operationStore.onRecordEfficiency({ index, row, col, prob: avgProb, pMin: pMin ?? 0, pMax: pMax ?? 0, score: 1, action: 'chord' })
       trackEvent('chord_open', { center_index: index, opened_count: targetIndices.length })
     }
     for (const gridItem of items) {
       gridItem.open();
       if (isFailed.value) return;
     }
+    scheduleSnapshot('chord', index)
   }
 }
 
@@ -563,7 +637,7 @@ function onBeforeUnload(event) {
       :cell-index="index"
       :columns="column"
       :is-selected="operationStore.selectedIndex === index"
-      @flag="onFlag(index, $event)"
+      @mark-state="onMarkState(index, $event)"
       @open="onOpen(item, index, $event)"
       @open-all="onOpenAll(item, index)"
     />
@@ -571,7 +645,10 @@ function onBeforeUnload(event) {
   <div v-if="operationStore.isShowChart" class="flex items-center justify-center my-4">
     <Suspense>
       <template #default>
-        <operation-chart />
+        <operation-chart
+          @replay="restoreToSnapshot"
+          @download="handleDownloadReplay"
+        />
       </template>
       <template #fallback>
         <div class="loading loading-spinner loading-lg"></div>

@@ -267,6 +267,16 @@
   z-index: 2;
   filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 4px #fff);
 }
+/* 问号标记：半信半疑的格子，不占旗数、可被左键/chord 打开 */
+.question-mark {
+  font-weight: 800;
+  font-size: 1rem;
+  color: #1d4ed8;
+  text-shadow: 0 0 2px #fff, 0 0 4px #fff;
+  @media (prefers-color-scheme: dark) {
+    color: #93c5fd;
+  }
+}
 .hint-flash {
   animation: hint-flash-anim 0.6s ease-in-out 3;
 }

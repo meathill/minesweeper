@@ -30,36 +30,36 @@
     "revealedBomb": "💣"
   },
   "chart": {
-    "title": "⭐ Rendimiento y eficiencia de decisión (clic para rastrear)",
+    "title": "⭐ Rendimiento y eficiencia de decisión (clic para reproducir el tablero)",
+    "download": "⬇ Descargar datos de la partida (JSON)",
     "openSafe": "Abrir seguro",
     "openExact": "Abrir (exacto)",
     "flag": "Bandera",
-    "flagExact": "Bandera (exacta)",
+    "flagExact": "Operaciones de bandera (exacto)",
     "efficiency": "Eficiencia",
     "mineProb": "Prob. de mina",
     "rpm": "RPM (operaciones/min)",
     "efficiencyAxis": "Eficiencia / Prob. de mina ×10",
     "time": "Tiempo",
     "timeMinutes": "Tiempo (min)",
-    "timeSeconds": "Tiempo (s)",
-    "selected": "Seleccionada",
+    "timeSeconds": "Tiempo (seg)",
+    "selected": "Seleccionado",
     "cell": "Casilla",
-    "clearSelection": "Quitar resaltado",
-    "clickHint": "Haz clic en los puntos naranjas/morados para resaltar la casilla que pulsaste",
-    "legendTitle": "Leyenda · 4 líneas",
-    "legendAria": "Leyenda de repetición: abrir seguro, bandera, eficiencia, probabilidad de mina",
-    "bucket": "bloque",
+    "clearSelection": "Quitar",
+    "clickHint": "Haz clic en cualquier punto y el tablero volverá a ese momento: casillas abiertas, banderas e interrogantes",
+    "legendTitle": "Leyenda · 2 áreas + 2 líneas",
+    "legendAria": "Leyenda de la repetición: abrir seguro, bandera, eficiencia, prob. de mina",
+    "bucket": "cubeta",
+    "legendArea": "área (RPM)",
     "legendExact": "tiempo exacto",
-    "legendLeftAxis": "Izq: velocidad (RPM)",
-    "legendRightAxis": "Der: calidad (0-10)",
-    "legendClickHint": "Clic para resaltar · rojo<5 naranja 5-9 verde 10",
-    "exampleAria": "Ejemplo: valle naranja + pico morado = apuesta arriesgada",
-    "exampleBad": "Apuesta arriesgada · clic para rastrear",
-    "exampleProbHigh": "pico morado = riesgo alto",
-    "exampleEffLow": "valle naranja = puntuación baja",
-    "exampleCaption": "Ejemplo: un 10 constante es lo óptimo; cuando el morado sube y el naranja cae a la vez, adivinaste sobre una casilla de alta probabilidad — clic en el punto para resaltarla.",
-    "lowScoreList": "Peores puntuaciones · ¿no se puede hacer clic? Pulsa aquí",
-    "lowScoreHint": "Ordenadas por puntuación <9 — pulsa un botón para resaltar esa casilla"
+    "legendLeftAxis": "Izq: velocidad (área RPM)",
+    "legendRightAxis": "Der: calidad (líneas 0-10)",
+    "legendClickHint": "Clic en un punto para reproducir el tablero · rojo<6 naranja<9 verde más",
+    "replayed": "Tablero reproducido de ese momento",
+    "backToFinal": "Volver al final",
+    "resetWindow": "Reiniciar",
+    "lowScoreList": "Peores puntuaciones · pulsa aquí para volver",
+    "lowScoreHint": "Ordenadas por puntuación <9 — pulsa y el tablero se restaurará tal como estaba tras ese movimiento"
   },
   "seo": {
     "whatIsTitle": "¿Qué es Meathill Minesweeper?",
@@ -67,7 +67,7 @@
     "howToPlayTitle": "Cómo jugar",
     "howToPlay": [
       "<strong>Clic izquierdo</strong> para abrir. El primer clic nunca toca una mina; los números cuentan las minas en las 8 vecinas.",
-      "<strong>Clic derecho / pulsación larga</strong> para poner banderas. La cabecera muestra las minas restantes.",
+      "<strong>Clic derecho en tres estados</strong>: el clic derecho cicla <strong>nada → 🚩 → ❓ → nada</strong>. 🚩 marca minas seguras, ❓ marca casillas dudosas (no consume bandera y se puede abrir); la cabecera muestra las minas restantes. En móvil, pulsación larga equivale al clic derecho.",
       "<strong>Doble clic para abrir en cadena (optimizado para Apple / trackpad)</strong>: el chording clásico exige pulsar izquierda+derecha. Aquí, si las banderas alrededor de un número igualan al número, <strong>doble clic sobre el número</strong> abre el resto — sin clic derecho. En escritorio izquierda+derecha sigue funcionando, y el chording puntúa un 10 perfecto.",
       "Abre todas las casillas sin mina para ganar; si pisas una mina, el tablero se revela."
     ],
@@ -75,16 +75,16 @@
     "heatmapTitle": "Mapa de calor de probabilidad: ver el riesgo",
     "heatmapDesc": "Con el Modo Aprendizaje activo, el solver construye restricciones <code>restante = número - banderas</code> a partir de los números abiertos, divide las casillas de frontera en componentes y las enumera, mientras las casillas aisladas reparten las minas restantes a partes iguales. Cada casilla recibe <code>P(mina) 0-1</code>, mostrado como <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#22c55e\"></span> verde (0%) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#eab308\"></span> amarillo (50%) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#ef4444\"></span> rojo (100%) al 75% de opacidad. Puedes activar o desactivar <code>%</code> y <code>fracción</code> por separado — el color solo ya entrena la intuición.",
     "efficiencyTitle": "Eficiencia de decisión: ¿cuánto valió esa jugada?",
-    "efficiencyDesc": "No hay un 10 absoluto — solo <strong>relativo al tablero</strong>. Abrir: <code>puntuación=(1-p)/(1-pMin)*10</code>, donde pMin es la casilla más segura del momento; bandera: <code>puntuación=p/pMax*10</code>. Elegir la más segura / más segura de marcar en ese instante es un <strong>10</strong>; elegir un 50% cuando hay un 0% disponible ronda el 5. El chording siempre es <strong>10</strong>. Las puntuaciones comparten el solver, así que cerrar el mapa de calor sigue registrando para la repetición.",
+    "efficiencyDesc": "Puntuación por diferencia fija: solo mide cuánto te alejaste de la <strong>mejor opción de ese momento</strong> — <code>puntuación = 10 × (1 − |prob. elegida − prob. óptima| ÷ 0,5)</code>. Abrir se compara con la probabilidad mínima <code>pMin</code>, bandera con <code>pMax</code>, quitar bandera al revés (cuanto más segura la casilla, más puntos). Una diferencia de 5 puntos solo cuesta 1 punto: <strong>las partidas fáciles no se penalizan</strong>; con 50 puntos de diferencia llega a 0. Doble clic para abrir en grupo cuenta como <strong>10</strong>.",
     "chartTitle": "Cómo leer el gráfico de repetición",
-    "chartDesc": "Aparece al terminar la partida. El eje X es el <strong>tiempo</strong>; el eje izquierdo mide velocidad y el derecho calidad — 4 líneas, dos ritmos:",
+    "chartDesc": "Aparece al terminar la partida, con <strong>deslizador de ventana de tiempo</strong> (arrastra ambos extremos para ampliar cualquier tramo) y <strong>descarga JSON</strong>. El eje X es el <strong>tiempo</strong>; el eje izquierdo es velocidad (áreas) y el derecho calidad (líneas) —",
     "chartBullets": [
-      "<strong class=\"text-[#4bc0c0]\">Abrir seguro (turquesa · izquierda)</strong>: fondo RPM en bloques de 6 s — velocidad bruta y rachas de apertura.",
-      "<strong class=\"text-[#FF6B6B]\">Bandera (rojo · izquierda)</strong>: fondo RPM también en bloques de 6 s — cuándo estabas marcando.",
-      "<strong class=\"text-[#f59e0b]\">Eficiencia (puntos naranjas + línea · derecha 0-10)</strong>: <strong>trazada en el instante exacto de cada clic</strong>. 10 = óptimo en ese momento; <5 rojo, 5-9 naranja, 10 verde. <strong>Haz clic en cualquier punto para resaltar esa casilla en el tablero</strong> y rastrear la baja puntuación.",
-      "<strong class=\"text-[#a855f7]\">Prob. de mina (triángulos morados, discontinua · derecha 0-10 = prob×10)</strong>: solo para abrir/encadenar, la P(mina) de esa casilla en ese momento. Súponla al naranja — morado alto + naranja bajo = apuesta arriesgada."
+      "<strong class=\"text-[#4bc0c0]\">Abrir seguro (área turquesa · izq)</strong>: área RPM en cubetas de 6 s — cuanto más alta, más rápidas las aperturas en cadena.",
+      "<strong class=\"text-[#FF6B6B]\">Bandera (área roja · izq)</strong>: área RPM también en cubetas de 6 s — cuándo estabas marcando.",
+      "<strong class=\"text-[#f59e0b]\">Eficiencia (puntos naranjas + línea · der 0-10)</strong>: <strong>ubicados en el instante exacto del clic</strong>. 10 = óptimo en ese momento; <6 rojo, <9 naranja. <strong>Haz clic en cualquier punto y el tablero completo se restaurará tal como estaba tras ese movimiento</strong> (abiertas, banderas, interrogantes).",
+      "<strong class=\"text-[#a855f7]\">Prob. de mina (triángulos morados, discontinuos · der 0-10 = prob×10)</strong>: solo en abrir/doble clic, la P(mina) de esa casilla. Míralo junto al naranja: morado alto + naranja bajo = apuesta arriesgada."
     ],
-    "chartHint": "<strong>Cómo usarlo:</strong> busca los valles naranjas y comprueba si el morado sube a la vez — ese es el movimiento a repasar. Pulsa el punto, el tablero resalta la casilla; la próxima, elige una más verde.",
+    "chartHint": "<strong>Cómo usarlo:</strong> busca los valles naranjas y mira si el morado sube a la vez — esa es la jugada a revisar. Haz clic y el tablero vuelve a ese momento; usa el <strong>deslizador de tiempo</strong> para ampliar tramos con muchos puntos; pulsa el botón de descarga para obtener un JSON con todas las instantáneas del tablero.",
     "progressTitle": "De novato a experto",
     "progressSteps": [
       "Empieza con el mapa de calor activo y crea la intuición verde=abrir, rojo=marcar;",
@@ -92,10 +92,22 @@
       "Apaga el Modo Aprendizaje y desafía el Difícil 16×30 — RPM estable y naranja ≥9."
     ],
     "guides": [
-      { "label": "Cómo jugar al Buscaminas: reglas, trucos y guía", "href": "/es/guide/how-to-play/" },
-      { "label": "Buscaminas de Google: abrirlo, banderas y reglas", "href": "/es/guide/google-minesweeper/" },
-      { "label": "Calculadora de probabilidad del Buscaminas", "href": "/es/tools/probability-calculator/" },
-      { "label": "Buscaminas online — jugar sin descargar", "href": "/es/unblocked/" }
+      {
+        "label": "Cómo jugar al Buscaminas: reglas, trucos y guía",
+        "href": "/es/guide/how-to-play/"
+      },
+      {
+        "label": "Buscaminas de Google: abrirlo, banderas y reglas",
+        "href": "/es/guide/google-minesweeper/"
+      },
+      {
+        "label": "Calculadora de probabilidad del Buscaminas",
+        "href": "/es/tools/probability-calculator/"
+      },
+      {
+        "label": "Buscaminas online — jugar sin descargar",
+        "href": "/es/unblocked/"
+      }
     ],
     "guidesTitle": "Guías y herramientas",
     "keywords": "Palabras clave: Meathill Minesweeper · aprender jugando · probabilidad de mina · trucos buscaminas · tutorial · sin clic derecho · trackpad · Modo Aprendizaje · eficiencia de decisión"
@@ -105,7 +117,7 @@
     "items": [
       {
         "q": "¿Qué es Meathill Minesweeper?",
-        "a": "Meathill Minesweeper (minesweeper.meathill.com) es un Buscaminas para aprender jugando: tableros 9×9/16×16/16×30, sin clic derecho, apertura en cadena con doble clic y Modo Aprendizaje: mapa de calor de probabilidad en vivo, puntuación de eficiencia y repetición de la partida."
+        "a": "Meathill Minesweeper (minesweeper.meathill.com) es un buscaminas para aprender jugando con tableros de 9×9/16×16/16×30, marcas de clic derecho en tres estados (bandera/interrogante), apertura en grupo con doble clic y modo aprendizaje: mapa de calor de probabilidades + puntuación de eficiencia, con gráfico final que reproduce el tablero en cualquier momento (con descarga de instantáneas)."
       },
       {
         "q": "¿Cómo se calcula la probabilidad?",
@@ -113,7 +125,7 @@
       },
       {
         "q": "¿Qué significa la eficiencia de 0 a 10?",
-        "a": "Relativa, no absoluta. Abrir: (1-p)/(1-pMin)*10; bandera: p/pMax*10; encadenar siempre 10. Elegir la casilla más segura en ese momento es un 10; elegir un 50% cuando hay un 0% ronda el 5. Cada punto naranja de la repetición es una puntuación — pulsa para resaltar la casilla."
+        "a": "Puntuación por diferencia fija, relativa al momento. Abrir se compara con la prob. mínima pMin, bandera con pMax, quitar bandera al revés; puntuación = 10 × (1 − diferencia ÷ 0,5). 5 puntos de diferencia cuestan 1; 50 puntos se llevan todo. Doble clic en grupo = 10 fijo. En tableros fáciles no hay castigo por opciones casi iguales; solo saltarse casillas claramente más seguras en situaciones peligrosas cuesta puntos. Cada punto naranja es una puntuación: haz clic y el tablero volverá a ese momento."
       },
       {
         "q": "¿Cómo se encadena con Apple / trackpad?",
@@ -121,7 +133,7 @@
       },
       {
         "q": "¿Cómo se lee el gráfico de repetición?",
-        "a": "Eje izquierdo = velocidad, derecho = calidad. X es tiempo; dos líneas RPM (turquesa=abrir, rojo=bandera) de fondo en bloques de 6 s; dos nubes de puntos (naranja=eficiencia 0-10, morado=prob. de mina×10) trazadas en el instante exacto del clic. Un naranja sostenido en 9+ es óptimo; pulsa un valle — si el morado sube ahí, fue una apuesta arriesgada sobre esa casilla resaltada."
+        "a": "Eje izq = velocidad (áreas), eje der = calidad (líneas). Las áreas RPM turquesa/roja van en cubetas de 6 s para ver el ritmo; los puntos naranjas son eficiencia (0-10) y los triángulos morados la prob. de mina ×10. Si hay demasiados puntos, usa el <strong>deslizador de tiempo</strong> bajo el gráfico para ampliar un tramo; <strong>haz clic en cualquier punto y el tablero se restaurará tras ese movimiento</strong>; «Volver al final» restaura la posición final; el botón de descarga exporta un JSON con todas las instantáneas."
       },
       {
         "q": "¿Para quién es?",

@@ -30,11 +30,12 @@
     "revealedBomb": "💣"
   },
   "chart": {
-    "title": "⭐ Performance & Decision Efficiency (click to trace)",
+    "title": "⭐ Performance & Decision Efficiency (click to replay the board)",
+    "download": "⬇ Download game data (JSON)",
     "openSafe": "Open safe",
     "openExact": "Open (exact)",
     "flag": "Flag",
-    "flagExact": "Flag (exact)",
+    "flagExact": "Flag ops (exact)",
     "efficiency": "Efficiency",
     "mineProb": "Mine prob",
     "rpm": "RPM (ops/min)",
@@ -45,21 +46,20 @@
     "selected": "Selected",
     "cell": "Cell",
     "clearSelection": "Clear",
-    "clickHint": "Click orange/purple dots to highlight the cell you clicked",
-    "legendTitle": "Legend · 4 lines",
+    "clickHint": "Click any operation dot and the board replays that exact moment — opened cells, flags and question marks",
+    "legendTitle": "Legend · 2 areas + 2 lines",
     "legendAria": "Replay legend: open safe, flag, efficiency, mine prob",
     "bucket": "bucket",
+    "legendArea": "area (RPM)",
     "legendExact": "exact time",
-    "legendLeftAxis": "Left: speed (RPM)",
-    "legendRightAxis": "Right: quality (0-10)",
-    "legendClickHint": "Click dots to highlight · red<5 orange 5-9 green 10",
-    "exampleAria": "Replay example: valley in orange + spike in purple = risky guess",
-    "exampleBad": "Risky guess · click to trace",
-    "exampleProbHigh": "purple spike = high risk",
-    "exampleEffLow": "orange valley = low score",
-    "exampleCaption": "Example: steady 10 is optimal; when purple spikes and orange dips together, you guessed on a high-prob cell — click that dot to highlight it.",
-    "lowScoreList": "Low-score trace · hard to click? Click here",
-    "lowScoreHint": "Sorted by score <9 — click a button to highlight that cell too"
+    "legendLeftAxis": "Left: speed (RPM area)",
+    "legendRightAxis": "Right: quality (0-10 lines)",
+    "legendClickHint": "Click dots to replay the board · red<6 orange<9 green higher",
+    "replayed": "Board replayed to that moment",
+    "backToFinal": "Back to final",
+    "resetWindow": "Reset",
+    "lowScoreList": "Low-score replay · click here",
+    "lowScoreHint": "Sorted by score <9 — click a button and the board restores to right after that move"
   },
   "seo": {
     "whatIsTitle": "What is Meathill Minesweeper?",
@@ -67,7 +67,7 @@
     "howToPlayTitle": "How to play",
     "howToPlay": [
       "<strong>Left-click</strong> to open. First click never hits a mine; numbers show mines in the 8 neighbors.",
-      "<strong>Right-click / long-press</strong> to flag. The header shows mines remaining.",
+      "<strong>Right-click to cycle marks</strong>: right-click cycles <strong>none → 🚩 → ❓ → none</strong>. 🚩 marks mines you're sure of, ❓ marks uncertain cells (costs no flag, can still be opened); the header shows mines remaining. Long-press works as right-click on mobile.",
       "<strong>Double-click to chord (Apple / trackpad optimized)</strong>: classic chording needs left+right together. Here, if flags around a number equal the number, <strong>double-click the number</strong> to open the rest — no right-click needed. Desktop left+right still works, and chording counts as a perfect 10.",
       "Open all non-mine cells to win; hit a mine and the board reveals."
     ],
@@ -75,16 +75,16 @@
     "heatmapTitle": "Probability heatmap: see the risk",
     "heatmapDesc": "With Learn Mode on, a solver builds constraints <code>need = number - flags</code> from opened numbers, splits frontier cells into components and enumerates, while isolated cells share the remaining mines evenly. Each cell gets <code>P(mine) 0-1</code>, shown as <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#22c55e\"></span> green (0%) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#eab308\"></span> yellow (50%) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#ef4444\"></span> red (100%) at 75% opacity. Toggle <code>%</code> and <code>fraction</code> independently — color alone trains intuition.",
     "efficiencyTitle": "Decision efficiency: how good was that move?",
-    "efficiencyDesc": "No absolute 10 — only <strong>relative to the board</strong>. Open: <code>score=(1-p)/(1-pMin)*10</code> where pMin is the current safest cell; Flag: <code>score=p/pMax*10</code>. Picking the safest/riskiest at that moment is <strong>10</strong>; picking 50% when 0% exists is ~5. Chording is always <strong>10</strong>. Scores share the solver, so closing the heatmap still records for the post-game chart.",
+    "efficiencyDesc": "Fixed-gap scoring: it only measures how far your move was from the <strong>best option at that moment</strong> — <code>score = 10 × (1 − |chosen prob − best prob| ÷ 0.5)</code>. Open is compared against the current lowest mine probability <code>pMin</code>, flag against <code>pMax</code>, unflag in reverse (the safer the cell you unflag, the higher the score). A 5-point gap costs only 1 point, so <strong>easy boards never punish you</strong>; a full 50-point gap drops to 0. Chording is always <strong>10</strong>. Scores share the solver, so closing the heatmap still records for the post-game chart.",
     "chartTitle": "How to read the replay chart",
-    "chartDesc": "It pops up at game over. X is <strong>time</strong>, left Y is speed, right Y is quality — 4 lines, two rhythms:",
+    "chartDesc": "It pops up at game over, with a <strong>time-window slider</strong> (drag both ends to zoom into any segment) and a <strong>JSON download</strong>. X is <strong>time</strong>, left Y is speed (areas), right Y is quality (lines) —",
     "chartBullets": [
-      "<strong class=\"text-[#4bc0c0]\">Open safe (teal · left)</strong>: RPM background, bucketed every 6s — raw speed & flood-fill bursts.",
-      "<strong class=\"text-[#FF6B6B]\">Flag (red · left)</strong>: RPM background, also 6s buckets — when you were flagging.",
-      "<strong class=\"text-[#f59e0b]\">Efficiency (orange dots+line · right 0-10)</strong>: <strong>plotted at the exact click time</strong>. 10 = optimal at that moment; <5 red, 5-9 orange, 10 green. <strong>Click any dot to highlight that cell on the board</strong> and trace the low score.",
+      "<strong class=\"text-[#4bc0c0]\">Open safe (teal area · left)</strong>: RPM area chart, bucketed every 6s — the taller the area, the faster the flood-fill bursts.",
+      "<strong class=\"text-[#FF6B6B]\">Flag (red area · left)</strong>: RPM area, also 6s buckets — when you were flagging.",
+      "<strong class=\"text-[#f59e0b]\">Efficiency (orange dots+line · right 0-10)</strong>: <strong>plotted at the exact click time</strong>. 10 = optimal at that moment; <6 red, <9 orange. <strong>Click any dot and the whole board restores to right after that move</strong> (opened cells, flags, question marks) for a true replay.",
       "<strong class=\"text-[#a855f7]\">Mine prob (purple triangles, dashed · right 0-10 = prob×10)</strong>: only for open/chord, the P(mine) of that cell at that moment. Overlay it with orange — high purple + low orange = a risky guess."
     ],
-    "chartHint": "<strong>How to use it:</strong> find valleys in orange, check if purple spikes at the same time — that's the move to review. Click the dot, the board highlights the cell; next time pick a greener one.",
+    "chartHint": "<strong>How to use it:</strong> find valleys in orange, check if purple spikes at the same time — that's the move to review. Click the dot and the board replays that moment; use the <strong>time slider</strong> to zoom into a busy segment; hit the download button to grab a JSON with every board snapshot for deep analysis.",
     "progressTitle": "From novice to expert",
     "progressSteps": [
       "Start with heatmap on, learn green=open, red=flag intuition;",
@@ -105,7 +105,7 @@
     "items": [
       {
         "q": "What is Meathill Minesweeper?",
-        "a": "Meathill Minesweeper (minesweeper.meathill.com) is a learn-while-playing Minesweeper with 9×9/16×16/16×30 boards, no right-click required, double-click chording, and Learn Mode: live probability heatmap + efficiency scoring with post-game replay."
+        "a": "Meathill Minesweeper (minesweeper.meathill.com) is a learn-while-playing Minesweeper with 9×9/16×16/16×30 boards, three-state right-click marks (flag/question), double-click chording, and Learn Mode: live probability heatmap + efficiency scoring, plus a post-game chart that replays the board to any moment (with snapshot download)."
       },
       {
         "q": "How is the probability computed?",
@@ -113,7 +113,7 @@
       },
       {
         "q": "What does 0-10 efficiency mean?",
-        "a": "Relative, not absolute. Open: (1-p)/(1-pMin)*10, flag: p/pMax*10, chord always 10. Picking the safest/most certain cell at that moment is 10; picking 50% when 0% exists is ~5. Each orange dot in the replay is one score — click it to highlight the cell."
+        "a": "Fixed-gap scoring, relative to the moment. Open is compared against the lowest mine probability pMin at that time, flag against pMax, unflag in reverse; score = 10 × (1 − gap ÷ 0.5). A 5-point gap costs 1 point; a 50-point gap costs all 10. Chord is always 10. Easy boards with near-equal options never get punished — only skipping clearly safer cells in dangerous spots costs real points. Each orange dot in the replay is one score — click it and the board replays that moment."
       },
       {
         "q": "How to chord on Apple / trackpad?",
@@ -121,7 +121,7 @@
       },
       {
         "q": "How to read the replay chart?",
-        "a": "Left Y = speed, right Y = quality. X is time, two RPM lines (teal=open, red=flag, left) are 6s-bucketed background; two scatter lines (orange=efficiency 0-10, purple=mine prob×10, right) are plotted at the exact click time. Sustained 9+ in orange means optimal; click a valley — if purple spikes there, it was a high-risk guess on that highlighted cell."
+        "a": "Left Y = speed (areas), right Y = quality (lines). Teal/red RPM areas are 6s-bucketed for pace; orange dots are efficiency (0-10), purple triangles the cell's mine prob ×10 at that moment. When dots get dense, drag the <strong>time slider</strong> below the chart to zoom into a segment; <strong>click any operation dot and the whole board restores to right after that move</strong>; 'Back to final' restores the end position; the download button exports a JSON with every board snapshot."
       },
       {
         "q": "Who is it for?",

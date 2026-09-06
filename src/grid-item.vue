@@ -2,7 +2,7 @@
 import {ref, toRefs, computed, watch} from 'vue';
 import { useOperationRecordsStore } from './store/operationRecords';
 
-const emit = defineEmits(['flag', 'open', 'openAll']);
+const emit = defineEmits(['markState', 'open', 'openAll']);
 const props = defineProps({
   count: Number,
   isBomb: Boolean,
@@ -16,11 +16,14 @@ const props = defineProps({
   cellIndex: Number,
   columns: Number,
   isSelected: Boolean,
+  flagable: Boolean, // 剩余旗数是否充足；不足时右键只能在 无↔❓ 间循环
 });
 const {count, isBomb} = toRefs(props);
 const isOpen = ref(false);
-const isFlag = ref(false);
 const isUncovered = ref(false);
+const markState = ref('none'); // 'none' | 'flag' | 'question'，经典扫雷右键三态
+const isFlag = computed(() => markState.value === 'flag');
+const isQuestion = computed(() => markState.value === 'question');
 const mouseCount = ref(0);
 const revealDelay = ref(0);
 const operationStore = useOperationRecordsStore()
@@ -101,8 +104,22 @@ function getCellMeta() {
 function onRightClick(event) {
   mouseCount.value = 0;
   event.preventDefault();
-  addFlag();
-  operationStore.onUpdateOperateRecords('flag', getCellMeta())
+  cycleMarkState();
+  operationStore.onUpdateOperateRecords('flag', {...getCellMeta(), flagState: markState.value});
+}
+// 右键三态循环：无 → 🚩 → ❓ → 无；旗数不足时跳过插旗（经典行为：问号不占旗数）
+function cycleMarkState() {
+  if (isOpen.value) {
+    return;
+  }
+  if (markState.value === 'none') {
+    markState.value = props.flagable ? 'flag' : 'question';
+  } else if (markState.value === 'flag') {
+    markState.value = 'question';
+  } else {
+    markState.value = 'none';
+  }
+  emit('markState', markState.value);
 }
 function onDoubleClick() {
   mouseCount.value = 0;
@@ -124,6 +141,7 @@ function open(isUserAction = false, delayMs = 0) {
   if (isOpen.value || isFlag.value) {
     return;
   }
+  markState.value = 'none'; // 问号格允许直接左键打开（经典行为）
   revealDelay.value = delayMs;
   isOpen.value = true;
 
@@ -135,16 +153,24 @@ function open(isUserAction = false, delayMs = 0) {
 
   emit('open', delayMs);
 }
-function addFlag(skipFlagged = false) {
+// 胜利结算时把未开格统一标为旗（不影响已开格）
+function markAsFlag() {
   if (isOpen.value) {
     return;
   }
-  if (skipFlagged && isFlag.value) return;
-  isFlag.value = !isFlag.value;
-  emit('flag', isFlag.value);
+  markState.value = 'flag';
 }
 function reset() {
-  isOpen.value = isFlag.value = isUncovered.value = false;
+  isOpen.value = isUncovered.value = false;
+  markState.value = 'none';
+  revealDelay.value = 0;
+}
+// 回放恢复：棋盘完整回到快照时刻的状态
+function restore({ isOpen: openVal, isFlag: flagVal, isQuestion: questionVal }) {
+  isOpen.value = openVal;
+  markState.value = flagVal ? 'flag' : questionVal ? 'question' : 'none';
+  isUncovered.value = false;
+  revealDelay.value = 0;
 }
 function uncover() {
   isUncovered.value = true;
@@ -153,7 +179,8 @@ function uncover() {
 defineExpose({
   open,
   reset,
-  addFlag,
+  markAsFlag,
+  restore,
   uncover,
 
   isFlag,
@@ -181,6 +208,7 @@ export default {
   @mouseup="onMouseUp"
 >
   <template v-if="isFlag">🚩</template>
+  <template v-else-if="isQuestion"><span class="question-mark">?</span></template>
   <template v-else-if="isOpen">
     <template v-if="isBomb">💥</template>
     <template v-else>{{count ? count : ''}}</template>
