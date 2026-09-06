@@ -82,12 +82,14 @@ const CALL_NODE_BUDGET = 100000
 // 跳过昂贵的完整证明。sat 结论是可靠的（真找到了解），只有 unknown 才走完整检查。
 const QUICK_CHECK_NODES = 200
 
-// O(n) 约束传播 + 子集规则，迭代至不动点：
+// O(n) 约束传播 + 重叠边界收紧，迭代至不动点：
 //  1. 代入已定格：need==0 → 全安全；need==len → 全雷；
-//  2. 子集规则：vars(A)⊂vars(B) → 派生 (B\A, needB-needA)，1-2-1 这类模式无需搜索直接解。
+//  2. 两两重叠分析：交集 I 的雷数被两侧夹出 [lo,hi]，任一子区域（I/A\B/B\A）
+//     计数坍缩为精确值就派生为新约束。子集规则是特例（A⊂B 时 B\A 精确）；
+//     互不包含的重叠（如 {a,b,c}=1 与 {b,c,d}=2）也能推出 a=0、d=1。
 // 定死的格子直接从约束中排除，剩下的约束变小、分量分裂，后续搜索只处理真正模糊的核。
-// 脏约束（need 越界，真实对局不可能出现）按既有语义丢弃并标记 contradiction。
-// 规模保护：约束太多时跳过子集派生（O(c²)，留给搜索处理）；轮次封顶防 pathological。
+// 脏约束/矛盾对（真实对局不可能出现）按既有语义丢弃并标记 contradiction。
+// 规模保护：约束太多时跳过派生（O(c²)，留给搜索处理）；轮次封顶防 pathological。
 const PROPAGATE_MAX_ROUNDS = 20
 const SUBSET_MAX_CONSTRAINTS = 500
 function constraintKey(vars, need) {
@@ -124,35 +126,46 @@ function propagateConstraints(constraints) {
       }
     }
     active = next
-    // --- 子集规则派生新约束 ---
+    // --- 两两重叠分析派生新约束（无序对，每对只算一次） ---
     if (active.length > 1 && active.length <= SUBSET_MAX_CONSTRAINTS) {
       const sets = active.map(c => new Set(c.vars))
       const m = active.length // 本轮只看快照；新派生的下轮参与，保证 sets 下标有效
       let derived = 0
       for (let i = 0; i < m; i++) {
         const A = active[i]
-        for (let j = 0; j < m; j++) {
-          if (i === j) continue
+        for (let j = i + 1; j < m; j++) {
           const B = active[j]
-          if (A.vars.length >= B.vars.length) continue
-          const setB = sets[j]
-          let isSubset = true
-          for (const v of A.vars) if (!setB.has(v)) { isSubset = false; break }
-          if (!isSubset) continue
-          const setA = sets[i]
-          const rest = B.vars.filter(v => !setA.has(v))
-          const need = B.need - A.need
-          if (rest.length === 0) { if (need !== 0) contradiction = true; continue }
-          if (need < 0 || need > rest.length) { contradiction = true; continue }
-          const sortedKey = rest.slice().sort((a, b) => a - b).join(',')
-          const prev = needByVars.get(sortedKey)
-          if (prev !== undefined && prev !== need) { contradiction = true; continue }
-          const key = sortedKey + ':' + need
-          if (seen.has(key)) continue
-          seen.add(key)
-          needByVars.set(sortedKey, need)
-          active.push({ vars: rest, need })
-          derived++
+          const setA = sets[i], setB = sets[j]
+          const inter = []
+          const aOnly = []
+          for (const v of A.vars) (setB.has(v) ? inter : aOnly).push(v)
+          if (inter.length === 0) continue // 不相交：派生不出新东西
+          const bOnly = B.vars.filter(v => !setA.has(v))
+          // 交集雷数的合法区间（两侧约束联立）
+          const loI = Math.max(0, A.need - aOnly.length, B.need - bOnly.length)
+          const hiI = Math.min(inter.length, A.need, B.need)
+          if (loI > hiI) { contradiction = true; continue } // 该对无解：脏盘面
+          // 坍缩的子区域计数是精确值（任何全局解限制到该对上都是其解，计数守恒）：
+          // I 精确；A\B = needA - mines(I)；B\A 同理
+          const regions = []
+          if (loI === hiI) regions.push([inter, loI])
+          const loA = A.need - hiI, hiA = A.need - loI
+          if (loA === hiA) regions.push([aOnly, loA])
+          const loB = B.need - hiI, hiB = B.need - loI
+          if (loB === hiB) regions.push([bOnly, loB])
+          for (const [vars, need] of regions) {
+            if (vars.length === 0) { if (need !== 0) contradiction = true; continue }
+            if (need < 0 || need > vars.length) { contradiction = true; continue }
+            const sortedKey = vars.slice().sort((a, b) => a - b).join(',')
+            const prev = needByVars.get(sortedKey)
+            if (prev !== undefined && prev !== need) { contradiction = true; continue }
+            const key = sortedKey + ':' + need
+            if (seen.has(key)) continue
+            seen.add(key)
+            needByVars.set(sortedKey, need)
+            active.push({ vars, need })
+            derived++
+          }
         }
       }
       if (derived) changed = true
