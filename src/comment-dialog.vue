@@ -10,8 +10,6 @@ const GOOGLE_ID =
 const AUTH_ROOT = 'https://awesomecomment.org/api/site/auth';
 const AUTH_PREFIX = 'acSaas';
 const POST_ID = 'https://minesweeper.meathill.com';
-const COMMENT_CSS =
-  'https://unpkg.com/@roudanio/awesome-comment@0.12.0/dist/style.css';
 const AUTH_JS =
   'https://unpkg.com/@roudanio/awesome-auth@0.1.5/dist/awesome-auth.js';
 const COMMENT_JS =
@@ -21,26 +19,14 @@ const dialogRef = ref(null);
 const commentsRef = ref(null);
 let initialized = false;
 
-function loadStyle(src, id) {
-  if (id && document.getElementById(id)) return;
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = src;
-  if (id) link.id = id;
-  document.head.appendChild(link);
-}
-
 async function initComment() {
   if (initialized || !commentsRef.value) return;
-  // 样式已存在说明初始化过（与 keytest 同守卫），外加 initialized 双保险
-  if (document.getElementById('awesome-comment-style')) {
-    initialized = true;
-    return;
-  }
   initialized = true;
-  loadStyle(COMMENT_CSS, 'awesome-comment-style');
   try {
-    const [authModule, commentModule] = await Promise.all([
+    // 样式走本地打包（见 src/vendor/awesome-comment.css），不经过 unpkg：
+    // unpkg 在部分网络下会 hang 住导致组件永久裸奔，且样式失败无从重试
+    const [, authModule, commentModule] = await Promise.all([
+      import('./vendor/awesome-comment.css'),
       import(/* @vite-ignore */ AUTH_JS),
       import(/* @vite-ignore */ COMMENT_JS),
     ]);

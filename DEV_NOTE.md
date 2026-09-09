@@ -39,5 +39,6 @@
 
 - 复用 Awesome Comment 的 `meathill.com` 站点（`siteId=47de…`，域名已验证，无需新建站点），全站统一 `postId=https://minesweeper.meathill.com`，中英共用一个评论区。
 - SDK 用 `awesome-comment@0.12.0` + `awesome-auth@0.1.5`（0.12 的 `init` 参数含 `siteId`/`locale`，与 keytest 的 0.10.3 不同；`turnstileSiteKey` 可选，官方生成代码没带就不用传）。
-- 弹窗复刻 keytest 形式：Header 按钮 → `<dialog class="modal">` + 骨架屏，首次打开才动态 `import` unpkg（`/* @vite-ignore */` 必加，否则 vite 试图预构建远端 URL）。`close` 回焦 `body`，`keydown` capture 隔离传播但不 `preventDefault`（保证输入法与 ESC 原生关闭正常）。
+- 弹窗复刻 keytest 形式：Header 按钮 → `<dialog class="modal">` + 骨架屏，首次打开才动态 `import`（JS 走 unpkg，`/* @vite-ignore */` 必加，否则 vite 试图预构建远端 URL）。`close` 回焦 `body`，`keydown` capture 隔离传播但不 `preventDefault`（保证输入法与 ESC 原生关闭正常）。
+- 样式必须走本地 `src/vendor/awesome-comment.css`（Vite 打包成独立懒加载 chunk），不经过 unpkg：unpkg 在部分网络下会 hang 住，JS 到了、CSS 没到时组件永久裸奔（2026-09 真实踩坑），且样式失败无从重试。CSS 选择器全在 `.awesome-comment` 作用域下，不会污染主站。
 - CDN 被拦截时降级保留骨架、不影响游戏（`initialized` 失败回滚允许重试）。
