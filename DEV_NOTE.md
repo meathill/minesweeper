@@ -34,3 +34,10 @@
 - `operation-chart.vue` 用 `defineAsyncComponent` 懒加载，避免首屏拉起 chart.js。
 - GA 的 `gtag` 调用全部经 `trackEvent` 包一层 try/catch，无痕模式/屏蔽插件下不抛错。
 - `index.html` 内联的 `aria-hidden` MutationObserver 是为了修复 Google Vignette 误标 body，具体见行内注释，勿删。
+
+## 评论（`src/comment-dialog.vue`）
+
+- 复用 Awesome Comment 的 `meathill.com` 站点（`siteId=47de…`，域名已验证，无需新建站点），全站统一 `postId=https://minesweeper.meathill.com`，中英共用一个评论区。
+- SDK 用 `awesome-comment@0.12.0` + `awesome-auth@0.1.5`（0.12 的 `init` 参数含 `siteId`/`locale`，与 keytest 的 0.10.3 不同；`turnstileSiteKey` 可选，官方生成代码没带就不用传）。
+- 弹窗复刻 keytest 形式：Header 按钮 → `<dialog class="modal">` + 骨架屏，首次打开才动态 `import` unpkg（`/* @vite-ignore */` 必加，否则 vite 试图预构建远端 URL）。`close` 回焦 `body`，`keydown` capture 隔离传播但不 `preventDefault`（保证输入法与 ESC 原生关闭正常）。
+- CDN 被拦截时降级保留骨架、不影响游戏（`initialized` 失败回滚允许重试）。

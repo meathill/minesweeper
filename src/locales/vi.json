@@ -4,6 +4,7 @@
   },
   "header": {
     "title": "Meathill Minesweeper",
+    "comment": "Bình luận",
     "level": "Độ khó",
     "levels": {
       "Easy": "Dễ",

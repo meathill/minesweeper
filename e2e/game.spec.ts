@@ -32,3 +32,10 @@ test('重开后棋盘归零', async ({ page }) => {
   await page.locator('.start-button').click();
   await expect(page.locator('#stage .grid-item.open')).toHaveCount(0);
 });
+
+test('评论按钮打开评论弹窗', async ({ page }) => {
+  await expect(page.locator('#comment-toggle')).toBeVisible();
+  await page.locator('#comment-toggle').click();
+  await expect(page.locator('#comment-modal')).toHaveJSProperty('open', true);
+  await expect(page.locator('#comment-modal #comments')).toBeAttached();
+});

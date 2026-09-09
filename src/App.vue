@@ -1,8 +1,9 @@
 <script setup>
-import { computed, onMounted, defineAsyncComponent, watch } from 'vue';
+import { computed, onMounted, defineAsyncComponent, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { version } from '../package.json';
 import GridItem from './grid-item.vue';
+import CommentDialog from './comment-dialog.vue';
 import BrandFooter from './brand-footer.vue';
 import BrandSiteSwitcher from './brand-site-switcher.vue';
 import { Levels } from './data';
@@ -23,6 +24,11 @@ const operationStore = useOperationRecordsStore();
 const learningStore = useLearningStore();
 const game = useGameStore();
 const prob = useProbabilityStore();
+const commentDialogRef = ref(null);
+
+function openComments() {
+  commentDialogRef.value?.open();
+}
 
 function switchLocale(code) {
   if (code === locale.value) return;
@@ -93,6 +99,15 @@ onMounted(() => {
           </div>
         </details>
         <BrandSiteSwitcher />
+        <button
+          type="button"
+          id="comment-toggle"
+          class="btn btn-ghost btn-sm px-2"
+          @click="openComments"
+        >
+          <i class="bi bi-chat-dots" aria-hidden="true"></i>
+          <span class="hidden sm:inline">{{ t('header.comment') }}</span>
+        </button>
         <div class="dropdown dropdown-end">
           <label tabindex="0" class="btn btn-ghost btn-sm px-2">
             {{ t(`header.levels.${game.level}`) }}
@@ -254,4 +269,5 @@ onMounted(() => {
   </section>
 
   <BrandFooter />
+  <CommentDialog ref="commentDialogRef" />
 </template>

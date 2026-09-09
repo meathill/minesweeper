@@ -4,6 +4,7 @@
   },
   "header": {
     "title": "Meathill Minesweeper",
+    "comment": "Comentarios",
     "level": "Nivel",
     "levels": {
       "Easy": "Fácil",
