@@ -243,9 +243,13 @@ export const useGameStore = defineStore('game', () => {
       return (ev.reduce((a, b) => a + b.score10, 0) / ev.length).toFixed(1);
     })();
     if (success) {
-      getConfetti().addConfetti({
-        confettiNumber: 500,
-      });
+      try {
+        getConfetti().addConfetti({
+          confettiNumber: 500,
+        });
+      } catch {
+        // node --test 等无 DOM 环境跳过撒花，不影响结算
+      }
       // 胜利：所有未开格（即全部雷位）统一标为旗，grid 数据与组件 UI 同步
       for (const cell of grid.value) {
         if (!cell.isOpen) {
@@ -254,8 +258,10 @@ export const useGameStore = defineStore('game', () => {
         }
       }
       for (const gridItem of gridItemRefs.value) {
-        gridItem.markAsFlag();
+        gridItem?.markAsFlag?.();
       }
+      // 结算时补齐旗数，否则顶栏 bombNumber - flagged 会残留（如 99-94=5）
+      flagged.value = bombNumber.value;
       trackEvent('game_win', {
         time_seconds: timeCount.value,
         avg_efficiency: avgEff,

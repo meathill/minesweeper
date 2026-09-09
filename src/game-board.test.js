@@ -140,6 +140,27 @@ describe('gameStore - 插旗与结算', () => {
     assert.equal(g.grid[0].isQuestion, false);
   });
 
+  it('胜利结算：自动补旗并清零剩余（回归：顶栏不再残留 5）', () => {
+    const g = useGameStore();
+    g.doStart(null);
+    mountFakeItems(g);
+    g.doRealStart(40);
+    // 只插部分旗，模拟用户没插满就点开全部安全格获胜
+    g.onMarkState(
+      g.grid.findIndex((c) => c.isBomb),
+      'flag',
+    );
+    assert.ok(g.flagged < g.bombNumber);
+    g.doStop(true, null);
+    assert.equal(g.isSuccess, true);
+    assert.equal(g.flagged, g.bombNumber);
+    assert.equal(g.bombNumber - g.flagged, 0);
+    assert.ok(
+      g.grid.every((c) => c.isOpen || c.isFlag),
+      '胜利后所有未开格都应标为旗',
+    );
+  });
+
   it('踩雷终局：失败态、踩雷格同步为已开', () => {
     const g = useGameStore();
     g.doStart(null);
