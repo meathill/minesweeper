@@ -515,7 +515,7 @@ export function computeProbabilities(grid, row, column, bombNumber) {
     if (n > 28) {
       isApproximate = true
       const large = solveLargeComponent(comp.vars, comp.constraints, budget)
-      if (large.forced) {
+      if (large.hasForced) {
         for (const [v, p] of large.forced) {
           frontierProbs.set(v, p)
           expectedFrontierMines += p
@@ -535,12 +535,12 @@ export function computeProbabilities(grid, row, column, bombNumber) {
       // 枚举超预算：改走 forced 检查（共享剩余预算），剩不下的用平均近似
       isApproximate = true
       const large = solveLargeComponent(comp.vars, comp.constraints, budget)
-      const probs = large.forced ?? approximateComponent(comp.vars, comp.constraints)
+      const probs = large.hasForced ? large.forced : approximateComponent(comp.vars, comp.constraints)
       for (const [v, p] of probs) {
         frontierProbs.set(v, p)
         expectedFrontierMines += p
       }
-      if (large.forced) for (const v of large.decided.keys()) decidedSet.add(v)
+      if (large.hasForced) for (const v of large.decided.keys()) decidedSet.add(v)
       continue
     }
     if (total === 0) {

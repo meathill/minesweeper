@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
-import { computeProbabilities, getBestProbs, scoreForAction, createForcedRefiner } from './probability.js'
+import { computeProbabilities, getBestProbs, scoreForAction, createForcedRefiner, solveLargeComponentExport } from './probability.js'
 
 // helper: row*col grid, callback to setup
 function makeGrid(row, col, setup) {
@@ -485,5 +485,32 @@ describe('createForcedRefiner - 后台精算', () => {
       grid[idx(0, 2, 3)].isOpen = true; grid[idx(0, 2, 3)].count = 1
     })
     assert.equal(createForcedRefiner(small, 2, 3, new Set()).total, 0)
+  })
+})
+
+describe('computeProbabilities - 大分量无 forced 不丢格（前沿灰带回归）', () => {
+  it('单约束大分量无 forced：solveLarge 返回空但 hasForced 为 false', () => {
+    // 31 变量单约束 need=15，每个变量 0/1 皆可满足，无任何 forced
+    const vars = Array.from({ length: 31 }, (_, i) => i)
+    const large = solveLargeComponentExport(vars, [{ vars: [...vars], need: 15 }], 100000)
+    assert.equal(large.hasForced, false)
+  })
+
+  it('大分量无 forced 时前沿格全员仍有近似概率（截图灰带回归）', () => {
+    // 3x36：中行 1/2 交替，上下两行 72 未知连成大分量，其中 34 格无 forced；
+    // 旧逻辑 `if (large.forced)` 把空 Map 当真，整块近似被跳过，前沿变纯灰 null。
+    const col = 36
+    const g = makeGrid(3, col, (grid) => {
+      for (let c = 0; c < col; c++) { grid[idx(1, c, col)].isOpen = true; grid[idx(1, c, col)].count = (c % 2 === 0) ? 1 : 2 }
+      for (let c = 0; c < col; c++) { grid[idx(0, c, col)].isOpen = false; grid[idx(2, c, col)].isOpen = false }
+    })
+    const { map, isApproximate, frontierSet } = computeProbabilities(g, 3, col, 15)
+    assert.equal(isApproximate, true)
+    assert.equal(frontierSet.size, 72)
+    for (const v of frontierSet) {
+      assert.ok(map.has(v), `前沿格 ${v} 丢失概率`)
+      const p = map.get(v)
+      assert.ok(p >= 0 && p <= 1, `前沿格 ${v} 概率越界：${p}`)
+    }
   })
 })
