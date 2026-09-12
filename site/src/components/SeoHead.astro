@@ -19,7 +19,18 @@ interface Props {
   breadcrumbs?: { name: string; path: string }[];
 }
 
-const { lang, title, description, path, keywords, ogType = 'website', ogImage, faq, howTo, breadcrumbs } = Astro.props;
+const {
+  lang,
+  title,
+  description,
+  path,
+  keywords,
+  ogType = 'website',
+  ogImage,
+  faq,
+  howTo,
+  breadcrumbs,
+} = Astro.props;
 const locale = getLocaleMeta(lang);
 
 const canonical = `${SITE}${locale.prefix}${path}`;

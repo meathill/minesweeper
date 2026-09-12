@@ -1,8 +1,10 @@
-@import 'meathill-brand/tokens.css';
-@import 'tailwindcss';
-@plugin '@tailwindcss/typography';
-@plugin 'daisyui' {
-  themes: cupcake --default, dark --prefersdark;
+@import "meathill-brand/tokens.css";
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@plugin "daisyui" {
+  themes:
+    cupcake --default,
+    dark --prefersdark;
 }
 
 /* 暗色品牌变量（与游戏 src/style/index.css 保持一致） */

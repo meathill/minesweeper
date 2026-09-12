@@ -12,7 +12,18 @@ const sourceIcon = path.join(publicDir, 'favicon.png');
 const sizes = [16, 32, 48, 180, 192, 512];
 
 for (const size of sizes) {
-  execFileSync('sips', ['-z', String(size), String(size), sourceIcon, '--out', path.join(publicDir, `icon-${size}.png`)], { stdio: 'pipe' });
+  execFileSync(
+    'sips',
+    [
+      '-z',
+      String(size),
+      String(size),
+      sourceIcon,
+      '--out',
+      path.join(publicDir, `icon-${size}.png`),
+    ],
+    { stdio: 'pipe' },
+  );
 }
 
 function buildIco(entries) {
@@ -37,8 +48,16 @@ function buildIco(entries) {
   return Buffer.concat([header, directory, ...blobs]);
 }
 
-writeFileSync(path.join(publicDir, 'apple-touch-icon.png'), readFileSync(path.join(publicDir, 'icon-180.png')));
+writeFileSync(
+  path.join(publicDir, 'apple-touch-icon.png'),
+  readFileSync(path.join(publicDir, 'icon-180.png')),
+);
 
-const icoEntries = [16, 32, 48].map((size) => ({ size, data: readFileSync(path.join(publicDir, `icon-${size}.png`)) }));
+const icoEntries = [16, 32, 48].map((size) => ({
+  size,
+  data: readFileSync(path.join(publicDir, `icon-${size}.png`)),
+}));
 writeFileSync(path.join(publicDir, 'favicon.ico'), buildIco(icoEntries));
-console.log(`generated: icon-{${sizes.join(',')}}.png + apple-touch-icon.png + favicon.ico`);
+console.log(
+  `generated: icon-{${sizes.join(',')}}.png + apple-touch-icon.png + favicon.ico`,
+);

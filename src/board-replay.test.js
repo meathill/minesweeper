@@ -47,13 +47,23 @@ describe('board-replay', () => {
     assert.equal(grid[2].isFlag, true);
     assert.equal(grid[3].isQuestion, true);
     assert.equal(grid[1].isUncovered, false);
-    assert.deepEqual(restored[0], [0, { isOpen: true, isFlag: false, isQuestion: false }]);
-    assert.deepEqual(restored[3], [3, { isOpen: false, isFlag: false, isQuestion: true }]);
+    assert.deepEqual(restored[0], [
+      0,
+      { isOpen: true, isFlag: false, isQuestion: false },
+    ]);
+    assert.deepEqual(restored[3], [
+      3,
+      { isOpen: false, isFlag: false, isQuestion: true },
+    ]);
   });
 
   it('applySnapshot 容忍缺失的组件实例', () => {
     const grid = makeGrid(['o', 'x']);
-    applySnapshot(grid, [], { openedBits: '10', flagBits: '00', questionBits: '00' });
+    applySnapshot(grid, [], {
+      openedBits: '10',
+      flagBits: '00',
+      questionBits: '00',
+    });
     assert.equal(grid[0].isOpen, true);
   });
 });

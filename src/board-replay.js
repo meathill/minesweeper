@@ -30,7 +30,11 @@ export function applySnapshot(grid, gridItems, snap) {
     cell.isUncovered = false;
     const item = gridItems?.[i];
     if (item && typeof item.restore === 'function') {
-      item.restore({ isOpen: opened[i], isFlag: flags[i], isQuestion: questions[i] });
+      item.restore({
+        isOpen: opened[i],
+        isFlag: flags[i],
+        isQuestion: questions[i],
+      });
     }
   });
 }

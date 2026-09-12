@@ -13,17 +13,25 @@ const props = defineProps({
 const model = defineModel({ type: Array, default: () => [0, 100] }); // [startSec, endSec]
 
 function updateStart(event) {
-  const value = Math.min(Number(event.target.value), model.value[1] - props.step);
+  const value = Math.min(
+    Number(event.target.value),
+    model.value[1] - props.step,
+  );
   model.value = [value, model.value[1]];
 }
 function updateEnd(event) {
-  const value = Math.max(Number(event.target.value), model.value[0] + props.step);
+  const value = Math.max(
+    Number(event.target.value),
+    model.value[0] + props.step,
+  );
   model.value = [model.value[0], value];
 }
 function reset() {
   model.value = [props.min, props.max];
 }
-const isTruncated = computed(() => model.value[0] > props.min || model.value[1] < props.max);
+const isTruncated = computed(
+  () => model.value[0] > props.min || model.value[1] < props.max,
+);
 const rangeStyle = computed(() => {
   const span = props.max - props.min || 1;
   const left = ((model.value[0] - props.min) / span) * 100;
@@ -31,7 +39,9 @@ const rangeStyle = computed(() => {
   return { left: `${left}%`, width: `${width}%` };
 });
 // 两柄重叠在一端时，把对应 input 置顶以便再拖回
-const startZ = computed(() => (model.value[0] >= props.max - props.step ? 3 : 1));
+const startZ = computed(() =>
+  model.value[0] >= props.max - props.step ? 3 : 1,
+);
 const endZ = computed(() => (model.value[1] <= props.min + props.step ? 3 : 1));
 </script>
 

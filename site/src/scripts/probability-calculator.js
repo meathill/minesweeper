@@ -17,7 +17,13 @@ if (root) {
   // 状态序列：hidden → flag → 1..8 → hidden，正反向循环
   const SEQ = ['hidden', 'flag', '1', '2', '3', '4', '5', '6', '7', '8'];
   const PROB_CLASS = (p) =>
-    p <= 0.2 ? 'prob-low' : p <= 0.5 ? 'prob-mid' : p <= 0.8 ? 'prob-high' : 'prob-certain';
+    p <= 0.2
+      ? 'prob-low'
+      : p <= 0.5
+        ? 'prob-mid'
+        : p <= 0.8
+          ? 'prob-high'
+          : 'prob-certain';
 
   let grid = [];
   let cellEls = [];
@@ -29,7 +35,11 @@ if (root) {
   function readConfig() {
     const row = clamp(parseInt(rowInput.value, 10) || 9, 5, 30);
     const column = clamp(parseInt(colInput.value, 10) || 9, 5, 40);
-    const mines = clamp(parseInt(mineInput.value, 10) || 10, 1, row * column - 1);
+    const mines = clamp(
+      parseInt(mineInput.value, 10) || 10,
+      1,
+      row * column - 1,
+    );
     rowInput.value = String(row);
     colInput.value = String(column);
     mineInput.value = String(mines);
@@ -91,7 +101,11 @@ if (root) {
 
   function rebuild() {
     const { row, column } = readConfig();
-    grid = Array.from({ length: row * column }, () => ({ isOpen: false, isFlag: false, count: 0 }));
+    grid = Array.from({ length: row * column }, () => ({
+      isOpen: false,
+      isFlag: false,
+      count: 0,
+    }));
     boardEl.style.setProperty('--calc-column', String(column));
     boardEl.replaceChildren(
       ...grid.map((_, i) => {
@@ -101,7 +115,9 @@ if (root) {
         btn.dataset.index = String(i);
         btn.setAttribute(
           'aria-label',
-          labelTemplate.replace('{x}', String((i % column) + 1)).replace('{y}', String(((i / column) | 0) + 1)),
+          labelTemplate
+            .replace('{x}', String((i % column) + 1))
+            .replace('{y}', String(((i / column) | 0) + 1)),
         );
         return btn;
       }),

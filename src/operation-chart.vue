@@ -46,14 +46,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useOperationRecordsStore } from "./store/operationRecords.js";
-import { Line } from "vue-chartjs";
-import TimeRangeSlider from "./time-range-slider.vue";
-import ChartLegend from "./chart-legend.vue";
-import { transferEventsToData, formatTimeLabel } from "./chart-data.js";
-const { t } = useI18n()
+import { useOperationRecordsStore } from './store/operationRecords.js';
+import { Line } from 'vue-chartjs';
+import TimeRangeSlider from './time-range-slider.vue';
+import ChartLegend from './chart-legend.vue';
+import { transferEventsToData, formatTimeLabel } from './chart-data.js';
+const { t } = useI18n();
 import {
   Chart as ChartJS,
   LinearScale,
@@ -63,7 +63,7 @@ import {
   Tooltip,
   Legend,
   Filler,
-} from "chart.js";
+} from 'chart.js';
 
 ChartJS.register(
   LinearScale,
@@ -72,7 +72,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  Filler
+  Filler,
 );
 
 const emit = defineEmits(['replay', 'download']);
@@ -93,52 +93,69 @@ const openPerOp = ref([]);
 
 const lowScoreOps = computed(() => {
   return [...operationStore.efficiencyEvents]
-    .filter(e => e.score10 < 9)
-    .sort((a,b)=>a.score10 - b.score10 || a.timeSinceStartSec - b.timeSinceStartSec)
-    .slice(0, 8)
-})
+    .filter((e) => e.score10 < 9)
+    .sort(
+      (a, b) =>
+        a.score10 - b.score10 || a.timeSinceStartSec - b.timeSinceStartSec,
+    )
+    .slice(0, 8);
+});
 const selectedDetail = computed(() => {
-  const idx = operationStore.selectedIndex
-  if (idx == null) return null
-  const ts = operationStore.selectedTimestamp
+  const idx = operationStore.selectedIndex;
+  if (idx == null) return null;
+  const ts = operationStore.selectedTimestamp;
   // 找到最近的 efficiency 事件
-  const ev = operationStore.efficiencyEvents.find(e => e.index === idx && (ts == null || e.clickTimestamp === ts))
-    || operationStore.efficiencyEvents.find(e => e.index === idx)
+  const ev =
+    operationStore.efficiencyEvents.find(
+      (e) => e.index === idx && (ts == null || e.clickTimestamp === ts),
+    ) || operationStore.efficiencyEvents.find((e) => e.index === idx);
   if (!ev) {
     // 可能是 flag 但没有效率？尝试从 operationEvents 找
-    const op = operationEvents.find(e => e.index === idx)
-    if (!op) return null
-    return { index: idx, row: op.row ?? '?', col: op.col ?? '?', action: op.type, score10: '-', prob: 0, timeSinceStartSec: op.timeSinceStartSec ?? 0 }
+    const op = operationEvents.find((e) => e.index === idx);
+    if (!op) return null;
+    return {
+      index: idx,
+      row: op.row ?? '?',
+      col: op.col ?? '?',
+      action: op.type,
+      score10: '-',
+      prob: 0,
+      timeSinceStartSec: op.timeSinceStartSec ?? 0,
+    };
   }
-  return ev
-})
+  return ev;
+});
 
 // 回放到某个时刻：取 ≤ 时间戳的最近快照，通知父组件恢复棋盘
 function replayTo(timestamp, cellIndex = null) {
-  const snap = operationStore.findSnapshotAt(timestamp)
-  if (!snap) return
-  if (cellIndex != null) operationStore.selectOperation(cellIndex, timestamp)
-  else operationStore.clearSelection()
-  emit('replay', snap)
-  const stage = document.getElementById('stage')
-  if (stage) stage.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  const snap = operationStore.findSnapshotAt(timestamp);
+  if (!snap) return;
+  if (cellIndex != null) operationStore.selectOperation(cellIndex, timestamp);
+  else operationStore.clearSelection();
+  emit('replay', snap);
+  const stage = document.getElementById('stage');
+  if (stage) stage.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 function backToFinal() {
-  operationStore.clearSelection()
-  const final = operationStore.findFinalSnapshot()
-  if (final) emit('replay', final)
-  const stage = document.getElementById('stage')
-  if (stage) stage.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  operationStore.clearSelection();
+  const final = operationStore.findFinalSnapshot();
+  if (final) emit('replay', final);
+  const stage = document.getElementById('stage');
+  if (stage) stage.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 // x 轴刻度随窗口宽度自适应细化
 const TICK_STEPS_SEC = [1, 2, 5, 10, 15, 30, 60, 120, 300, 600];
-const xMin = computed(() => (isMinuteScale.value ? windowSec.value[0] / 60 : windowSec.value[0]));
-const xMax = computed(() => (isMinuteScale.value ? windowSec.value[1] / 60 : windowSec.value[1]));
+const xMin = computed(() =>
+  isMinuteScale.value ? windowSec.value[0] / 60 : windowSec.value[0],
+);
+const xMax = computed(() =>
+  isMinuteScale.value ? windowSec.value[1] / 60 : windowSec.value[1],
+);
 const tickStep = computed(() => {
-  const widthSec = Math.max(windowSec.value[1] - windowSec.value[0], 1)
-  const step = TICK_STEPS_SEC.find((s) => s >= widthSec / 10) ?? 600
-  return isMinuteScale.value ? step / 60 : step
+  const widthSec = Math.max(windowSec.value[1] - windowSec.value[0], 1);
+  const step = TICK_STEPS_SEC.find((s) => s >= widthSec / 10) ?? 600;
+  return isMinuteScale.value ? step / 60 : step;
 });
 
 const chartOptions = computed(() => ({
@@ -148,25 +165,35 @@ const chartOptions = computed(() => ({
   interaction: { mode: 'nearest', intersect: false },
   onClick(_evt, elements, chart) {
     // 兼容 Chart.js 4：elements 可能为空，改用 chart.getElementsAtEventForMode
-    let hits = elements
+    let hits = elements;
     if ((!hits || hits.length === 0) && chart && _evt) {
-      try { hits = chart.getElementsAtEventForMode(_evt, 'nearest', { intersect: false }, false) || [] } catch(e) { hits = [] }
+      try {
+        hits =
+          chart.getElementsAtEventForMode(
+            _evt,
+            'nearest',
+            { intersect: false },
+            false,
+          ) || [];
+      } catch (e) {
+        hits = [];
+      }
     }
     if (!hits || hits.length === 0) {
-      backToFinal()
-      return
+      backToFinal();
+      return;
     }
-    const el = hits[0]
-    const point = chartData.value.datasets[el.datasetIndex].data[el.index]
+    const el = hits[0];
+    const point = chartData.value.datasets[el.datasetIndex].data[el.index];
     if (point && point.clickTimestamp != null) {
-      replayTo(point.clickTimestamp, point.index)
+      replayTo(point.clickTimestamp, point.index);
     } else {
-      backToFinal()
+      backToFinal();
     }
   },
   scales: {
     x: {
-      type: "linear",
+      type: 'linear',
       title: {
         display: true,
         text: isMinuteScale.value ? t('chart.timeMinutes') : t('chart.time'),
@@ -177,8 +204,8 @@ const chartOptions = computed(() => ({
         maxTicksLimit: 14,
         stepSize: tickStep.value,
         callback(value) {
-          const sec = isMinuteScale.value ? value * 60 : value
-          return formatTimeLabel(sec)
+          const sec = isMinuteScale.value ? value * 60 : value;
+          return formatTimeLabel(sec);
         },
       },
     },
@@ -213,43 +240,52 @@ const chartOptions = computed(() => ({
     tooltip: {
       callbacks: {
         title(items) {
-          if (!items.length) return ''
-          const x = items[0].parsed.x
-          const sec = isMinuteScale.value ? x * 60 : x
-          return formatTimeLabel(sec)
+          if (!items.length) return '';
+          const x = items[0].parsed.x;
+          const sec = isMinuteScale.value ? x * 60 : x;
+          return formatTimeLabel(sec);
         },
         label: (ctx) => {
-          const v = ctx.parsed.y
-          const raw = ctx.raw
-          const coord = raw.row != null ? ` (#${raw.index} ${raw.row},${raw.col})` : (raw.index != null ? ` #${raw.index}` : '')
+          const v = ctx.parsed.y;
+          const raw = ctx.raw;
+          const coord =
+            raw.row != null
+              ? ` (#${raw.index} ${raw.row},${raw.col})`
+              : raw.index != null
+                ? ` #${raw.index}`
+                : '';
           if (ctx.dataset.yAxisID === 'y1') {
             if (ctx.dataset.label === t('chart.mineProb')) {
-              const pct = raw.prob != null ? (raw.prob * 100).toFixed(1) + '%' : (v*10).toFixed(1)+'%'
-              return `${ctx.dataset.label}: ${pct}${coord}`
+              const pct =
+                raw.prob != null
+                  ? (raw.prob * 100).toFixed(1) + '%'
+                  : (v * 10).toFixed(1) + '%';
+              return `${ctx.dataset.label}: ${pct}${coord}`;
             }
             // efficiency: y 已抖动，显示原始分
-            const score = raw._y0 != null ? raw._y0 : v
-            const probStr = raw.prob != null ? ` prob ${(raw.prob*100).toFixed(1)}%` : ''
-            return `${ctx.dataset.label}: ${score?.toFixed ? score.toFixed(1) : score} /10${probStr}${coord}`
+            const score = raw._y0 != null ? raw._y0 : v;
+            const probStr =
+              raw.prob != null ? ` prob ${(raw.prob * 100).toFixed(1)}%` : '';
+            return `${ctx.dataset.label}: ${score?.toFixed ? score.toFixed(1) : score} /10${probStr}${coord}`;
           }
           // 左轴：RPM 区域 + 精确点散点
           if (raw.index != null) {
-            const state = raw.flagState ? ` (${raw.flagState})` : ''
-            return `${ctx.dataset.label}: ${coord.trim()}${state}`
+            const state = raw.flagState ? ` (${raw.flagState})` : '';
+            return `${ctx.dataset.label}: ${coord.trim()}${state}`;
           }
-          return `${ctx.dataset.label}: ${v} RPM`
+          return `${ctx.dataset.label}: ${v} RPM`;
         },
         afterLabel: (ctx) => {
-          const raw = ctx.raw
-          if (raw && raw.action) return `  action: ${raw.action}`
-          return ''
-        }
-      }
-    }
+          const raw = ctx.raw;
+          if (raw && raw.action) return `  action: ${raw.action}`;
+          return '';
+        },
+      },
+    },
   },
   animation: {
     duration: 250,
-    easing: "ease-out",
+    easing: 'ease-out',
   },
 }));
 
@@ -257,11 +293,14 @@ const chartData = computed(() => ({
   datasets: [
     {
       label: t('chart.openSafe'),
-      borderColor: "rgba(75,192,192,0.75)",
-      backgroundColor: "rgba(75,192,192,0.16)",
+      borderColor: 'rgba(75,192,192,0.75)',
+      backgroundColor: 'rgba(75,192,192,0.16)',
       fill: 'origin',
       yAxisID: 'y',
-      data: operationEventsData.value.map((item) => ({ x: item.interval, y: item.openSave * RPM_FACTOR })),
+      data: operationEventsData.value.map((item) => ({
+        x: item.interval,
+        y: item.openSave * RPM_FACTOR,
+      })),
       pointRadius: 2,
       pointHoverRadius: 4,
       tension: 0.15,
@@ -270,11 +309,14 @@ const chartData = computed(() => ({
     },
     {
       label: t('chart.flag'),
-      borderColor: "rgba(255,107,107,0.75)",
-      backgroundColor: "rgba(255,107,107,0.13)",
+      borderColor: 'rgba(255,107,107,0.75)',
+      backgroundColor: 'rgba(255,107,107,0.13)',
       fill: 'origin',
       yAxisID: 'y',
-      data: operationEventsData.value.map((item) => ({ x: item.interval, y: item.flag * RPM_FACTOR })),
+      data: operationEventsData.value.map((item) => ({
+        x: item.interval,
+        y: item.flag * RPM_FACTOR,
+      })),
       pointRadius: 2,
       pointHoverRadius: 4,
       tension: 0.15,
@@ -283,8 +325,8 @@ const chartData = computed(() => ({
     },
     {
       label: t('chart.openExact'),
-      borderColor: "rgba(75,192,192,0)",
-      backgroundColor: "#4bc0c0",
+      borderColor: 'rgba(75,192,192,0)',
+      backgroundColor: '#4bc0c0',
       yAxisID: 'y',
       data: openPerOp.value,
       pointRadius: 3.5,
@@ -296,8 +338,8 @@ const chartData = computed(() => ({
     },
     {
       label: t('chart.flagExact'),
-      borderColor: "rgba(255,107,107,0)",
-      backgroundColor: "#FF6B6B",
+      borderColor: 'rgba(255,107,107,0)',
+      backgroundColor: '#FF6B6B',
       yAxisID: 'y',
       data: flagPerOp.value,
       pointRadius: 3.5,
@@ -309,14 +351,19 @@ const chartData = computed(() => ({
     },
     {
       label: t('chart.efficiency'),
-      borderColor: "#f59e0b",
-      backgroundColor: "rgba(245,158,11,0.9)",
+      borderColor: '#f59e0b',
+      backgroundColor: 'rgba(245,158,11,0.9)',
       yAxisID: 'y1',
       data: efficiencyPerOp.value,
       pointRadius: (ctx) => {
-        const raw = ctx.raw
-        if (raw && operationStore.selectedIndex === raw.index && operationStore.selectedTimestamp === raw.clickTimestamp) return 9
-        return 5
+        const raw = ctx.raw;
+        if (
+          raw &&
+          operationStore.selectedIndex === raw.index &&
+          operationStore.selectedTimestamp === raw.clickTimestamp
+        )
+          return 9;
+        return 5;
       },
       pointHoverRadius: 8,
       pointHitRadius: 12,
@@ -325,17 +372,17 @@ const chartData = computed(() => ({
       borderWidth: 2,
       order: 0,
       pointBackgroundColor: (ctx) => {
-        const raw = ctx.raw
-        if (!raw) return "rgba(245,158,11,0.9)"
-        if (raw.score10 < 6) return "#ef4444"
-        if (raw.score10 < 9) return "#f59e0b"
-        return "#22c55e"
+        const raw = ctx.raw;
+        if (!raw) return 'rgba(245,158,11,0.9)';
+        if (raw.score10 < 6) return '#ef4444';
+        if (raw.score10 < 9) return '#f59e0b';
+        return '#22c55e';
       },
     },
     {
       label: t('chart.mineProb'),
-      borderColor: "#a855f7",
-      backgroundColor: "rgba(168,85,247,0.15)",
+      borderColor: '#a855f7',
+      backgroundColor: 'rgba(168,85,247,0.15)',
       yAxisID: 'y1',
       data: mineProbPerOp.value,
       pointRadius: 4,
@@ -352,16 +399,27 @@ const chartData = computed(() => ({
 }));
 
 onMounted(() => {
-  const { buckets, effPoints, probPoints, flagPoints, openPoints, totalSeconds: total, isMinuteScale: minuteScale } =
-    transferEventsToData({ events: operationEvents, efficiencyEvents: operationStore.efficiencyEvents, startTimeStamp: operationStore.operationRecords.startTimeStamp });
-  operationEventsData.value = buckets
-  efficiencyPerOp.value = effPoints
-  mineProbPerOp.value = probPoints
-  flagPerOp.value = flagPoints
-  openPerOp.value = openPoints
-  totalSeconds.value = Math.ceil(total)
-  isMinuteScale.value = minuteScale
-  windowSec.value = [0, Math.ceil(total)]
+  const {
+    buckets,
+    effPoints,
+    probPoints,
+    flagPoints,
+    openPoints,
+    totalSeconds: total,
+    isMinuteScale: minuteScale,
+  } = transferEventsToData({
+    events: operationEvents,
+    efficiencyEvents: operationStore.efficiencyEvents,
+    startTimeStamp: operationStore.operationRecords.startTimeStamp,
+  });
+  operationEventsData.value = buckets;
+  efficiencyPerOp.value = effPoints;
+  mineProbPerOp.value = probPoints;
+  flagPerOp.value = flagPoints;
+  openPerOp.value = openPoints;
+  totalSeconds.value = Math.ceil(total);
+  isMinuteScale.value = minuteScale;
+  windowSec.value = [0, Math.ceil(total)];
 });
 </script>
 

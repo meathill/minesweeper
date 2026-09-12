@@ -1,10 +1,10 @@
-import { defineStore } from "pinia";
-import { ref, reactive } from "vue";
+import { defineStore } from 'pinia';
+import { ref, reactive } from 'vue';
 
 // 单次棋盘快照：完整记录当时哪些格子已开/插旗/问号，用于图表点击后彻底回到当时情景
 // 位串与 board-replay.js 的 encodeGridState 对应："0101…"，长度 = 棋盘格数
 
-export const useOperationRecordsStore = defineStore("operationRecords", () => {
+export const useOperationRecordsStore = defineStore('operationRecords', () => {
   const isShowChart = ref(false);
   const operationRecords = reactive({
     startTimeStamp: 0,
@@ -51,7 +51,16 @@ export const useOperationRecordsStore = defineStore("operationRecords", () => {
   // 决策效率记录：每次操作相对最佳操作的得分 0-10，逐操作精确记录
   const efficiencyEvents = reactive([]);
 
-  function onRecordEfficiency({ prob, pMin, pMax, score, action, index, row, col }) {
+  function onRecordEfficiency({
+    prob,
+    pMin,
+    pMax,
+    score,
+    action,
+    index,
+    row,
+    col,
+  }) {
     const now = Date.now();
     if (operationRecords.startTimeStamp === 0) {
       operationRecords.startTimeStamp = now;

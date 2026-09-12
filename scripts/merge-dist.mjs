@@ -1,6 +1,12 @@
 // 把内容子站（Astro）的构建产物并入游戏 SPA 的 dist/，并重建整站 sitemap.xml。
 // 前置条件：已运行 `vite build`（生成 dist/）和 `astro build`（生成 site/dist/）。
-import { cpSync, existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs';
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  writeFileSync,
+} from 'node:fs';
 import path from 'node:path';
 
 const rootDir = path.resolve(import.meta.dirname, '..');
@@ -27,7 +33,10 @@ cpSync(contentDistDir, distDir, { recursive: true });
 // 让 /es/ 等路径与 /en/ 一样走文件系统（rewrite 匹配不到带尾斜杠的目录路径）
 for (const locale of ['es', 'ru', 'vi', 'de']) {
   mkdirSync(path.join(distDir, locale), { recursive: true });
-  cpSync(path.join(distDir, 'index.html'), path.join(distDir, locale, 'index.html'));
+  cpSync(
+    path.join(distDir, 'index.html'),
+    path.join(distDir, locale, 'index.html'),
+  );
 }
 
 /** 递归收集目录格式产物中的页面路径（形如 guide/xxx/index.html → /guide/xxx/） */
@@ -52,7 +61,10 @@ const lastmod = new Date().toISOString().slice(0, 10);
 const urls = [
   { loc: '/', priority: '1.0' },
   // 游戏多语言首页由 Vercel rewrite 提供，不在静态产物里，需手动列出
-  ...['/en/', '/es/', '/ru/', '/vi/', '/de/'].map((loc) => ({ loc, priority: '0.8' })),
+  ...['/en/', '/es/', '/ru/', '/vi/', '/de/'].map((loc) => ({
+    loc,
+    priority: '0.8',
+  })),
   ...contentPaths.map((loc) => ({ loc, priority: '0.6' })),
 ];
 
@@ -74,4 +86,6 @@ const xml = [
 ].join('\n');
 
 writeFileSync(path.join(distDir, 'sitemap.xml'), xml);
-console.log(`merged ${contentPaths.length} content page(s) into dist/, sitemap.xml regenerated with ${urls.length} URLs`);
+console.log(
+  `merged ${contentPaths.length} content page(s) into dist/, sitemap.xml regenerated with ${urls.length} URLs`,
+);

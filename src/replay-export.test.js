@@ -20,8 +20,25 @@ describe('replay-export', () => {
       startTimeStamp: Date.UTC(2026, 8, 6, 12, 0, 0),
       endTimeStamp: Date.UTC(2026, 8, 6, 12, 2, 30),
       operationEvents: [{ clickTimestamp: 1, type: 'open' }],
-      efficiencyEvents: [{ clickTimestamp: 1, prob: 0.5, pMin: 0, pMax: 1, score: 1, action: 'open' }],
-      snapshots: [{ clickTimestamp: 1, action: 'start', openedBits: '010', flagBits: '000', questionBits: '000' }],
+      efficiencyEvents: [
+        {
+          clickTimestamp: 1,
+          prob: 0.5,
+          pMin: 0,
+          pMax: 1,
+          score: 1,
+          action: 'open',
+        },
+      ],
+      snapshots: [
+        {
+          clickTimestamp: 1,
+          action: 'start',
+          openedBits: '010',
+          flagBits: '000',
+          questionBits: '000',
+        },
+      ],
     });
     assert.equal(data.app, 'minesweeper');
     assert.equal(data.version, '0.7.0');

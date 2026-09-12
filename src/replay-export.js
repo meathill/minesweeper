@@ -1,6 +1,19 @@
 // 导出本局完整数据（JSON），便于复盘与 debug：雷区、事件流、效率评分、全部棋盘快照
 
-export function buildReplayJson({ version, level, grid, row, column, bombNumber, result, startTimeStamp, endTimeStamp, operationEvents, efficiencyEvents, snapshots }) {
+export function buildReplayJson({
+  version,
+  level,
+  grid,
+  row,
+  column,
+  bombNumber,
+  result,
+  startTimeStamp,
+  endTimeStamp,
+  operationEvents,
+  efficiencyEvents,
+  snapshots,
+}) {
   return {
     app: 'minesweeper',
     version,
@@ -32,7 +45,9 @@ export function downloadReplayJson(data) {
   const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement('a');
-  const startedAt = data?.meta?.startedAt ? Date.parse(data.meta.startedAt) : Date.now();
+  const startedAt = data?.meta?.startedAt
+    ? Date.parse(data.meta.startedAt)
+    : Date.now();
   anchor.href = url;
   anchor.download = `minesweeper-replay-${formatFilenameTime(startedAt)}.json`;
   anchor.click();

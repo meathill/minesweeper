@@ -1,5 +1,5 @@
 <script setup>
-import {ref, toRefs, computed, watch} from 'vue';
+import { ref, toRefs, computed, watch } from 'vue';
 import { useOperationRecordsStore } from './store/operationRecords';
 
 const emit = defineEmits(['markState', 'open', 'openAll']);
@@ -18,7 +18,7 @@ const props = defineProps({
   isSelected: Boolean,
   flagable: Boolean, // 剩余旗数是否充足；不足时右键只能在 无↔❓ 间循环
 });
-const {count, isBomb} = toRefs(props);
+const { count, isBomb } = toRefs(props);
 const isOpen = ref(false);
 const isUncovered = ref(false);
 const markState = ref('none'); // 'none' | 'flag' | 'question'，经典扫雷右键三态
@@ -26,86 +26,100 @@ const isFlag = computed(() => markState.value === 'flag');
 const isQuestion = computed(() => markState.value === 'question');
 const mouseCount = ref(0);
 const revealDelay = ref(0);
-const operationStore = useOperationRecordsStore()
-const isHintFlashing = ref(false)
-let flashTimer = null
+const operationStore = useOperationRecordsStore();
+const isHintFlashing = ref(false);
+let flashTimer = null;
 
 const probOverlayVisible = computed(() => {
-  return props.showProbability && !isOpen.value && !isFlag.value && !isUncovered.value && props.probability != null
-})
-const probPercent = computed(() => props.probability != null ? Math.round(props.probability * 100) : null)
+  return (
+    props.showProbability &&
+    !isOpen.value &&
+    !isFlag.value &&
+    !isUncovered.value &&
+    props.probability != null
+  );
+});
+const probPercent = computed(() =>
+  props.probability != null ? Math.round(props.probability * 100) : null,
+);
 const probFraction = computed(() => {
-  if (props.probability == null) return ''
-  const p = props.probability
-  const denoms = [2,3,4,6,8]
+  if (props.probability == null) return '';
+  const p = props.probability;
+  const denoms = [2, 3, 4, 6, 8];
   for (const d of denoms) {
-    const n = Math.round(p * d)
-    if (Math.abs(n/d - p) < 0.015) return `${n}/${d}`
+    const n = Math.round(p * d);
+    if (Math.abs(n / d - p) < 0.015) return `${n}/${d}`;
   }
-  return `${probPercent.value}%`
-})
+  return `${probPercent.value}%`;
+});
 function probColor(p) {
   // 0 绿  -> 0.5 黄 -> 1 红，均 75% alpha 叠加
-  const alpha = 0.75
+  const alpha = 0.75;
   // green #22c55e (34,197,94), yellow #eab308 (234,179,8), red #ef4444 (239,68,68)
-  let r,g,b
+  let r, g, b;
   if (p <= 0.5) {
-    const t = p / 0.5
-    r = Math.round(34 + (234-34)*t)
-    g = Math.round(197 + (179-197)*t)
-    b = Math.round(94 + (8-94)*t)
+    const t = p / 0.5;
+    r = Math.round(34 + (234 - 34) * t);
+    g = Math.round(197 + (179 - 197) * t);
+    b = Math.round(94 + (8 - 94) * t);
   } else {
-    const t = (p-0.5)/0.5
-    r = Math.round(234 + (239-234)*t)
-    g = Math.round(179 + (68-179)*t)
-    b = Math.round(8 + (68-8)*t)
+    const t = (p - 0.5) / 0.5;
+    r = Math.round(234 + (239 - 234) * t);
+    g = Math.round(179 + (68 - 179) * t);
+    b = Math.round(8 + (68 - 8) * t);
   }
-  return `rgba(${r},${g},${b},${alpha})`
+  return `rgba(${r},${g},${b},${alpha})`;
 }
 const probStyle = computed(() => {
-  if (props.probability == null) return {}
-  return { background: probColor(props.probability) }
-})
+  if (props.probability == null) return {};
+  return { background: probColor(props.probability) };
+});
 
 const hintVisible = computed(() => {
-  return props.isHint && !isOpen.value && !isFlag.value
-})
+  return props.isHint && !isOpen.value && !isFlag.value;
+});
 
 // 监听 hint 触发闪动 3 次
-watch(() => [props.isHint, props.hintFlashKey], ([isHint, key]) => {
-  if (isHint && key != null) {
-    isHintFlashing.value = false
-    // 强制重绘以重启动画
-    requestAnimationFrame(() => {
-      isHintFlashing.value = true
-      clearTimeout(flashTimer)
-      flashTimer = setTimeout(() => {
-        isHintFlashing.value = false
-      }, 1800)
-    })
-  } else if (!isHint) {
-    isHintFlashing.value = false
-    clearTimeout(flashTimer)
-  }
-})
+watch(
+  () => [props.isHint, props.hintFlashKey],
+  ([isHint, key]) => {
+    if (isHint && key != null) {
+      isHintFlashing.value = false;
+      // 强制重绘以重启动画
+      requestAnimationFrame(() => {
+        isHintFlashing.value = true;
+        clearTimeout(flashTimer);
+        flashTimer = setTimeout(() => {
+          isHintFlashing.value = false;
+        }, 1800);
+      });
+    } else if (!isHint) {
+      isHintFlashing.value = false;
+      clearTimeout(flashTimer);
+    }
+  },
+);
 
 function onClick() {
   mouseCount.value = 0;
   open(true);
 }
 function getCellMeta() {
-  if (props.cellIndex == null || props.columns == null) return {}
+  if (props.cellIndex == null || props.columns == null) return {};
   return {
     index: props.cellIndex,
     row: Math.floor(props.cellIndex / props.columns),
     col: props.cellIndex % props.columns,
-  }
+  };
 }
 function onRightClick(event) {
   mouseCount.value = 0;
   event.preventDefault();
   cycleMarkState();
-  operationStore.onUpdateOperateRecords('flag', {...getCellMeta(), flagState: markState.value});
+  operationStore.onUpdateOperateRecords('flag', {
+    ...getCellMeta(),
+    flagState: markState.value,
+  });
 }
 // 右键三态循环：无 → 🚩 → ❓ → 无；旗数不足时跳过插旗（经典行为：问号不占旗数）
 function cycleMarkState() {
@@ -124,7 +138,7 @@ function cycleMarkState() {
 function onDoubleClick() {
   mouseCount.value = 0;
   if (isOpen.value) {
-    operationStore.onUpdateOperateRecords('doubleClick', getCellMeta())
+    operationStore.onUpdateOperateRecords('doubleClick', getCellMeta());
     emit('openAll');
   }
 }
@@ -145,9 +159,12 @@ function open(isUserAction = false, delayMs = 0) {
   revealDelay.value = delayMs;
   isOpen.value = true;
 
-  const meta = getCellMeta()
-  if (isUserAction && !props.isBomb){
-    operationStore.onUpdateOperateRecords(count.value === 0 ? 'openBlank' : 'open', meta);
+  const meta = getCellMeta();
+  if (isUserAction && !props.isBomb) {
+    operationStore.onUpdateOperateRecords(
+      count.value === 0 ? 'openBlank' : 'open',
+      meta,
+    );
   }
   operationStore.onUpdateOperateRecords('openSave', meta);
 
@@ -166,7 +183,11 @@ function reset() {
   revealDelay.value = 0;
 }
 // 回放恢复：棋盘完整回到快照时刻的状态
-function restore({ isOpen: openVal, isFlag: flagVal, isQuestion: questionVal }) {
+function restore({
+  isOpen: openVal,
+  isFlag: flagVal,
+  isQuestion: questionVal,
+}) {
   isOpen.value = openVal;
   markState.value = flagVal ? 'flag' : questionVal ? 'question' : 'none';
   isUncovered.value = false;
