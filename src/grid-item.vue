@@ -29,6 +29,21 @@ const revealDelay = ref(0);
 const operationStore = useOperationRecordsStore();
 const isHintFlashing = ref(false);
 let flashTimer = null;
+// 右键摘旗后的左键误触保护：只锁本格、只拦单击，时长见 LEFT_LOCK_MS
+const LEFT_LOCK_MS = 200;
+const leftLocked = ref(false);
+let leftLockTimer = null;
+function lockLeftClick() {
+  leftLocked.value = true;
+  clearTimeout(leftLockTimer);
+  leftLockTimer = setTimeout(() => {
+    leftLocked.value = false;
+  }, LEFT_LOCK_MS);
+}
+function clearLeftLock() {
+  clearTimeout(leftLockTimer);
+  leftLocked.value = false;
+}
 
 const probOverlayVisible = computed(() => {
   return (
@@ -101,6 +116,10 @@ watch(
 );
 
 function onClick() {
+  if (leftLocked.value) {
+    mouseCount.value = 0;
+    return;
+  }
   mouseCount.value = 0;
   open(true);
 }
@@ -115,7 +134,11 @@ function getCellMeta() {
 function onRightClick(event) {
   mouseCount.value = 0;
   event.preventDefault();
+  const wasFlag = isFlag.value;
   cycleMarkState();
+  if (wasFlag) {
+    lockLeftClick();
+  }
   operationStore.onUpdateOperateRecords('flag', {
     ...getCellMeta(),
     flagState: markState.value,
@@ -181,6 +204,7 @@ function reset() {
   isOpen.value = isUncovered.value = false;
   markState.value = 'none';
   revealDelay.value = 0;
+  clearLeftLock();
 }
 // 回放恢复：棋盘完整回到快照时刻的状态
 function restore({
@@ -192,6 +216,7 @@ function restore({
   markState.value = flagVal ? 'flag' : questionVal ? 'question' : 'none';
   isUncovered.value = false;
   revealDelay.value = 0;
+  clearLeftLock();
 }
 function uncover() {
   isUncovered.value = true;

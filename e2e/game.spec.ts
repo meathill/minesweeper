@@ -24,6 +24,45 @@ test('右键插旗并计入剩余雷数', async ({ page }) => {
   await expect(page.locator('#stage .grid-item').nth(0)).toContainText('🚩');
 });
 
+test('右键摘旗后 200ms 内同格左键误触被吞掉', async ({ page }) => {
+  // 先开局，确保已布雷
+  await page.locator('#stage .grid-item').nth(40).click();
+  const targetIndex = await page.evaluate(() => {
+    const cells = Array.from(document.querySelectorAll('#stage .grid-item'));
+    return cells.findIndex((el) => !el.classList.contains('open'));
+  });
+  expect(targetIndex).toBeGreaterThanOrEqual(0);
+  const target = page.locator('#stage .grid-item').nth(targetIndex);
+  // 右键插旗
+  await target.click({ button: 'right' });
+  await expect(target).toContainText('🚩');
+  const openedBefore = await page.locator('#stage .grid-item.open').count();
+  // 误触复现：右键摘旗（旗→问号）后左键紧落同格，必须被吞掉（同步派发保证落在锁窗内）
+  await page.evaluate((i) => {
+    const el = document.querySelectorAll('#stage .grid-item')[i] as HTMLElement;
+    el.dispatchEvent(
+      new MouseEvent('contextmenu', {
+        bubbles: true,
+        cancelable: true,
+        button: 2,
+      }),
+    );
+    el.dispatchEvent(
+      new MouseEvent('click', { bubbles: true, cancelable: true, button: 0 }),
+    );
+  }, targetIndex);
+  await expect(target).toContainText('?');
+  await expect(page.locator('#stage .grid-item.open')).toHaveCount(
+    openedBefore,
+  );
+  // 锁过期后左键恢复正常
+  await page.waitForTimeout(300);
+  await target.click();
+  expect(await page.locator('#stage .grid-item.open').count()).toBeGreaterThan(
+    openedBefore,
+  );
+});
+
 test('重开后棋盘归零', async ({ page }) => {
   await page.locator('#stage .grid-item').nth(40).click();
   expect(await page.locator('#stage .grid-item.open').count()).toBeGreaterThan(
