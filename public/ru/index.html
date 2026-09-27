@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meathill Minesweeper - Сапёр, на котором учатся играя | Карта вероятностей и эффективность</title>
+    <meta name="description" content="Современный Сапёр для обучения: без правой кнопки, чординг двойным щелчком (оптимизирован под Apple/тачпад), живая карта вероятностей мины и оценка эффективности 0-10. Лёгкий/Средний/Сложный + повтор партии." />
+    <meta name="keywords" content="Meathill Minesweeper, сапёр обучение, вероятность мины, советы по сапёру, без правой кнопки, тачпад, мышь Apple, режим обучения, эффективность решений" />
+    <meta name="theme-color" content="#f2f2f2" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/icon-192.png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="canonical" href="https://minesweeper.meathill.com/ru/" />
+    <link rel="alternate" hreflang="zh" href="https://minesweeper.meathill.com/" />
+    <link rel="alternate" hreflang="en" href="https://minesweeper.meathill.com/en/" />
+    <link rel="alternate" hreflang="es" href="https://minesweeper.meathill.com/es/" />
+    <link rel="alternate" hreflang="ru" href="https://minesweeper.meathill.com/ru/" />
+    <link rel="alternate" hreflang="vi" href="https://minesweeper.meathill.com/vi/" />
+    <link rel="alternate" hreflang="de" href="https://minesweeper.meathill.com/de/" />
+    <link rel="alternate" hreflang="x-default" href="https://minesweeper.meathill.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Meathill Minesweeper - Сапёр, на котором учатся играя" />
+    <meta property="og:description" content="Режим обучения показывает карту вероятностей 75% зелёный-жёлтый-красный для каждой клетки и записывает RPM и эффективность — без правой кнопки, чординг двойным щелчком (Apple/тачпад)." />
+    <meta property="og:url" content="https://minesweeper.meathill.com/ru/" />
+    <meta property="og:image" content="https://minesweeper.meathill.com/og-image-ru.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Meathill Minesweeper - Сапёр, на котором учатся играя" />
+    <meta property="og:site_name" content="Meathill Minesweeper" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:locale:alternate" content="zh_CN" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Meathill Minesweeper - Сапёр, на котором учатся играя" />
+    <meta name="twitter:description" content="Видьте вероятность каждой клетки, оценивайте каждое решение — Сапёр, на котором действительно учишься." />
+    <meta name="twitter:image" content="https://minesweeper.meathill.com/og-image-ru.png" />
+    <meta name="twitter:image:alt" content="Meathill Minesweeper - Сапёр, на котором учатся играя" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://meathill.com/#organization",
+            "name": "Meathill Studio",
+            "legalName": "Meathill LLC",
+            "url": "https://meathill.com"
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://minesweeper.meathill.com/ru/#website",
+            "name": "Meathill Minesweeper",
+            "alternateName": "Мастерская Сапёра Meathill",
+            "url": "https://minesweeper.meathill.com/ru/",
+            "inLanguage": "ru",
+            "publisher": { "@id": "https://meathill.com/#organization" }
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://minesweeper.meathill.com/ru/#webpage",
+            "name": "Meathill Minesweeper",
+            "url": "https://minesweeper.meathill.com/ru/",
+            "description": "Современный Сапёр для обучения: без правой кнопки, чординг двойным щелчком (оптимизирован под Apple/тачпад), живая карта вероятностей мины и оценка эффективности 0-10. Лёгкий/Средний/Сложный + повтор партии.",
+            "inLanguage": "ru",
+            "isPartOf": { "@id": "https://minesweeper.meathill.com/ru/#website" },
+            "publisher": { "@id": "https://meathill.com/#organization" }
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Что такое Meathill Minesweeper?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Meathill Minesweeper (minesweeper.meathill.com) — обучающий сапёр с полями 9×9/16×16/16×30, без обязательной правой кнопки, чордингом двойным щелчком и режимом обучения: живая карта вероятностей + оценка эффективности, с повтором партии в конце."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Как считается вероятность?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Ограничения берутся только из открытых цифр (ровно N мин среди закрытых соседей; флажки игнорируются, так как могут быть ошибочными). Клетки фронтона делятся на компоненты и точно перебираются, изолированные делят оставшиеся мины поровну — итог P(мины) 0-1 в виде заливки зелёный→жёлтый→красный 75%."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Что означает эффективность 0-10?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Оценка по фиксированной разнице относительно лучшего хода в тот момент: открытие сравнивается с минимумом pMin, флажок — с максимумом pMax; разница 5 пунктов стоит 1 очко, 50 пунктов — все 10. Открытие группой всегда даёт 10."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Как чордить на Apple / тачпаде?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Оптимизировано: двойной щелчок по любой открытой цифре, где флажков == цифре, открывает остальных соседей. Правый щелчок, долгое нажатие и тачпад работают, плюс мобильные устройства."
+                }
+              }
+            ]
+          },
+          {
+            "@type": "HowTo",
+            "name": "Как играть в Meathill Minesweeper",
+            "step": [
+              { "@type": "HowToStep", "text": "Левый щелчок открывает клетку; первый щелчок всегда безопасен, а каждая цифра считает мины в 8 соседних клетках." },
+              { "@type": "HowToStep", "text": "Правый щелчок или долгое нажатие ставит флажок; в шапке видно, сколько мин осталось." },
+              { "@type": "HowToStep", "text": "Когда флажков столько же, сколько цифра, двойной щелчок по цифре открывает остальных соседей сразу (оптимизировано под мышь Apple/тачпад)." },
+              { "@type": "HowToStep", "text": "Включите режим обучения, чтобы увидеть живую карту вероятностей и оценку эффективности, а затем разберите партию на итоговом графике." }
+            ]
+          }
+        ]
+      }
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MEATHILL01"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-MEATHILL01');
+      try {
+        const mo = new MutationObserver(() => {
+          if (document.body.getAttribute('aria-hidden') === 'true') {
+            document.body.removeAttribute('aria-hidden');
+            document.body.setAttribute('aria-hidden', 'false');
+          }
+        });
+        mo.observe(document.body, { attributes: true, attributeFilter: ['aria-hidden'] });
+      } catch(e) {}
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <nav aria-label="Продукты Meathill Studio">
+        <a href="https://meathill.com">Meathill Studio</a>
+        · <a href="https://meathill.com/app">Все продукты</a>
+      </nav>
+    </noscript>
+    <div id="app"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+    <script type="module" src="/src/main.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9946806099979342" crossorigin="anonymous"></script>
+  </body>
+</html>

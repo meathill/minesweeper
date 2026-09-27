@@ -33,8 +33,17 @@ const {
 } = Astro.props;
 const locale = getLocaleMeta(lang);
 
+const OG_IMAGE: Record<string, string> = {
+  zh: '/og-image.png',
+  en: '/og-image-en.png',
+  es: '/og-image-es.png',
+  ru: '/og-image-ru.png',
+  vi: '/og-image-vi.png',
+  de: '/og-image-de.png',
+};
+
 const canonical = `${SITE}${locale.prefix}${path}`;
-const imageUrl = `${SITE}${ogImage ?? (lang === 'zh' ? '/og-image.png' : '/og-image-en.png')}`;
+const imageUrl = `${SITE}${ogImage ?? OG_IMAGE[lang] ?? '/og-image-en.png'}`;
 const { '@context': _ignored, ...organization } = getOrganizationJsonLd();
 
 const graph: Record<string, unknown>[] = [organization];

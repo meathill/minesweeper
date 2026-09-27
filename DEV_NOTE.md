@@ -23,7 +23,7 @@
 
 ## 多语言
 
-- 游戏 UI 仅 zh/en（`src/locales` + `src/i18n.js`）；内容页 6 语言（zh/en/es/ru/vi/de，`site/src/pages`）。其它语言页的"开始游戏"落到 `/en/`。
+- 游戏 UI 6 语言（`src/locales` + `src/i18n.js`，zh/en/es/ru/vi/de）；内容页 6 语言（`site/src/pages`）。各语言首页为 `public/<lang>/index.html` 真实静态文件（中文在根），`site/src/i18n.ts` 的 `gameHomePath()` 按语言返回对应首页。
 - 语言唯一来源：`SUPPORTED_LOCALES` 与 `LOCALES`（含 URL path）定义在 `src/i18n/` 相关模块，`App.vue` 只消费不重复定义。内容子站侧组件 Props 只认 `SiteLang` 联合类型（`site/src/i18n.ts`），新增语言时同步改它；`SiteNav`/`SeoHead` 保持 `string` + fallback，刻意宽容。`document.lang` 映射（zh→zh-CN）与 hreflang 互指逻辑集中在一处。
 - SEO：内容页 `SeoHead`/`GuideLayout` 自动生成 Organization + BreadcrumbList + FAQPage + HowTo；首页 JSON-LD 用 WebSite + WebPage，不伪造评分（2026-09 降级决策）。
 

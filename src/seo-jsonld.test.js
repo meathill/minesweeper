@@ -3,11 +3,46 @@ import fs from 'node:fs/promises';
 import test from 'node:test';
 
 const PAGES = [
-  { file: '../index.html', url: 'https://minesweeper.meathill.com/' },
+  {
+    file: '../index.html',
+    url: 'https://minesweeper.meathill.com/',
+    lang: 'zh-CN',
+  },
   {
     file: '../public/en/index.html',
     url: 'https://minesweeper.meathill.com/en/',
+    lang: 'en',
   },
+  {
+    file: '../public/es/index.html',
+    url: 'https://minesweeper.meathill.com/es/',
+    lang: 'es',
+  },
+  {
+    file: '../public/ru/index.html',
+    url: 'https://minesweeper.meathill.com/ru/',
+    lang: 'ru',
+  },
+  {
+    file: '../public/vi/index.html',
+    url: 'https://minesweeper.meathill.com/vi/',
+    lang: 'vi',
+  },
+  {
+    file: '../public/de/index.html',
+    url: 'https://minesweeper.meathill.com/de/',
+    lang: 'de',
+  },
+];
+
+const HREFLANGS = [
+  ['zh', 'https://minesweeper.meathill.com/'],
+  ['en', 'https://minesweeper.meathill.com/en/'],
+  ['es', 'https://minesweeper.meathill.com/es/'],
+  ['ru', 'https://minesweeper.meathill.com/ru/'],
+  ['vi', 'https://minesweeper.meathill.com/vi/'],
+  ['de', 'https://minesweeper.meathill.com/de/'],
+  ['x-default', 'https://minesweeper.meathill.com/'],
 ];
 
 // 需要 rating/review 才能出富结果的应用类，站内无可见评价体系时一律不允许出现。
@@ -26,7 +61,7 @@ function extractJsonLd(html) {
   return JSON.parse(match[1]);
 }
 
-for (const { file, url } of PAGES) {
+for (const { file, url, lang } of PAGES) {
   test(`${file} 不伪造评分：禁用应用类 + aggregateRating/review`, async () => {
     const html = await fs.readFile(new URL(file, import.meta.url), 'utf8');
     const jsonLd = extractJsonLd(html);
@@ -80,5 +115,26 @@ for (const { file, url } of PAGES) {
         webPage.description.includes(metaDescription.slice(0, 12)),
       'WebPage.description 与 meta description 一致',
     );
+  });
+
+  test(`${file} 多语言首页自指：canonical + html lang + hreflang`, async () => {
+    const html = await fs.readFile(new URL(file, import.meta.url), 'utf8');
+    assert.ok(html.includes(`<html lang="${lang}">`), `html lang 应为 ${lang}`);
+    assert.ok(
+      html.includes(`<link rel="canonical" href="${url}" />`),
+      'canonical 必须自指',
+    );
+    assert.ok(
+      html.includes(`<meta property="og:url" content="${url}" />`),
+      'og:url 必须与 canonical 一致',
+    );
+    for (const [code, href] of HREFLANGS) {
+      assert.ok(
+        html.includes(
+          `<link rel="alternate" hreflang="${code}" href="${href}" />`,
+        ),
+        `缺少 hreflang=${code} → ${href}`,
+      );
+    }
   });
 }

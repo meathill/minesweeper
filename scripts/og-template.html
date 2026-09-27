@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1200px; height: 630px; overflow: hidden;
+    background: #141b2e;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 48px 48px;
+    font-family: system-ui, -apple-system, "PingFang SC", "Hiragino Sans GB",
+      "Microsoft YaHei", "Noto Sans", "Segoe UI", Roboto, sans-serif;
+    display: flex; align-items: center;
+    padding: 0 64px; gap: 48px;
+  }
+  .left { flex: 0 0 520px; }
+  .badge {
+    display: inline-block; background: #f5c518; color: #141b2e;
+    font-size: 22px; font-weight: 700; padding: 8px 22px; border-radius: 999px;
+    margin-bottom: 26px; white-space: nowrap;
+  }
+  .title { font-size: 84px; line-height: 1.05; font-weight: 800; letter-spacing: -1px; }
+  .title .w { color: #fff; display: block; }
+  .title .y { color: #f5c518; display: block; }
+  .sub { color: #9aa4b8; font-size: 24px; line-height: 1.5; margin-top: 22px; }
+  .pills { display: flex; gap: 12px; margin-top: 26px; flex-wrap: wrap; }
+  .pill {
+    border: 1.5px solid rgba(255,255,255,0.22); color: #d5dbe7;
+    font-size: 19px; font-weight: 600; padding: 9px 18px; border-radius: 12px;
+    background: rgba(255,255,255,0.06); white-space: nowrap;
+  }
+  .board {
+    flex: 0 0 440px; margin-left: auto;
+    background: #1b2338; border-radius: 22px; padding: 18px;
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 9px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.45);
+  }
+  .cell {
+    aspect-ratio: 1; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 21px; font-weight: 700;
+  }
+  .g { background: #22c55e; color: #fff; }
+  .y2 { background: #c9930a; color: #1a1a1a; }
+  .r { background: #ef4444; color: #fff; }
+  .u { background: #8b96ab; }
+  .o { background: #f1f5f9; }
+  .n-blue { color: #2563eb; } .n-green { color: #15803d; }
+  .n-red { color: #dc2626; } .n-yellow { color: #b8860b; }
+  .n-black { color: #1e293b; }
+  .foot {
+    position: absolute; right: 56px; bottom: 30px;
+    color: rgba(255,255,255,0.42); font-size: 19px; font-weight: 600;
+  }
+</style>
+</head>
+<body>
+  <div class="left">
+    <div class="badge">{{BADGE}}</div>
+    <div class="title"><span class="w">{{TITLE_W}}</span><span class="y">{{TITLE_Y}}</span></div>
+    <div class="sub">{{SUB1}}<br />{{SUB2}}</div>
+    <div class="pills">
+      <span class="pill">{{P1}}</span><span class="pill">{{P2}}</span><span class="pill">{{P3}}</span><span class="pill">{{P4}}</span>
+    </div>
+  </div>
+  <div class="board">
+    <div class="cell o n-blue">1</div><div class="cell g">11%</div><div class="cell y2">28%</div><div class="cell u"></div><div class="cell r">85%</div><div class="cell u"></div>
+    <div class="cell g">5%</div><div class="cell o n-green">2</div><div class="cell y2">40%</div><div class="cell u"></div><div class="cell o n-red">3</div><div class="cell g">0%</div>
+    <div class="cell u"></div><div class="cell y2">28%</div><div class="cell g">🎯</div><div class="cell o n-black">2</div><div class="cell u"></div><div class="cell r">92%</div>
+    <div class="cell g">11%</div><div class="cell u"></div><div class="cell g">0%</div><div class="cell y2">35%</div><div class="cell o n-yellow">1</div><div class="cell u"></div>
+    <div class="cell u"></div><div class="cell y2">28%</div><div class="cell u"></div><div class="cell g">11%</div><div class="cell o n-blue">1</div><div class="cell r">100%</div>
+    <div class="cell g">11%</div><div class="cell u"></div><div class="cell u"></div><div class="cell y2">28%</div><div class="cell u"></div><div class="cell o n-green">2</div>
+  </div>
+  <div class="foot">minesweeper.meathill.com · Meathill Studio</div>
+</body>
+</html>

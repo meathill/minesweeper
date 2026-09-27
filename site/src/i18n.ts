@@ -64,7 +64,8 @@ export function getLocaleMeta(code: string): LocaleMeta {
   return LOCALES.find((locale) => locale.code === code) ?? LOCALES[0];
 }
 
-/** 游戏本体只有 zh/en UI，其它语言页的「开始游戏」统一落到英文版 */
+/** 游戏首页按语言返回对应路径 */
 export function gameHomePath(lang: string): string {
-  return lang === 'zh' ? '/' : '/en/';
+  const locale = LOCALES.find((item) => item.code === lang);
+  return locale ? `${locale.prefix}/` || '/' : '/';
 }

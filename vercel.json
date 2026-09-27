@@ -1,16 +1,16 @@
 {
   "buildCommand": "pnpm run build",
   "rewrites": [
-    { "source": "/en", "destination": "/index.html" },
-    { "source": "/en/:path*", "destination": "/index.html" },
-    { "source": "/es", "destination": "/index.html" },
-    { "source": "/es/:path*", "destination": "/index.html" },
-    { "source": "/ru", "destination": "/index.html" },
-    { "source": "/ru/:path*", "destination": "/index.html" },
-    { "source": "/vi", "destination": "/index.html" },
-    { "source": "/vi/:path*", "destination": "/index.html" },
-    { "source": "/de", "destination": "/index.html" },
-    { "source": "/de/:path*", "destination": "/index.html" }
+    { "source": "/en", "destination": "/en/index.html" },
+    { "source": "/en/:path*", "destination": "/en/index.html" },
+    { "source": "/es", "destination": "/es/index.html" },
+    { "source": "/es/:path*", "destination": "/es/index.html" },
+    { "source": "/ru", "destination": "/ru/index.html" },
+    { "source": "/ru/:path*", "destination": "/ru/index.html" },
+    { "source": "/vi", "destination": "/vi/index.html" },
+    { "source": "/vi/:path*", "destination": "/vi/index.html" },
+    { "source": "/de", "destination": "/de/index.html" },
+    { "source": "/de/:path*", "destination": "/de/index.html" }
   ],
   "headers": [
     {

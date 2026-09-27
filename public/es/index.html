@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meathill Minesweeper - Buscaminas para aprender jugando | Mapa de calor y eficiencia</title>
+    <meta name="description" content="Buscaminas moderno para aprender jugando: sin clic derecho, apertura en cadena con doble clic (optimizado para Apple/trackpad), mapa de calor de probabilidad de mina en vivo y puntuación de eficiencia 0-10. Fácil/Medio/Difícil + repetición." />
+    <meta name="keywords" content="Meathill Minesweeper, buscaminas aprender jugando, probabilidad de mina, trucos buscaminas, sin clic derecho, trackpad, ratón Apple, Modo Aprendizaje, eficiencia de decisión" />
+    <meta name="theme-color" content="#f2f2f2" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/icon-192.png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="canonical" href="https://minesweeper.meathill.com/es/" />
+    <link rel="alternate" hreflang="zh" href="https://minesweeper.meathill.com/" />
+    <link rel="alternate" hreflang="en" href="https://minesweeper.meathill.com/en/" />
+    <link rel="alternate" hreflang="es" href="https://minesweeper.meathill.com/es/" />
+    <link rel="alternate" hreflang="ru" href="https://minesweeper.meathill.com/ru/" />
+    <link rel="alternate" hreflang="vi" href="https://minesweeper.meathill.com/vi/" />
+    <link rel="alternate" hreflang="de" href="https://minesweeper.meathill.com/de/" />
+    <link rel="alternate" hreflang="x-default" href="https://minesweeper.meathill.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Meathill Minesweeper - Buscaminas para aprender jugando" />
+    <meta property="og:description" content="El Modo Aprendizaje muestra un mapa de calor 75% verde-amarillo-rojo por casilla y registra RPM y eficiencia — sin clic derecho, doble clic para encadenar (Apple/trackpad optimizado)." />
+    <meta property="og:url" content="https://minesweeper.meathill.com/es/" />
+    <meta property="og:image" content="https://minesweeper.meathill.com/og-image-es.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Meathill Minesweeper - Buscaminas para aprender jugando" />
+    <meta property="og:site_name" content="Meathill Minesweeper" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:locale:alternate" content="zh_CN" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Meathill Minesweeper - Buscaminas para aprender jugando" />
+    <meta name="twitter:description" content="Ve la probabilidad de cada casilla, puntúa cada decisión — un Buscaminas del que de verdad aprendes." />
+    <meta name="twitter:image" content="https://minesweeper.meathill.com/og-image-es.png" />
+    <meta name="twitter:image:alt" content="Meathill Minesweeper - Buscaminas para aprender jugando" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://meathill.com/#organization",
+            "name": "Meathill Studio",
+            "legalName": "Meathill LLC",
+            "url": "https://meathill.com"
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://minesweeper.meathill.com/es/#website",
+            "name": "Meathill Minesweeper",
+            "alternateName": "Taller de Buscaminas Meathill",
+            "url": "https://minesweeper.meathill.com/es/",
+            "inLanguage": "es",
+            "publisher": { "@id": "https://meathill.com/#organization" }
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://minesweeper.meathill.com/es/#webpage",
+            "name": "Meathill Minesweeper",
+            "url": "https://minesweeper.meathill.com/es/",
+            "description": "Buscaminas moderno para aprender jugando: sin clic derecho, apertura en cadena con doble clic (optimizado para Apple/trackpad), mapa de calor de probabilidad de mina en vivo y puntuación de eficiencia 0-10. Fácil/Medio/Difícil + repetición.",
+            "inLanguage": "es",
+            "isPartOf": { "@id": "https://minesweeper.meathill.com/es/#website" },
+            "publisher": { "@id": "https://meathill.com/#organization" }
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "¿Qué es Meathill Minesweeper?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Meathill Minesweeper (minesweeper.meathill.com) es un buscaminas para aprender jugando con tableros de 9×9/16×16/16×30, sin clic derecho obligatorio, apertura en cadena con doble clic y Modo Aprendizaje: mapa de calor de probabilidad en vivo + puntuación de eficiencia, con repetición tras la partida."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "¿Cómo se calcula la probabilidad?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Las restricciones provienen solo de los números abiertos (cada número exige exactamente N minas entre sus vecinas cerradas; las banderas se ignoran porque pueden estar mal). Las casillas de frontera se dividen en componentes y se enumeran con exactitud, las aisladas reparten las minas restantes a partes iguales, dando P(mina) 0-1 como capa verde→amarilla→roja al 75%."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "¿Qué significa la eficiencia 0-10?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Puntuación por diferencia fija respecto a la mejor opción del momento: abrir se compara con la probabilidad mínima pMin, marcar con pMax; una diferencia de 5 puntos cuesta 1 punto y de 50 puntos llega a 0. La apertura en cadena siempre vale 10."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "¿Cómo se encadena con Apple / trackpad?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Optimizado: doble clic sobre cualquier número abierto cuyas banderas igualen al número para abrir el resto. Clic derecho, pulsación larga y trackpad funcionan, además del móvil."
+                }
+              }
+            ]
+          },
+          {
+            "@type": "HowTo",
+            "name": "Cómo jugar a Meathill Minesweeper",
+            "step": [
+              { "@type": "HowToStep", "text": "Clic izquierdo para abrir una casilla; el primer clic siempre es seguro y cada número cuenta las minas en las 8 casillas vecinas." },
+              { "@type": "HowToStep", "text": "Clic derecho o pulsación larga para marcar; la cabecera muestra las minas restantes." },
+              { "@type": "HowToStep", "text": "Cuando las banderas igualan al número, doble clic sobre el número para abrir las vecinas restantes de una vez (optimizado para ratón Apple/trackpad)." },
+              { "@type": "HowToStep", "text": "Activa el Modo Aprendizaje para ver el mapa de calor de probabilidad en vivo y la puntuación de eficiencia, y repasa la partida en el gráfico final." }
+            ]
+          }
+        ]
+      }
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MEATHILL01"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-MEATHILL01');
+      try {
+        const mo = new MutationObserver(() => {
+          if (document.body.getAttribute('aria-hidden') === 'true') {
+            document.body.removeAttribute('aria-hidden');
+            document.body.setAttribute('aria-hidden', 'false');
+          }
+        });
+        mo.observe(document.body, { attributes: true, attributeFilter: ['aria-hidden'] });
+      } catch(e) {}
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <nav aria-label="Red de productos de Meathill Studio">
+        <a href="https://meathill.com">Meathill Studio</a>
+        · <a href="https://meathill.com/app">Todos los productos</a>
+      </nav>
+    </noscript>
+    <div id="app"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+    <script type="module" src="/src/main.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9946806099979342" crossorigin="anonymous"></script>
+  </body>
+</html>
