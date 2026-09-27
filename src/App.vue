@@ -45,8 +45,24 @@ function switchLocale(code) {
   if (location.pathname !== target) {
     history.pushState(null, '', target);
   }
+  closeBrandSwitchers();
   updateSeoMeta(code, t);
   trackEvent('locale_switch', { to_locale: code, level: game.level });
+}
+// 下拉菜单（<details>）点空白处关闭：原生 details 无此行为
+function closeBrandSwitchers() {
+  document
+    .querySelectorAll('details.brand-switcher[open]')
+    .forEach((el) => el.removeAttribute('open'));
+}
+function handleOutsideClick(event) {
+  if (
+    event.target instanceof Element &&
+    event.target.closest('details.brand-switcher')
+  ) {
+    return;
+  }
+  closeBrandSwitchers();
 }
 // 学习模式开关埋点
 watch(
@@ -73,14 +89,20 @@ onMounted(() => {
   game.doStart(null);
   updateSeoMeta(locale.value, t);
   window.addEventListener('keydown', handleGlobalKeydown);
+  document.addEventListener('click', handleOutsideClick);
 });
 
 onUnmounted(() => {
   window.removeEventListener('keydown', handleGlobalKeydown);
+  document.removeEventListener('click', handleOutsideClick);
 });
 
 // 全局快捷键（Windows 对齐：F2 新开；H 提示、L 教学为本站扩展）
 function handleGlobalKeydown(event) {
+  if (event.key === 'Escape') {
+    closeBrandSwitchers();
+    return;
+  }
   const action = matchShortcut(event);
   if (!action) return;
   if (action === 'new') {

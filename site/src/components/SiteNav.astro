@@ -49,3 +49,14 @@ const navLabel: Record<string, string> = {
     </nav>
   </div>
 </header>
+<script is:inline>
+  document.addEventListener('click', (event) => {
+    if (event.target instanceof Element && event.target.closest('details.lang-switch')) return;
+    document.querySelectorAll('details.lang-switch[open]').forEach((el) => el.removeAttribute('open'));
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      document.querySelectorAll('details.lang-switch[open]').forEach((el) => el.removeAttribute('open'));
+    }
+  });
+</script>
