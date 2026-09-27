@@ -81,7 +81,7 @@
                 "name": "How is the probability computed?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Constraints need = number - flags on frontier cells, split into components and enumerated exactly, isolated cells share remaining mines evenly, yielding P(mine) 0-1 as green→yellow→red 75% overlay."
+                  "text": "Constraints come only from opened numbers (each says: exactly N mines among my hidden neighbors — flags are ignored, since they may be wrong) on frontier cells, split into components and enumerated exactly, isolated cells share remaining mines evenly, yielding P(mine) 0-1 as green→yellow→red 75% overlay. The solver always runs for scoring."
                 }
               },
               {
@@ -89,7 +89,7 @@
                 "name": "What does efficiency mean?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Relative: open (1-p)/(1-pMin)*10, flag p/pMax*10, chording always 10, averaged per 6s bucket on the replay chart's right axis."
+                  "text": "Fixed-gap scoring against the best option at that moment: open is compared against the lowest mine probability pMin, flag against pMax; a 5-point gap costs 1 point and a 50-point gap costs all 10. Chording is always 10."
                 }
               },
               {
