@@ -16,7 +16,10 @@
   "toolbar": {
     "mines": "Minas: {count}",
     "hint": "Pista",
+    "hintTitle": "Pista (H)",
     "learningMode": "Modo Aprendizaje",
+    "learnTitle": "Activar/desactivar modo aprendizaje (L)",
+    "newGameTitle": "Nueva partida (F2 / N)",
     "learningDropdown": {
       "enableHeatmap": "Mapa de calor",
       "showPercent": "Mostrar %",
@@ -70,7 +73,8 @@
       "<strong>Clic izquierdo</strong> para abrir. El primer clic nunca toca una mina; los números cuentan las minas en las 8 vecinas.",
       "<strong>Clic derecho en tres estados</strong>: el clic derecho cicla <strong>nada → 🚩 → ❓ → nada</strong>. 🚩 marca minas seguras, ❓ marca casillas dudosas (no consume bandera y se puede abrir); la cabecera muestra las minas restantes. En móvil, pulsación larga equivale al clic derecho.",
       "<strong>Doble clic para abrir en cadena (optimizado para Apple / trackpad)</strong>: el chording clásico exige pulsar izquierda+derecha. Aquí, si las banderas alrededor de un número igualan al número, <strong>doble clic sobre el número</strong> abre el resto — sin clic derecho. En escritorio izquierda+derecha sigue funcionando, y el chording puntúa un 10 perfecto.",
-      "Abre todas las casillas sin mina para ganar; si pisas una mina, el tablero se revela."
+      "Abre todas las casillas sin mina para ganar; si pisas una mina, el tablero se revela.",
+      "<strong>Atajos de teclado</strong>: <kbd class=\"kbd kbd-xs\">F2</kbd>/<kbd class=\"kbd kbd-xs\">N</kbd> nueva partida, <kbd class=\"kbd kbd-xs\">H</kbd> pista, <kbd class=\"kbd kbd-xs\">L</kbd> modo aprendizaje (F2 como en el Buscaminas clásico de Windows; no se activan al escribir)."
     ],
     "learningTitle": "¿Qué es el Modo Aprendizaje?",
     "heatmapTitle": "Mapa de calor de probabilidad: ver el riesgo",

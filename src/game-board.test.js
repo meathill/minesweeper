@@ -185,6 +185,29 @@ describe('gameStore - 插旗与结算', () => {
   });
 });
 
+describe('gameStore - 终局惰性（Windows 对齐）', () => {
+  it('终局后插旗/点开/双击全部被忽略，不污染快照计数', async () => {
+    const g = useGameStore();
+    g.doStart(null);
+    mountFakeItems(g);
+    g.doRealStart(40);
+    const bombIdx = g.grid.findIndex((c) => c.isBomb);
+    const safeIdx = g.grid.findIndex((c) => !c.isBomb && !c.isOpen);
+    g.doStop(false, bombIdx);
+    assert.equal(g.isStart, false);
+    const flaggedBefore = g.flagged;
+    const openedBefore = g.opened;
+    g.onMarkState(0, 'flag');
+    assert.equal(g.flagged, flaggedBefore);
+    assert.equal(g.grid[0].isFlag, false);
+    await g.onOpen(g.grid[safeIdx], safeIdx);
+    assert.equal(g.opened, openedBefore);
+    assert.equal(g.grid[safeIdx].isOpen, false);
+    g.onOpenAll(g.grid[safeIdx], safeIdx);
+    assert.equal(g.opened, openedBefore);
+  });
+});
+
 describe('formatTime - 游戏计时显示', () => {
   it('m:ss，分钟封顶 99', () => {
     assert.equal(formatTime(0), '0:00');

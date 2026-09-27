@@ -6,7 +6,7 @@ const emit = defineEmits(['markState', 'open', 'openAll']);
 const props = defineProps({
   count: Number,
   isBomb: Boolean,
-  isStart: Boolean,
+  disabled: Boolean, // 终局后棋盘惰性：点/右键/双击全部忽略（事件仍被棋盘拦截，不冒原生菜单）
   probability: Number,
   showProbability: Boolean,
   showPercent: Boolean,
@@ -116,6 +116,7 @@ watch(
 );
 
 function onClick() {
+  if (props.disabled) return;
   if (leftLocked.value) {
     mouseCount.value = 0;
     return;
@@ -132,8 +133,9 @@ function getCellMeta() {
   };
 }
 function onRightClick(event) {
-  mouseCount.value = 0;
   event.preventDefault();
+  if (props.disabled) return;
+  mouseCount.value = 0;
   const wasFlag = isFlag.value;
   cycleMarkState();
   if (wasFlag) {
@@ -159,6 +161,7 @@ function cycleMarkState() {
   emit('markState', markState.value);
 }
 function onDoubleClick() {
+  if (props.disabled) return;
   mouseCount.value = 0;
   if (isOpen.value) {
     operationStore.onUpdateOperateRecords('doubleClick', getCellMeta());

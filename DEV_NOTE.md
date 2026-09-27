@@ -35,6 +35,12 @@
 - GA 的 `gtag` 调用全部经 `trackEvent` 包一层 try/catch，无痕模式/屏蔽插件下不抛错。
 - `index.html` 内联的 `aria-hidden` MutationObserver 是为了修复 Google Vignette 误标 body，具体见行内注释，勿删。
 
+## 交互（棋盘惰性 + 快捷键）
+
+- 终局棋盘不用 `pointer-events: none`：事件落到棋盘外会导致 `@contextmenu.prevent` 失效、原生右键菜单透出。改用 `game-over` 类（只改 cursor/hover）+ 格子 `disabled` prop + store 三动作 `!isStart` 兜底，事件仍被棋盘吞掉（Windows 版同款惰性）。
+- `#stage` / `.grid-item` 用 `touch-action: manipulation` 禁双击缩放：保留 pinch、不伤无障碍，双击仍走 chord；`user-scalable=no` 不用。
+- 快捷键走 `src/utils/shortcuts.js` 纯函数（F2/N 新开、H 提示、L 教学；F2 对齐 Windows 经典键位）：输入框聚焦、弹窗打开、长按连发、修饰键全部放行不抢键。评论弹窗另有 capture 隔离（见下节），快捷键里再加一道 `dialog[open]` 守卫。
+
 ## 评论（`src/comment-dialog.vue`）
 
 - 复用 Awesome Comment 的 `meathill.com` 站点（`siteId=47de…`，域名已验证，无需新建站点），全站统一 `postId=https://minesweeper.meathill.com`，中英共用一个评论区。

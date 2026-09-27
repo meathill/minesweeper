@@ -16,7 +16,10 @@
   "toolbar": {
     "mines": "Minen: {count}",
     "hint": "Tipp",
+    "hintTitle": "Tipp (H)",
     "learningMode": "Lernmodus",
+    "learnTitle": "Lernmodus umschalten (L)",
+    "newGameTitle": "Neues Spiel (F2 / N)",
     "learningDropdown": {
       "enableHeatmap": "Heatmap",
       "showPercent": "% anzeigen",
@@ -70,7 +73,8 @@
       "<strong>Linksklick</strong> deckt auf. Der erste Klick trifft nie eine Mine; Zahlen zählen die Minen in den 8 Nachbarn.",
       "<strong>Rechtsklick mit drei Zuständen</strong>: Rechtsklick wechselt <strong>leer → 🚩 → ❓ → leer</strong>. 🚩 markiert sichere Minen, ❓ unsichere Felder (kostet keine Flagge, Feld bleibt offen); die Kopfzeile zeigt die restlichen Minen. Am Handy entspricht langes Drücken dem Rechtsklick.",
       "<strong>Doppelklick öffnet Ketten (für Apple / Trackpad optimiert)</strong>: klassisch hält man beide Tasten. Hier gilt: Sind die Flaggen um eine Zahl so viele wie die Zahl, öffnet ein <strong>Doppelklick auf die Zahl</strong> den Rest — ohne rechte Maustaste. Am Desktop funktioniert Links+Rechts weiter, Chording zählt als perfekte 10.",
-      "Öffne alle Felder ohne Mine, um zu gewinnen; eine Mine deckt das Brett auf."
+      "Öffne alle Felder ohne Mine, um zu gewinnen; eine Mine deckt das Brett auf.",
+      "<strong>Tastenkürzel</strong>: <kbd class=\"kbd kbd-xs\">F2</kbd>/<kbd class=\"kbd kbd-xs\">N</kbd> neues Spiel, <kbd class=\"kbd kbd-xs\">H</kbd> Tipp, <kbd class=\"kbd kbd-xs\">L</kbd> Lernmodus umschalten (F2 wie im klassischen Windows-Minesweeper; beim Tippen deaktiviert)."
     ],
     "learningTitle": "Was ist der Lernmodus?",
     "heatmapTitle": "Wahrscheinlichkeits-Heatmap: das Risiko sehen",

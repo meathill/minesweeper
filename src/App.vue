@@ -1,5 +1,12 @@
 <script setup>
-import { computed, onMounted, defineAsyncComponent, ref, watch } from 'vue';
+import {
+  computed,
+  onMounted,
+  onUnmounted,
+  defineAsyncComponent,
+  ref,
+  watch,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { version } from '../package.json';
 import GridItem from './grid-item.vue';
@@ -7,6 +14,7 @@ import CommentDialog from './comment-dialog.vue';
 import BrandFooter from './brand-footer.vue';
 import BrandSiteSwitcher from './brand-site-switcher.vue';
 import { Levels } from './data';
+import { matchShortcut } from './utils/shortcuts.js';
 import { useOperationRecordsStore } from './store/operationRecords';
 import { useLearningStore } from './store/learningStore';
 import { useGameStore } from './store/gameStore';
@@ -64,7 +72,27 @@ const faqItems = computed(() => tm('faq.items'));
 onMounted(() => {
   game.doStart(null);
   updateSeoMeta(locale.value, t);
+  window.addEventListener('keydown', handleGlobalKeydown);
 });
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleGlobalKeydown);
+});
+
+// 全局快捷键（Windows 对齐：F2 新开；H 提示、L 教学为本站扩展）
+function handleGlobalKeydown(event) {
+  const action = matchShortcut(event);
+  if (!action) return;
+  if (action === 'new') {
+    event.preventDefault();
+    game.doStart(true);
+  } else if (action === 'hint') {
+    prob.handleHint();
+  } else if (action === 'learn') {
+    learningStore.showProbability = !learningStore.showProbability;
+  }
+  trackEvent('shortcut_use', { action, level: game.level });
+}
 </script>
 
 <template>
@@ -145,20 +173,23 @@ onMounted(() => {
           <button
             type="button"
             class="btn btn-sm btn-outline bg-white text-slate-800 border-slate-300 start-button"
+            :title="t('toolbar.newGameTitle')"
+            aria-keyshortcuts="F2"
             @click="(e) => game.doStart(e)"
           >
             <template v-if="game.isSuccess">😊</template>
             <template v-else-if="game.isFailed">😭</template>
             <template v-else>🎮</template>
+            <kbd class="kbd kbd-xs hidden sm:inline-flex">F2</kbd>
           </button>
           <span class="w-24 sm:w-32 text-right text-sm font-mono">{{ formatTime(game.timeCount) }}</span>
         </div>
       </div>
       <!-- 右侧：提示 + 学习模式（对齐高级难度游戏区右缘） -->
       <div class="flex items-center gap-1 sm:gap-2 shrink-0 ml-2">
-        <button class="btn btn-xs sm:btn-sm btn-warning" @click="prob.handleHint" :disabled="!game.isRealStart || !prob.probabilities.size">{{ t('toolbar.hint') }}</button>
+        <button class="btn btn-xs sm:btn-sm btn-warning" aria-keyshortcuts="h" :title="t('toolbar.hintTitle')" @click="prob.handleHint" :disabled="!game.isRealStart || !prob.probabilities.size">{{ t('toolbar.hint') }} <kbd class="kbd kbd-xs hidden sm:inline-flex">H</kbd></button>
         <div class="dropdown dropdown-end">
-          <label tabindex="0" class="btn btn-xs sm:btn-sm btn-primary">{{ t('toolbar.learningMode') }}</label>
+          <label tabindex="0" class="btn btn-xs sm:btn-sm btn-primary" aria-keyshortcuts="l" :title="t('toolbar.learnTitle')">{{ t('toolbar.learningMode') }} <kbd class="kbd kbd-xs hidden sm:inline-flex">L</kbd></label>
           <div tabindex="0" class="dropdown-content mt-3 p-3 shadow menu bg-base-100 text-base-content rounded-box w-56">
             <label class="flex items-center gap-2 text-sm cursor-pointer">
               <input type="checkbox" class="toggle toggle-sm toggle-primary" v-model="learningStore.showProbability" />
@@ -184,13 +215,14 @@ onMounted(() => {
       </div>
     </div>
   </div>
-  <div v-if="game.grid" id="stage" :class="{'pointer-events-none': !game.isStart}" :style="game.gridStyle" @contextmenu.stop.prevent>
+  <div v-if="game.grid" id="stage" :class="{ 'game-over': !game.isStart }" :style="game.gridStyle" @contextmenu.stop.prevent>
     <grid-item
       v-for="(item, index) in game.grid"
       :ref="(el) => game.setGridItemRef(el, index)"
       :key="index"
       :count="item.count"
       :is-bomb="item.isBomb"
+      :disabled="!game.isStart"
       :flagable="game.flagged < game.bombNumber"
       :probability="prob.getProbability(index)"
       :show-probability="learningStore.showProbability && game.isRealStart"

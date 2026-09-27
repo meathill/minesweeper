@@ -290,6 +290,8 @@ export const useGameStore = defineStore('game', () => {
   }
 
   function onMarkState(index, state) {
+    // 终局惰性：组件层已早退，这里兜底防快照/旗数被污染
+    if (!isStart.value) return;
     const prob = useProbabilityStore();
     const cell = grid.value?.[index];
     if (!cell || cell.isOpen) return;
@@ -345,6 +347,7 @@ export const useGameStore = defineStore('game', () => {
   }
 
   async function onOpen(item, index, delayMs = 0) {
+    if (!isStart.value) return;
     const prob = useProbabilityStore();
     if (!isRealStart.value) {
       doRealStart(index);
@@ -429,6 +432,7 @@ export const useGameStore = defineStore('game', () => {
   }
 
   function onOpenAll(item, index) {
+    if (!isStart.value) return;
     const prob = useProbabilityStore();
     if (item.count === 0) {
       return;

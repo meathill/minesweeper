@@ -196,6 +196,16 @@
   justify-content: center;
   grid-template-columns: repeat(var(--column), 2rem);
   grid-template-rows: repeat(var(--row), 2rem);
+  /* 禁双击缩放（保留 pinch；双击仍走 chord 逻辑） */
+  touch-action: manipulation;
+}
+/* 终局惰性棋盘：事件仍落在棋盘上（右键菜单照常拦截），只去掉可点暗示 */
+#stage.game-over .grid-item {
+  cursor: default;
+}
+#stage:not(.game-over) .grid-item:not(.open):hover {
+  cursor: pointer;
+  border-color: transparent;
 }
 
 .grid-item {
@@ -211,6 +221,8 @@
   user-select: none;
   position: relative;
   overflow: hidden;
+  /* 与 #stage 同理：禁双击缩放，保住 dblclick chord */
+  touch-action: manipulation;
 
   @media (prefers-color-scheme: dark) {
     border-color: #fff2 #3339 #3339 #fff2;
@@ -298,10 +310,6 @@
     opacity: 0.2;
     transform: scale(1.15);
   }
-}
-.grid-item:not(.open):hover {
-  cursor: pointer;
-  border-color: transparent;
 }
 .wrong-mark {
   position: relative;

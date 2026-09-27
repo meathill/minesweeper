@@ -16,7 +16,10 @@
   "toolbar": {
     "mines": "Mines: {count}",
     "hint": "Hint",
+    "hintTitle": "Hint (H)",
     "learningMode": "Learn Mode",
+    "learnTitle": "Toggle Learn Mode (L)",
+    "newGameTitle": "New game (F2 / N)",
     "learningDropdown": {
       "enableHeatmap": "Heatmap",
       "showPercent": "Show %",
@@ -70,7 +73,8 @@
       "<strong>Left-click</strong> to open. First click never hits a mine; numbers show mines in the 8 neighbors.",
       "<strong>Right-click to cycle marks</strong>: right-click cycles <strong>none → 🚩 → ❓ → none</strong>. 🚩 marks mines you're sure of, ❓ marks uncertain cells (costs no flag, can still be opened); the header shows mines remaining. Long-press works as right-click on mobile.",
       "<strong>Double-click to chord (Apple / trackpad optimized)</strong>: classic chording needs left+right together. Here, if flags around a number equal the number, <strong>double-click the number</strong> to open the rest — no right-click needed. Desktop left+right still works, and chording counts as a perfect 10.",
-      "Open all non-mine cells to win; hit a mine and the board reveals."
+      "Open all non-mine cells to win; hit a mine and the board reveals.",
+      "<strong>Shortcuts</strong>: <kbd class=\"kbd kbd-xs\">F2</kbd>/<kbd class=\"kbd kbd-xs\">N</kbd> new game, <kbd class=\"kbd kbd-xs\">H</kbd> hint, <kbd class=\"kbd kbd-xs\">L</kbd> toggle Learn Mode (F2 matches classic Windows Minesweeper; ignored while typing)."
     ],
     "learningTitle": "What is Learn Mode?",
     "heatmapTitle": "Probability heatmap: see the risk",

@@ -16,7 +16,10 @@
   "toolbar": {
     "mines": "Mìn: {count}",
     "hint": "Gợi ý",
+    "hintTitle": "Gợi ý (H)",
     "learningMode": "Chế độ học",
+    "learnTitle": "Bật/tắt chế độ học (L)",
+    "newGameTitle": "Ván mới (F2 / N)",
     "learningDropdown": {
       "enableHeatmap": "Bản đồ nhiệt",
       "showPercent": "Hiện %",
@@ -70,7 +73,8 @@
       "<strong>Chuột trái</strong> để mở. Lần bấm đầu không bao giờ trúng mìn; số đếm mìn trong 8 ô kề.",
       "<strong>Chuột phải ba trạng thái</strong>: bấm phải luân chuyển <strong>trống → 🚩 → ❓ → trống</strong>. 🚩 đánh dấu mìn chắc chắn, ❓ đánh dấu ô chưa rõ (không tốn cờ, vẫn mở được); phần trên hiển thị mìn còn lại. Trên điện thoại, nhấn giữ = chuột phải.",
       "<strong>Nháy đúp để mở dây chuyền (tối ưu cho Apple / touchpad)</strong>: cách cổ điển phải giữ cả hai phím. Ở đây, nếu số cờ quanh một con số bằng chính nó, <strong>nháy đúp vào con số</strong> là mở hết phần còn lại — không cần chuột phải. Trên máy tính, giữ trái+phải vẫn hoạt động và mở dây chuyền được tính 10 điểm tuyệt đối.",
-      "Mở hết mọi ô không mìn để thắng; dẫm mìn là bàn chơi được lật ngược."
+      "Mở hết mọi ô không mìn để thắng; dẫm mìn là bàn chơi được lật ngược.",
+      "<strong>Phím tắt</strong>: <kbd class=\"kbd kbd-xs\">F2</kbd>/<kbd class=\"kbd kbd-xs\">N</kbd> ván mới, <kbd class=\"kbd kbd-xs\">H</kbd> gợi ý, <kbd class=\"kbd kbd-xs\">L</kbd> bật/tắt chế độ học (F2 giống Minesweeper Windows cổ điển; không kích hoạt khi đang gõ)."
     ],
     "learningTitle": "Chế độ học là gì?",
     "heatmapTitle": "Bản đồ nhiệt xác suất: nhìn thấy rủi ro",
