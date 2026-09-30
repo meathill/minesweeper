@@ -1,0 +1,82 @@
+# 肉山扫雷 / Meathill Minesweeper — llms-full.txt
+
+> 官网：https://minesweeper.meathill.com/ · 作者：Meathill Studio (https://meathill.com)
+> 精简版：https://minesweeper.meathill.com/llms.txt
+
+## 一句话简介（中文）
+经典扫雷 + 学习模式：实时概率热力图与决策效率评分，免右键、双击批量打开，支持 9×9 / 16×16 / 16×30 三档，手机与苹果鼠标/触摸板友好。
+
+## One-liner (English)
+Classic Minesweeper plus Learn Mode: live mine-probability heatmap and decision-efficiency scoring, no right-click required, double-click chording, Easy/Medium/Hard boards, mobile and Apple mouse/trackpad friendly.
+
+## 产品是什么 / What it is
+肉山扫雷是经典扫雷的现代复刻，边玩边学是它的核心：既保留 9×9/16×16/16×30 三档难度与右键插旗的原味规则，又加入学习模式——实时计算每个未翻开格子的地雷概率，用 75% 绿-黄-红热力图直接盖在格子上，并用决策效率 0-10 分量化你每一步与“当时最优解”的差距。免右键、双击批量打开，触摸板与手机也能流畅游玩。
+
+A modern, learn-while-playing Minesweeper. Classic 9×9 / 16×16 / 16×30 boards and flagging, plus a Learn Mode that computes the mine probability for every unopened cell in real time, overlays a 75% green-yellow-red heatmap, and scores each move 0-10 against the optimal choice. No right-click required — double-click to chord, perfect for trackpads and phones.
+
+## 核心功能
+- 学习模式：基于已翻开数字构建约束，分量拆分回溯枚举 + 孤立格均摊，得到每格 P(是雷) 0-1，绿→黄→红 75% 透明叠加。
+- 决策效率 0-10：固定差距扣分；翻开对比当时最低雷概率，插旗对比最高；双击批量打开固定 10 分。
+- 复盘图：RPM（6 秒一桶）+ 效率 + 地雷概率×10，按真实点击时刻打点，可点选回溯。
+- 操作：左键翻开（首点安全）、右键/长按插旗（三态）、双击数字批量打开。
+- 难度：Easy 9×9 10 雷 / Medium 16×16 40 雷 / Hard 16×30 99 雷。
+
+## 怎么玩
+1. 左键翻开，数字=周围 8 格雷数。
+2. 右键或长按插旗，顶部显示剩余雷数。
+3. 旗数==数字时，双击该数字一键打开剩余邻格。
+4. 翻开全部非雷格胜利。
+
+## FAQ（中文）
+Q: 肉山扫雷是什么？
+A: 肉山扫雷（minesweeper.meathill.com）是边玩边学的现代扫雷，支持 9×9/16×16/16×30 三档难度，右键三态标记（旗/问号）、双击批量打开，独有学习模式：实时概率热力图与决策效率评分，局后复盘图可点击任意操作、让棋盘完整回到当时（含每步快照下载），帮助从盲猜到精通。
+
+Q: 学习模式的概率是怎么算的？
+A: 只基于已翻开的数字构建约束（每个数字周围恰好有这么多个雷；旗可能是错的，完全不参与计算），对前沿格分量拆分回溯枚举，孤立格按剩余雷数均摊，得到每格 P(是雷) 0-1，用绿→黄→红 75% 叠加。求解器后台始终运行，即使关闭显隐也会用于决策评分。
+
+Q: 决策效率 0-10 分是什么意思？
+A: 固定差距扣分，不是绝对分。翻开看与当时全场最低雷概率 pMin 的差距，插旗看与最高 pMax 的差距，拔旗方向相反；得分 = 10 × (1 − 差距 ÷ 0.5)，与最优差 5 个百分点只扣 1 分，差满 50 个百分点扣到 0。双击批量打开固定 10 分。局面越顺利、选项越接近，越不会被误伤；危险局面下放着更安全的格子不选，才会明显扣分。复盘图里每个橙点就是一次得分，点一下棋盘就回到当时。
+
+Q: 苹果鼠标/触摸板怎么玩？
+A: 已优化：无需左右键同按，对满足 旗数==数字 的已翻开格双击即可批量打开剩余邻格。右键、长按插旗、触摸板点按均兼容，手机亦可直接游玩。
+
+Q: 复盘图怎么看？
+A: 记住“左轴看速度（区域），右轴看质量（折线）”。左轴青绿/红两块 RPM 区域按 6 秒一桶看手速与排雷节奏；右轴橙点是决策效率（0-10），紫三角是当时那格是雷的概率×10。操作太密时拖动图表下方的时间滑块放大到某一段；点击任意操作点，整个棋盘会恢复到那一步刚下完时的样子，点「返回终局」还原；「下载本局数据」可拿到含全部棋盘快照的 JSON。
+
+Q: 适合谁？
+A: 零基础新手用热力图建立直觉，进阶玩家关掉 %/分数只看颜色训练盲扫，高手关闭学习模式冲 Hard 榜单。所有局都可局后复盘。官网：https://minesweeper.meathill.com/ · 作者：Meathill Studio
+
+
+## FAQ (English)
+Q: What is Meathill Minesweeper?
+A: Meathill Minesweeper (minesweeper.meathill.com) is a learn-while-playing Minesweeper with 9×9/16×16/16×30 boards, three-state right-click marks (flag/question), double-click chording, and Learn Mode: live probability heatmap + efficiency scoring, plus a post-game chart that replays the board to any moment (with snapshot download).
+
+Q: How is the probability computed?
+A: Constraints come only from opened numbers (each says: exactly N mines among my hidden neighbors — flags are ignored, since they may be wrong) on frontier cells, split into components and enumerated exactly, isolated cells share remaining mines evenly, yielding P(mine) 0-1 as green→yellow→red 75% overlay. Solver always runs for scoring.
+
+Q: What does 0-10 efficiency mean?
+A: Fixed-gap scoring, relative to the moment. Open is compared against the lowest mine probability pMin at that time, flag against pMax, unflag in reverse; score = 10 × (1 − gap ÷ 0.5). A 5-point gap costs 1 point; a 50-point gap costs all 10. Chord is always 10. Easy boards with near-equal options never get punished — only skipping clearly safer cells in dangerous spots costs real points. Each orange dot in the replay is one score — click it and the board replays that moment.
+
+Q: How to chord on Apple / trackpad?
+A: Optimized: no left+right needed — double-click any opened number where flags == number to open the rest. Right-click, long-press, and trackpad all work, plus mobile.
+
+Q: How to read the replay chart?
+A: Left Y = speed (areas), right Y = quality (lines). Teal/red RPM areas are 6s-bucketed for pace; orange dots are efficiency (0-10), purple triangles the cell's mine prob ×10 at that moment. When dots get dense, drag the time slider below the chart to zoom into a segment; click any operation dot and the whole board restores to right after that move; 'Back to final' restores the end position; the download button exports a JSON with every board snapshot.
+
+Q: Who is it for?
+A: Beginners use heatmap for intuition, intermediates use color only, experts turn Learn Mode off for Hard. Every game is reviewable.Site: https://minesweeper.meathill.com/ · Studio: Meathill Studio
+
+
+## 语言与 URL
+- 中文（默认）：https://minesweeper.meathill.com/
+- English：https://minesweeper.meathill.com/en/
+- Español：https://minesweeper.meathill.com/es/
+- Русский：https://minesweeper.meathill.com/ru/
+- Tiếng Việt：https://minesweeper.meathill.com/vi/
+- Deutsch：https://minesweeper.meathill.com/de/
+- 教程 / 计算器 / Unblocked：各语言前缀下的 /guide/how-to-play/、/guide/google-minesweeper/、/tools/probability-calculator/、/unblocked/
+
+## 链接
+- 游戏源码：https://github.com/meathill/minesweeper
+- 作者：https://meathill.com
+- 精简 llms.txt：https://minesweeper.meathill.com/llms.txt

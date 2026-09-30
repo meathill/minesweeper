@@ -86,10 +86,15 @@ const seoGuideLinks = computed(() => tm('seo.guides'));
 const faqItems = computed(() => tm('faq.items'));
 
 onMounted(() => {
-  game.doStart(null);
   updateSeoMeta(locale.value, t);
   window.addEventListener('keydown', handleGlobalKeydown);
   document.addEventListener('click', handleOutsideClick);
+  // 延后生成棋盘：先让 header H1 / SSR 文案完成首屏绘制，避免格子 DOM 抢走 LCP
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      game.doStart(null);
+    });
+  });
 });
 
 onUnmounted(() => {

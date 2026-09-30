@@ -32,6 +32,9 @@ A: 低点时刻选的不是当时最绿格，回看热力图对照，下次选�
 Q: 适合谁？
 A: 新手开颜色建立直觉→进阶只看颜色→高手关学习模式冲榜。
 
+## 机器可读全文
+- 完整版：https://minesweeper.meathill.com/llms-full.txt
+
 ## 链接
 - 游戏：https://minesweeper.meathill.com/
 - 英文版：https://minesweeper.meathill.com/en/

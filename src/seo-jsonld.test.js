@@ -80,10 +80,14 @@ for (const { file, url, lang } of PAGES) {
       false,
       '禁止伪造 aggregateRating',
     );
-    assert.match(
-      html,
-      /"@type":\s*"(WebSite|WebPage|Organization|FAQPage|HowTo)"/,
+    assert.match(html, /"@type":\s*"(WebSite|WebPage|Organization|FAQPage)"/);
+    assert.equal(
+      types.includes('HowTo'),
+      false,
+      '首页不再输出已废弃的 HowTo schema（见 issue-12）',
     );
+    const organization = graph.find((node) => node['@type'] === 'Organization');
+    assert.ok(organization?.logo, 'Organization 必须包含 logo');
   });
 
   test(`${file} 降级为 WebSite + WebPage 且与可见内容一致`, async () => {
@@ -136,5 +140,25 @@ for (const { file, url, lang } of PAGES) {
         `缺少 hreflang=${code} → ${href}`,
       );
     }
+  });
+}
+
+for (const { file } of PAGES) {
+  test(`${file} SSR 必须输出 H1 + 介绍文字（issue-12）`, async () => {
+    const html = await fs.readFile(new URL(file, import.meta.url), 'utf8');
+    const h1Match = html.match(/<h1>([^<]+)<\/h1>/);
+    assert.ok(h1Match, '首页 SSR HTML 必须包含 H1');
+    assert.ok(h1Match[1].trim().length >= 2, 'H1 文本非空');
+    const introMatch = html.match(/<p class="ssr-intro">([\s\S]*?)<\/p>/);
+    assert.ok(introMatch, '首页 SSR HTML 必须包含 .ssr-intro 介绍文字');
+    const introText = introMatch[1].replace(/<[^>]+>/g, '').trim();
+    assert.ok(
+      introText.length >= 40,
+      `介绍文字过短（${introText.length} 字符），爬虫/PSI 需要可见正文`,
+    );
+    assert.ok(
+      html.includes('id="ssr-hero"'),
+      '介绍区应放在 #ssr-hero，供无 JS 抓取与首屏 LCP',
+    );
   });
 }

@@ -27,6 +27,14 @@
 - 语言唯一来源：`SUPPORTED_LOCALES` 与 `LOCALES`（含 URL path）定义在 `src/i18n/` 相关模块，`App.vue` 只消费不重复定义。内容子站侧组件 Props 只认 `SiteLang` 联合类型（`site/src/i18n.ts`），新增语言时同步改它；`SiteNav`/`SeoHead` 保持 `string` + fallback，刻意宽容。`document.lang` 映射（zh→zh-CN）与 hreflang 互指逻辑集中在一处。
 - SEO：内容页 `SeoHead`/`GuideLayout` 自动生成 Organization + BreadcrumbList + FAQPage + HowTo；首页 JSON-LD 用 WebSite + WebPage，不伪造评分（2026-09 降级决策）。
 
+## 首页 SSR / LCP（issue-12）
+
+- 游戏首页不是真正的服务端渲染：各语言静态 HTML（根 `index.html` + `public/<lang>/index.html`）在 `#app` 内预置 `#ssr-hero`（H1 + `.ssr-intro`），供爬虫/PSI 在无 JS 时也能看到标题与介绍；Vue mount 后整段被替换。
+- 棋盘 `game.doStart` 延后到双 `requestAnimationFrame`，让 header H1 先成为 LCP，避免首屏被大量格子 DOM 抢走。
+- `public/<lang>/index.html` 经 Vite 原样拷贝，脚本仍写 `/src/main.js`；`merge-dist.mjs` 的 `patchLocaleGameHtmlAssets` 在构建后把根页的 `/assets/*` CSS/JS 同步进去（否则线上 /en/ 等语言首页 JS 404、NO_LCP）。
+- 首页 JSON-LD 已去掉 HowTo；Organization 补 `logo`。内容页 Guide 的 HowTo 保留。
+
+
 ## 框架坑
 
 - **ref 不要穿过模板边界**：模板表达式会自动解包 ref，把 ref 对象当参数传给函数拿到的是裸值。子组件实例注册表放 store 里、用 `:ref="(el) => setGridItemRef(el, index)"` 函数 ref 收集（2026-09 曾因此导致空白级联全灭的回归）。

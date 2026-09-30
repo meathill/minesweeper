@@ -64,7 +64,8 @@
             "@id": "https://meathill.com/#organization",
             "name": "Meathill Studio",
             "legalName": "Meathill LLC",
-            "url": "https://meathill.com"
+            "url": "https://meathill.com",
+            "logo": "https://minesweeper.meathill.com/icon-512.png"
           },
           {
             "@type": "WebSite",
@@ -129,20 +130,15 @@
                 }
               }
             ]
-          },
-          {
-            "@type": "HowTo",
-            "name": "怎么玩肉山扫雷",
-            "step": [
-              { "@type": "HowToStep", "text": "左键翻开，首次必不中雷，数字为周围8格雷数。" },
-              { "@type": "HowToStep", "text": "右键或长按插旗，顶部显示剩余雷数。" },
-              { "@type": "HowToStep", "text": "旗数==数字时，双击数字批量打开剩余邻格（苹果鼠标/触摸板已优化）。" },
-              { "@type": "HowToStep", "text": "开启学习模式看热力图与决策效率，局后看四线复盘图（RPM双线6秒一桶 + 效率/地雷概率按真实时刻打点，点击可回溯）。" }
-            ]
           }
         ]
       }
     </script>
+    <style id="ssr-hero-css">
+      #ssr-hero{box-sizing:border-box;margin:0 auto;max-width:48rem;padding:1.25rem 1rem 0.75rem;font-family:system-ui,-apple-system,sans-serif;color:#0f172a}
+      #ssr-hero h1{font-size:clamp(1.35rem,3.5vw,1.75rem);line-height:1.25;margin:0 0 0.5rem;font-weight:700}
+      #ssr-hero .ssr-intro{font-size:1rem;line-height:1.65;margin:0;color:#334155}
+    </style>
   </head>
   <body>
     <noscript>
@@ -151,7 +147,12 @@
         · <a href="https://meathill.com/app">全部产品</a>
       </nav>
     </noscript>
-    <div id="app"></div>
+    <div id="app">
+      <main id="ssr-hero">
+        <h1>肉山扫雷</h1>
+        <p class="ssr-intro">边玩边学的现代扫雷：免右键、双击批量打开（已针对苹果鼠标/触摸板优化），开启学习模式实时查看每格地雷概率热力图与决策效率评分，从盲猜到精通。支持 Easy/Medium/Hard 与完整复盘。</p>
+      </main>
+    </div>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
     <script type="module" src="/src/main.js"></script>
     <script

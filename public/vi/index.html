@@ -44,7 +44,8 @@
             "@id": "https://meathill.com/#organization",
             "name": "Meathill Studio",
             "legalName": "Meathill LLC",
-            "url": "https://meathill.com"
+            "url": "https://meathill.com",
+            "logo": "https://minesweeper.meathill.com/icon-512.png"
           },
           {
             "@type": "WebSite",
@@ -101,16 +102,6 @@
                 }
               }
             ]
-          },
-          {
-            "@type": "HowTo",
-            "name": "Cách chơi Meathill Minesweeper",
-            "step": [
-              { "@type": "HowToStep", "text": "Chuột trái để mở ô; lần bấm đầu luôn an toàn và mỗi con số đếm mìn trong 8 ô kề." },
-              { "@type": "HowToStep", "text": "Chuột phải hoặc nhấn giữ để cắm cờ; phía trên hiển thị số mìn còn lại." },
-              { "@type": "HowToStep", "text": "Khi số cờ bằng con số, nháy đúp vào con số để mở hết các ô kề còn lại cùng lúc (tối ưu cho chuột Apple/touchpad)." },
-              { "@type": "HowToStep", "text": "Bật Chế độ học để xem bản đồ nhiệt xác suất trực tiếp và điểm hiệu quả, rồi xem lại ván đấu trên biểu đồ cuối trận." }
-            ]
           }
         ]
       }
@@ -131,6 +122,11 @@
         mo.observe(document.body, { attributes: true, attributeFilter: ['aria-hidden'] });
       } catch(e) {}
     </script>
+    <style id="ssr-hero-css">
+      #ssr-hero{box-sizing:border-box;margin:0 auto;max-width:48rem;padding:1.25rem 1rem 0.75rem;font-family:system-ui,-apple-system,sans-serif;color:#0f172a}
+      #ssr-hero h1{font-size:clamp(1.35rem,3.5vw,1.75rem);line-height:1.25;margin:0 0 0.5rem;font-weight:700}
+      #ssr-hero .ssr-intro{font-size:1rem;line-height:1.65;margin:0;color:#334155}
+    </style>
   </head>
   <body>
     <noscript>
@@ -139,7 +135,12 @@
         · <a href="https://meathill.com/app">Tất cả sản phẩm</a>
       </nav>
     </noscript>
-    <div id="app"></div>
+    <div id="app">
+      <main id="ssr-hero">
+        <h1>Meathill Minesweeper</h1>
+        <p class="ssr-intro">Dò Mìn hiện đại vừa chơi vừa học: không cần chuột phải, nháy đúp mở dây chuyền (tối ưu Apple/touchpad), bản đồ nhiệt xác suất mìn trực tiếp và chấm điểm hiệu quả 0-10. Dễ/Vừa/Khó + xem lại ván đấu.</p>
+      </main>
+    </div>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
     <script type="module" src="/src/main.js"></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9946806099979342" crossorigin="anonymous"></script>

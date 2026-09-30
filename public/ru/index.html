@@ -44,7 +44,8 @@
             "@id": "https://meathill.com/#organization",
             "name": "Meathill Studio",
             "legalName": "Meathill LLC",
-            "url": "https://meathill.com"
+            "url": "https://meathill.com",
+            "logo": "https://minesweeper.meathill.com/icon-512.png"
           },
           {
             "@type": "WebSite",
@@ -101,16 +102,6 @@
                 }
               }
             ]
-          },
-          {
-            "@type": "HowTo",
-            "name": "Как играть в Meathill Minesweeper",
-            "step": [
-              { "@type": "HowToStep", "text": "Левый щелчок открывает клетку; первый щелчок всегда безопасен, а каждая цифра считает мины в 8 соседних клетках." },
-              { "@type": "HowToStep", "text": "Правый щелчок или долгое нажатие ставит флажок; в шапке видно, сколько мин осталось." },
-              { "@type": "HowToStep", "text": "Когда флажков столько же, сколько цифра, двойной щелчок по цифре открывает остальных соседей сразу (оптимизировано под мышь Apple/тачпад)." },
-              { "@type": "HowToStep", "text": "Включите режим обучения, чтобы увидеть живую карту вероятностей и оценку эффективности, а затем разберите партию на итоговом графике." }
-            ]
           }
         ]
       }
@@ -131,6 +122,11 @@
         mo.observe(document.body, { attributes: true, attributeFilter: ['aria-hidden'] });
       } catch(e) {}
     </script>
+    <style id="ssr-hero-css">
+      #ssr-hero{box-sizing:border-box;margin:0 auto;max-width:48rem;padding:1.25rem 1rem 0.75rem;font-family:system-ui,-apple-system,sans-serif;color:#0f172a}
+      #ssr-hero h1{font-size:clamp(1.35rem,3.5vw,1.75rem);line-height:1.25;margin:0 0 0.5rem;font-weight:700}
+      #ssr-hero .ssr-intro{font-size:1rem;line-height:1.65;margin:0;color:#334155}
+    </style>
   </head>
   <body>
     <noscript>
@@ -139,7 +135,12 @@
         · <a href="https://meathill.com/app">Все продукты</a>
       </nav>
     </noscript>
-    <div id="app"></div>
+    <div id="app">
+      <main id="ssr-hero">
+        <h1>Meathill Minesweeper</h1>
+        <p class="ssr-intro">Современный Сапёр для обучения: без правой кнопки, чординг двойным щелчком (оптимизирован под Apple/тачпад), живая карта вероятностей мины и оценка эффективности 0-10. Лёгкий/Средний/Сложный + повтор партии.</p>
+      </main>
+    </div>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
     <script type="module" src="/src/main.js"></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9946806099979342" crossorigin="anonymous"></script>
