@@ -17,6 +17,17 @@ export const HTML_LANG = {
   de: 'de',
 };
 
+/** 游戏壳的语言只看路径。浏览器语言和 localStorage 不能改 canonical。 */
+export function localeFromPath(pathname) {
+  const path = pathname || '/';
+  const prefixed = LOCALES.find((item) => {
+    if (item.code === 'zh') return false;
+    const prefix = `/${item.code}`;
+    return path === prefix || path.startsWith(`${prefix}/`);
+  });
+  return prefixed?.code ?? 'zh';
+}
+
 export function updateSeoMeta(loc, t) {
   const homePath = LOCALES.find((item) => item.code === loc)?.path ?? '/';
   const homeUrl = `https://minesweeper.meathill.com${homePath}`;

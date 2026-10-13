@@ -1,31 +1,18 @@
 import { createI18n } from 'vue-i18n';
-import zh from './locales/zh.json';
+import de from './locales/de.json';
 import en from './locales/en.json';
 import es from './locales/es.json';
 import ru from './locales/ru.json';
 import vi from './locales/vi.json';
-import de from './locales/de.json';
-import { HTML_LANG, LOCALES } from './seo-meta.js';
+import zh from './locales/zh.json';
+import { HTML_LANG, LOCALES, localeFromPath } from './seo-meta.js';
 
 export const SUPPORTED_LOCALES = LOCALES.map((l) => l.code);
 export { HTML_LANG };
 
 function getInitialLocale() {
-  if (typeof window !== 'undefined') {
-    const prefixed = SUPPORTED_LOCALES.find(
-      (l) => l !== 'zh' && location.pathname.startsWith(`/${l}`),
-    );
-    if (prefixed) return prefixed;
-    const saved = localStorage.getItem('locale');
-    if (SUPPORTED_LOCALES.includes(saved)) return saved;
-    // fallback to browser language
-    const navLang = navigator.language?.toLowerCase() || '';
-    const matched = SUPPORTED_LOCALES.find(
-      (l) => l !== 'zh' && navLang.startsWith(l),
-    );
-    if (matched) return matched;
-  }
-  return 'zh';
+  if (typeof window === 'undefined') return 'zh';
+  return localeFromPath(window.location.pathname);
 }
 
 export const i18n = createI18n({
