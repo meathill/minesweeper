@@ -19,6 +19,7 @@
 
 - `pnpm build` = vite build（游戏 SPA）→ astro build（`site/` workspace 子包，静态 HTML、零框架 JS）→ `scripts/merge-dist.mjs` 并入 `dist/` 并重生成整站 `sitemap.xml`。游戏 SPA 不动，内容页纯静态。
 - `dist/` 不进仓（gitignored），本地有构建产物属正常。
+- IndexNow key 放在 `public/<key>.txt`，文件名即内容，随静态资源公开。`pnpm indexnow` 必须等该文件在线上返回 200 后再跑；构建期提交会被拒。
 - `meathill-brand` 走 npm registry，不提交 tgz。
 
 ## 多语言
