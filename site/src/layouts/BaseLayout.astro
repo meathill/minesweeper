@@ -6,6 +6,7 @@ import type { SiteLang } from '../i18n';
 import SiteNav from '../components/SiteNav.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import { getLocaleMeta } from '../i18n';
+import { readGoogleAnalyticsId } from '../../../scripts/google-analytics.mjs';
 
 interface Props {
   lang: SiteLang;
@@ -22,6 +23,7 @@ interface Props {
 }
 
 const props = Astro.props;
+const googleAnalyticsId = readGoogleAnalyticsId();
 ---
 
 <!doctype html>
@@ -30,13 +32,25 @@ const props = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <SeoHead {...props} />
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1S0T1HF97B" is:inline></script>
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() { dataLayer.push(arguments); }
-      gtag('js', new Date());
-      gtag('config', 'G-1S0T1HF97B');
-    </script>
+    {
+      googleAnalyticsId && (
+        <>
+          <script
+            async
+            src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}
+            is:inline
+          />
+          <script is:inline define:vars={{ googleAnalyticsId }}>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+              dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', googleAnalyticsId);
+          </script>
+        </>
+      )
+    }
   </head>
   <body class="flex min-h-screen flex-col">
     <SiteNav lang={props.lang} path={props.path} />

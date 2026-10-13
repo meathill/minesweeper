@@ -106,12 +106,16 @@
         ]
       }
     </script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1S0T1HF97B"></script>
+    <!-- ga:start -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_ID__"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-1S0T1HF97B');
+      gtag('config', '__GA_ID__');
+    </script>
+    <!-- ga:end -->
+    <script>
       try {
         const mo = new MutationObserver(() => {
           if (document.body.getAttribute('aria-hidden') === 'true') {
