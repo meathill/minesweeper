@@ -155,5 +155,56 @@
     "ogTitle": "Meathill Minesweeper - Learn While Playing",
     "ogDescription": "Learn Mode shows 75% green-yellow-red heatmap per cell and tracks RPM + efficiency — no right-click, double-click to chord (Apple/trackpad optimized).",
     "twitterDescription": "See every cell's probability, score every decision — Minesweeper you can actually learn from."
+  },
+  "unblocked": {
+    "title": "Minesweeper Unblocked - Play Free in Your Browser - Meathill Minesweeper",
+    "description": "Play Minesweeper unblocked directly in your browser: no download, no install, no account, no popups. Long-press to flag, no right-click needed, three difficulties plus Learn Mode. Free unblocked game.",
+    "ogTitle": "Minesweeper Unblocked - Play Free in Browser",
+    "ogDescription": "Play Minesweeper unblocked directly in your browser: no download, no install, no account. Touch-friendly, three difficulties, and Learn Mode."
+  },
+  "unblockedContent": {
+    "title": "Online Minesweeper, Zero Setup",
+    "lede": "This is Minesweeper played directly in the browser: nothing to download, nothing to install, and the full game board is right above — click and play.",
+    "featuresTitle": "Key Features",
+    "features": [
+      {
+        "title": "No download, no install",
+        "desc": "An ordinary web page that contains the complete game; nothing is written to your device."
+      },
+      {
+        "title": "No pop-ups",
+        "desc": "Clean gameplay with no interstitials or pop-ups; once loaded, everything runs locally with zero input lag."
+      },
+      {
+        "title": "Touch & trackpad friendly",
+        "desc": "Long-press to flag, double-click to chord — the no-right-click design works seamlessly on laptops and mobile devices."
+      },
+      {
+        "title": "Learn mode & replay",
+        "desc": "Built-in live probability heatmap, per-decision scoring, and full post-game replay charts."
+      }
+    ],
+    "networkTitle": "Which networks can access the game?",
+    "networkDesc": "This page is a plain HTTPS website and loads on home and typical office networks. If your school or workplace network explicitly restricts game sites, please follow your organization guidelines; when fully offline, the game continues running in your browser memory.",
+    "faqTitle": "Frequently Asked Questions (FAQ)",
+    "faqItems": [
+      {
+        "q": "Do I need to download anything to play?",
+        "a": "No. This page is the game itself: open it in any modern browser and play — nothing to install, no account, and no plugins."
+      },
+      {
+        "q": "What if I lose my connection mid-game?",
+        "a": "Once loaded, the game runs entirely in your local device memory. A brief disconnect does not interrupt the current game; refreshing starts a fresh board."
+      },
+      {
+        "q": "How do I flag on a phone or trackpad?",
+        "a": "Long-press a cell to flag it. When flags equal a revealed number, double-click that number to open the remaining neighbors — no right-click needed."
+      },
+      {
+        "q": "How do I play full screen or switch difficulty?",
+        "a": "Press F11 in any desktop browser for fullscreen mode. You can switch between Beginner, Intermediate, and Expert in the header dropdown anytime."
+      }
+    ],
+    "guidesTitle": "Guides & Strategy"
   }
 }

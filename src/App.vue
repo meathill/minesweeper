@@ -1,327 +1,55 @@
 <script setup>
-import {
-  computed,
-  onMounted,
-  onUnmounted,
-  defineAsyncComponent,
-  ref,
-  watch,
-} from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { version } from '../package.json';
-import GridItem from './grid-item.vue';
-import CommentDialog from './comment-dialog.vue';
+import AppHeader from './app-header.vue';
+import MinesweeperGame from './minesweeper-game.vue';
+import SeoHomeContent from './seo-home-content.vue';
+import SeoUnblockedContent from './seo-unblocked-content.vue';
 import BrandFooter from './brand-footer.vue';
-import BrandSiteSwitcher from './brand-site-switcher.vue';
-import CossDropdown from './coss-dropdown.vue';
-import { Levels } from './data';
-import { matchShortcut } from './utils/shortcuts.js';
-import { useOperationRecordsStore } from './store/operationRecords';
-import { useLearningStore } from './store/learningStore';
-import { useGameStore } from './store/gameStore';
-import { useProbabilityStore } from './store/probabilityStore';
-import { LOCALES, updateSeoMeta } from './seo-meta.js';
-import { formatTime } from './utils/format.js';
-import { trackEvent } from './analytics.js';
-import { setLocale } from './i18n.js';
+import CommentDialog from './comment-dialog.vue';
+import { updateSeoMeta } from './seo-meta.js';
 
-const { t, tm, locale } = useI18n();
-const OperationChart = defineAsyncComponent(
-  () => import('./operation-chart.vue'),
-);
-const operationStore = useOperationRecordsStore();
-const learningStore = useLearningStore();
-const game = useGameStore();
-const prob = useProbabilityStore();
+const { t, locale } = useI18n();
+
 const commentDialogRef = ref(null);
+const isUnblocked = ref(
+  typeof window !== 'undefined' &&
+    window.location.pathname.includes('/unblocked'),
+);
 
 function openComments() {
   commentDialogRef.value?.open();
 }
 
-function switchLocale(code, closeFn) {
-  closeFn?.();
-  if (code === locale.value) return;
-  setLocale(code);
-  const target = LOCALES.find((item) => item.code === code)?.path ?? '/';
-  if (location.pathname !== target) {
-    history.pushState(null, '', target);
+function updateRouteState() {
+  if (typeof window !== 'undefined') {
+    isUnblocked.value = window.location.pathname.includes('/unblocked');
   }
+}
+
+watch(locale, (code) => {
   updateSeoMeta(code, t);
-  trackEvent('locale_switch', { to_locale: code, level: game.level });
-}
-
-function selectLevel(key, closeFn) {
-  if (key === 'Custom') return;
-  game.level = key;
-  game.onLevelChange(key);
-  closeFn?.();
-}
-
-// 学习模式开关埋点
-watch(
-  () => learningStore.showProbability,
-  (v) => trackEvent('learn_mode_toggle', { enabled: v, level: game.level }),
-);
-watch(
-  () => learningStore.showPercent,
-  (v) => trackEvent('learn_show_percent', { enabled: v, level: game.level }),
-);
-watch(
-  () => learningStore.showFraction,
-  (v) => trackEvent('learn_show_fraction', { enabled: v, level: game.level }),
-);
-// init SEO on mount (in case locale is en on /en/)
-watch(locale, (v) => updateSeoMeta(v, t));
-const seoHowToPlay = computed(() => tm('seo.howToPlay'));
-const seoChartBullets = computed(() => tm('seo.chartBullets'));
-const seoProgressSteps = computed(() => tm('seo.progressSteps'));
-const seoGuideLinks = computed(() => tm('seo.guides'));
-const faqItems = computed(() => tm('faq.items'));
+});
 
 onMounted(() => {
+  updateRouteState();
   updateSeoMeta(locale.value, t);
-  window.addEventListener('keydown', handleGlobalKeydown);
-  // 延后生成棋盘：先让 header H1 / SSR 文案完成首屏绘制，避免格子 DOM 抢走 LCP
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      game.doStart(null);
-    });
-  });
+  window.addEventListener('popstate', updateRouteState);
 });
 
 onUnmounted(() => {
-  window.removeEventListener('keydown', handleGlobalKeydown);
+  window.removeEventListener('popstate', updateRouteState);
 });
-
-// 全局快捷键（Windows 对齐：F2 新开；H 提示、L 教学为本站扩展）
-function handleGlobalKeydown(event) {
-  const action = matchShortcut(event);
-  if (!action) return;
-  if (action === 'new') {
-    event.preventDefault();
-    game.doStart(true);
-  } else if (action === 'hint') {
-    prob.handleHint();
-  } else if (action === 'learn') {
-    learningStore.showProbability = !learningStore.showProbability;
-  }
-  trackEvent('shortcut_use', { action, level: game.level });
-}
 </script>
 
 <template>
-  <header class="navbar bg-base-200">
-    <div class="container mx-auto flex flex-wrap items-center gap-x-3 gap-y-2 py-1">
-      <div class="flex items-center gap-2 min-w-0 flex-1">
-        <a class="brand-studio" href="https://meathill.com">Meathill Studio</a>
-        <span aria-hidden="true" class="brand-divider"></span>
-        <h1 class="text-lg sm:text-xl font-bold truncate">{{ t('header.title') }}</h1>
-        <span class="text-xs opacity-60 whitespace-nowrap shrink-0">v{{version}}</span>
-      </div>
-      <div class="flex items-center gap-2 flex-wrap justify-end shrink-0">
-        <CossDropdown :label="t('seo.guidesTitle')" panel-class="coss-dropdown-wide">
-          <template #default="{ close }">
-            <a
-              v-for="(item, idx) in seoGuideLinks"
-              :key="idx"
-              class="coss-dropdown-item"
-              :href="item.href"
-              @click="close"
-            >
-              <span>{{ item.label }}</span>
-            </a>
-          </template>
-        </CossDropdown>
-        <CossDropdown :label="LOCALES.find((item) => item.code === locale)?.label">
-          <template #default="{ close }">
-            <a
-              v-for="item in LOCALES"
-              :key="item.code"
-              class="coss-dropdown-item"
-              :href="item.path"
-              :aria-current="item.code === locale ? 'page' : undefined"
-              @click.prevent="switchLocale(item.code, close)"
-            >
-              <span>{{ item.label }}</span>
-              <span v-if="item.code === locale" class="coss-dropdown-check" aria-hidden="true">✓</span>
-            </a>
-          </template>
-        </CossDropdown>
-        <BrandSiteSwitcher />
-        <button
-          type="button"
-          id="comment-toggle"
-          class="coss-header-btn"
-          :aria-label="t('header.comment')"
-          :title="t('header.comment')"
-          @click="openComments"
-        >
-          <i class="bi bi-chat-dots" aria-hidden="true"></i>
-          <span class="hidden sm:inline">{{ t('header.comment') }}</span>
-        </button>
-        <CossDropdown :label="t(`header.levels.${game.level}`)">
-          <template #default="{ close }">
-            <button
-              v-for="(item, key) in Levels"
-              :key="key"
-              type="button"
-              class="coss-dropdown-item"
-              :class="{ 'is-active': game.level === key }"
-              :disabled="key === 'Custom'"
-              @click="selectLevel(key, close)"
-            >
-              <span>{{ t(`header.levels.${key}`) }}</span>
-              <span v-if="game.level === key" class="coss-dropdown-check" aria-hidden="true">✓</span>
-            </button>
-          </template>
-        </CossDropdown>
-      </div>
-    </div>
-  </header>
-  <div class="bg-slate-800 text-white mt-3">
-    <div class="mx-auto flex items-center py-2 px-2" :style="{ width: `min(calc(100% - 16px), calc(var(--column) * 2rem))` }">
-      <div class="flex-1 flex justify-center">
-        <div class="flex items-center gap-3 sm:gap-6">
-          <span class="w-24 sm:w-32 text-sm">{{ t('toolbar.mines', { count: game.bombNumber - game.flagged }) }}</span>
-          <button
-            type="button"
-            class="btn btn-sm btn-outline bg-white text-slate-800 border-slate-300 start-button"
-            :title="t('toolbar.newGameTitle')"
-            aria-keyshortcuts="F2"
-            @click="(e) => game.doStart(e)"
-          >
-            <template v-if="game.isSuccess">😊</template>
-            <template v-else-if="game.isFailed">😭</template>
-            <template v-else>🎮</template>
-            <kbd class="kbd kbd-xs hidden sm:inline-flex">F2</kbd>
-          </button>
-          <span class="w-24 sm:w-32 text-right text-sm font-mono">{{ formatTime(game.timeCount) }}</span>
-        </div>
-      </div>
-      <!-- 右侧：提示 + 学习模式（对齐高级难度游戏区右缘） -->
-      <div class="flex items-center gap-1 sm:gap-2 shrink-0 ml-2">
-        <button class="btn btn-xs sm:btn-sm btn-warning" aria-keyshortcuts="h" :title="t('toolbar.hintTitle')" @click="prob.handleHint" :disabled="!game.isRealStart || !prob.probabilities.size">{{ t('toolbar.hint') }} <kbd class="kbd kbd-xs hidden sm:inline-flex">H</kbd></button>
-        <CossDropdown
-          trigger-class="coss-dropdown-trigger-toolbar"
-          panel-class="coss-dropdown-learning"
-          aria-keyshortcuts="l"
-          :title="t('toolbar.learnTitle')"
-        >
-          <template #trigger>
-            <span>{{ t('toolbar.learningMode') }}</span>
-            <kbd class="kbd kbd-xs hidden sm:inline-flex">L</kbd>
-          </template>
-          <div class="coss-learning-body">
-            <label class="flex items-center gap-2 text-sm cursor-pointer">
-              <input type="checkbox" class="toggle toggle-sm toggle-primary" v-model="learningStore.showProbability" />
-              <span>{{ t('toolbar.learningDropdown.enableHeatmap') }}</span>
-            </label>
-            <div v-if="learningStore.showProbability" class="mt-3 flex flex-col gap-2">
-              <div class="flex items-center gap-1 text-xs">
-                <span class="w-12 h-2 rounded" style="background: linear-gradient(90deg, rgba(34,197,94,0.75), rgba(234,179,8,0.75), rgba(239,68,68,0.75))"></span>
-                <span>{{ t('toolbar.learningDropdown.gradient') }}</span>
-              </div>
-              <label class="flex items-center gap-2 text-sm cursor-pointer">
-                <input type="checkbox" class="checkbox checkbox-xs" v-model="learningStore.showPercent" />
-                <span>{{ t('toolbar.learningDropdown.showPercent') }}</span>
-              </label>
-              <label class="flex items-center gap-2 text-sm cursor-pointer">
-                <input type="checkbox" class="checkbox checkbox-xs" v-model="learningStore.showFraction" />
-                <span>{{ t('toolbar.learningDropdown.showFraction') }}</span>
-              </label>
-            </div>
-            <p v-else class="text-xs opacity-60 mt-2">{{ t('toolbar.learningDropdown.disabledHint') }}</p>
-          </div>
-        </CossDropdown>
-      </div>
-    </div>
-  </div>
-  <div v-if="game.grid" id="stage" :class="{ 'game-over': !game.isStart }" :style="game.gridStyle" @contextmenu.stop.prevent>
-    <grid-item
-      v-for="(item, index) in game.grid"
-      :ref="(el) => game.setGridItemRef(el, index)"
-      :key="index"
-      :count="item.count"
-      :is-bomb="item.isBomb"
-      :disabled="!game.isStart"
-      :flagable="game.flagged < game.bombNumber"
-      :probability="prob.getProbability(index)"
-      :show-probability="learningStore.showProbability && game.isRealStart"
-      :show-percent="learningStore.showPercent"
-      :show-fraction="learningStore.showFraction"
-      :is-hint="prob.hintIndex === index"
-      :hint-flash-key="prob.hintFlashKey"
-      :cell-index="index"
-      :columns="game.column"
-      :is-selected="operationStore.selectedIndex === index"
-      @mark-state="game.onMarkState(index, $event)"
-      @open="game.onOpen(item, index, $event)"
-      @open-all="game.onOpenAll(item, index)"
-    />
-  </div>
-  <div v-if="operationStore.isShowChart" class="flex items-center justify-center my-4">
-    <Suspense>
-      <template #default>
-        <operation-chart
-          @replay="game.restoreToSnapshot"
-          @download="() => game.handleDownloadReplay(version)"
-        />
-      </template>
-      <template #fallback>
-        <div class="loading loading-spinner loading-lg"></div>
-      </template>
-    </Suspense>
-  </div>
-
-  <section class="container mx-auto max-w-3xl px-4 py-10 mt-6 border-t border-base-300">
-    <h2 class="text-2xl font-bold mb-3">{{ t('seo.whatIsTitle') }}</h2>
-    <p class="text-sm leading-7 opacity-80 mb-6" v-html="t('seo.whatIsDesc')"></p>
-
-    <h2 class="text-xl font-bold mt-8 mb-3">{{ t('seo.howToPlayTitle') }}</h2>
-    <ul class="list-disc ps-5 text-sm leading-7 opacity-80 mb-6">
-      <li v-for="(item, idx) in seoHowToPlay" :key="idx" v-html="item"></li>
-    </ul>
-
-    <h2 class="text-xl font-bold mt-8 mb-3">{{ t('seo.learningTitle') }}</h2>
-    <h3 class="font-semibold mt-4 mb-2">{{ t('seo.heatmapTitle') }}</h3>
-    <p class="text-sm leading-7 opacity-80 mb-4" v-html="t('seo.heatmapDesc')"></p>
-    <h3 class="font-semibold mt-4 mb-2">{{ t('seo.efficiencyTitle') }}</h3>
-    <p class="text-sm leading-7 opacity-80 mb-4" v-html="t('seo.efficiencyDesc')"></p>
-
-    <h2 class="text-xl font-bold mt-8 mb-3">{{ t('seo.chartTitle') }}</h2>
-    <p class="text-sm leading-7 opacity-80 mb-2" v-html="t('seo.chartDesc')"></p>
-    <ul class="list-disc ps-5 text-sm leading-7 opacity-80 mb-6">
-      <li v-for="(item, idx) in seoChartBullets" :key="idx" v-html="item"></li>
-    </ul>
-    <p class="text-sm leading-7 opacity-80 mb-6" v-html="t('seo.chartHint')"></p>
-
-    <h2 class="text-xl font-bold mt-8 mb-3">{{ t('seo.progressTitle') }}</h2>
-    <ol class="list-decimal ps-5 text-sm leading-7 opacity-80 mb-6">
-      <li v-for="(item, idx) in seoProgressSteps" :key="idx" v-html="item"></li>
-    </ol>
-
-    <h2 class="text-xl font-bold mt-8 mb-3">{{ t('seo.guidesTitle') }}</h2>
-    <ul class="list-disc ps-5 text-sm leading-7 mb-6">
-      <li v-for="(item, idx) in seoGuideLinks" :key="idx">
-        <a class="link link-hover" :href="item.href">{{ item.label }}</a>
-      </li>
-    </ul>
-
-    <div class="text-xs opacity-60 mt-8">{{ t('seo.keywords') }}</div>
-  </section>
-
-  <!-- GEO 友好：高密度问答，供生成式引擎直接引用 -->
-  <section id="geo-faq" class="container mx-auto max-w-3xl px-4 py-8 mt-2">
-    <h2 class="text-xl font-bold mb-4">{{ t('faq.title') }}</h2>
-    <div class="space-y-4 text-sm leading-7">
-      <div v-for="(item, idx) in faqItems" :key="idx" class="bg-base-100 border border-base-300 rounded-box p-4">
-        <h3 class="font-semibold">{{ item.q }}</h3>
-        <p class="opacity-80 mt-1" v-html="item.a"></p>
-      </div>
-    </div>
-  </section>
-
+  <AppHeader
+    :is-unblocked="isUnblocked"
+    @open-comments="openComments"
+    @locale-changed="updateRouteState"
+  />
+  <MinesweeperGame />
+  <component :is="isUnblocked ? SeoUnblockedContent : SeoHomeContent" />
   <BrandFooter />
   <CommentDialog ref="commentDialogRef" />
 </template>

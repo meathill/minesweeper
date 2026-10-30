@@ -155,5 +155,56 @@
     "ogTitle": "Meathill Minesweeper - Démineur pour Apprendre en Jouant",
     "ogDescription": "Le Mode Apprentissage affiche une carte thermique 75 % vert-jaune-rouge par case et mesure RPM et efficacité — sans clic droit, double-clic sur trackpad.",
     "twitterDescription": "Visualisez la probabilité de chaque case et notez chaque décision — le Démineur qui fait vraiment progresser."
+  },
+  "unblocked": {
+    "title": "Démineur en ligne gratuit - Jouer dans le navigateur sans téléchargement - Meathill Minesweeper",
+    "description": "Jouez au Démineur directement dans votre navigateur : sans téléchargement, sans installation, sans compte, sans pop-up. Appui long pour poser un drapeau, 3 difficultés et Mode Apprentissage. Partie immédiate.",
+    "ogTitle": "Démineur en ligne gratuit - Jouer sans téléchargement",
+    "ogDescription": "Jouez au Démineur directement dans votre navigateur : sans téléchargement, sans installation, avec Mode Apprentissage."
+  },
+  "unblockedContent": {
+    "title": "Démineur en ligne, zéro installation",
+    "lede": "Jouez au Démineur directement dans votre navigateur sans rien installer : la grille complète vous attend juste au-dessus dès le premier clic, sans inscription.",
+    "featuresTitle": "Points clés",
+    "features": [
+      {
+        "title": "Aucun téléchargement",
+        "desc": "Fonctionne immédiatement sur PC, Mac, Chromebook, iPhone et Android sans aucune installation."
+      },
+      {
+        "title": "Sans fenêtres surgissantes",
+        "desc": "Expérience épurée sans pop-up intempestif ; après chargement, le jeu tourne localement sans aucun lag."
+      },
+      {
+        "title": "Conçu pour le tactile et le trackpad",
+        "desc": "Appui long pour poser un drapeau et double-clic pour ouvrir en chaîne sans clic droit."
+      },
+      {
+        "title": "Mode Apprentissage intégré",
+        "desc": "Superposez la carte thermique des probabilités en direct et analysez vos décisions avec le graphique de replay."
+      }
+    ],
+    "networkTitle": "Sur quels réseaux jouer ?",
+    "networkDesc": "Ce site est une page web HTTPS standard accessible depuis les réseaux domestiques et professionnels classiques. Sur un réseau scolaire ou entreprise avec filtrage, respectez les règles en vigueur ; après chargement, la grille continue de tourner dans la mémoire de votre navigateur.",
+    "faqTitle": "Foire aux questions (FAQ)",
+    "faqItems": [
+      {
+        "q": "Faut-il télécharger un logiciel pour jouer ?",
+        "a": "Non. Le jeu complet tourne directement dans cette page web — sans installation, sans inscription et sans extension."
+      },
+      {
+        "q": "Que se passe-t-il si ma connexion coupe en pleine partie ?",
+        "a": "Une fois la page chargée, toute la logique s’exécute localement sur votre appareil. Une micro-coupure réseau n’interrompt pas votre grille en cours."
+      },
+      {
+        "q": "Comment poser un drapeau sur téléphone ou trackpad ?",
+        "a": "Appui long sur mobile, tap à deux doigts sur trackpad. Dès que les drapeaux autour d’un chiffre correspondent à sa valeur, un double-clic ouvre toutes les cases voisines sûres."
+      },
+      {
+        "q": "Comment jouer en plein écran ou changer la difficulté ?",
+        "a": "Appuyez sur F11 sur votre clavier pour passer en plein écran. Vous pouvez changer de niveau (Débutant, Intermédiaire, Expert) à tout moment dans la barre supérieure."
+      }
+    ],
+    "guidesTitle": "Guides et stratégies"
   }
 }

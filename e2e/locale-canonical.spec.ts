@@ -15,6 +15,8 @@ test('英文浏览器且记下 en，打开 / 仍自指中文首页', async ({ pa
   );
   await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
   await expect(page.locator('header h1')).toHaveText('肉山扫雷');
+  await expect(page.locator('#geo-faq')).toBeVisible();
+  await expect(page.locator('#unblocked-faq')).toHaveCount(0);
 });
 
 test('/en/ 的 canonical 自指英文首页', async ({ page }) => {
@@ -106,4 +108,45 @@ test('顶栏 Coss UI 下拉支持锚点定位、Escape 关闭、难度切换且�
   await expect(learnPanel).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(learnPanel).toBeHidden();
+});
+
+test('/unblocked/ 与 /en/unblocked/ 作为独立全功能 SPA 运行，无 iframe 且正确映射', async ({
+  page,
+}) => {
+  await page.goto('/unblocked/');
+  await expect(page.locator('.play-iframe, #app iframe')).toHaveCount(0);
+  await expect(page.locator('#stage .grid-item')).toHaveCount(81);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    'https://minesweeper.meathill.com/unblocked/',
+  );
+  await expect(page).toHaveTitle(/扫雷在线玩/);
+  await expect(page.locator('#unblocked-faq')).toBeVisible();
+  await expect(page.locator('#geo-faq')).toHaveCount(0);
+  await expect(
+    page.getByRole('heading', { name: '在线扫雷，即开即玩' }),
+  ).toBeVisible();
+
+  // 语言下拉在 unblocked 下切换到英语，路由无缝切换到 /en/unblocked/
+  const langTrigger = page.locator('header .coss-dropdown-trigger').filter({
+    hasText: '中文',
+  });
+  await langTrigger.click();
+  const langPanelId = await langTrigger.getAttribute('popovertarget');
+  const langPanel = page.locator(`#${langPanelId}`);
+  await expect(langPanel).toBeVisible();
+  await langPanel.getByRole('link', { name: 'English' }).click();
+  await expect(page).toHaveURL(/\/en\/unblocked\/?$/);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    'https://minesweeper.meathill.com/en/unblocked/',
+  );
+  await expect(page).toHaveTitle(/Minesweeper Unblocked/);
+  await expect(page.locator('.play-iframe, #app iframe')).toHaveCount(0);
+  await expect(page.locator('#stage .grid-item')).toHaveCount(81);
+  await expect(page.locator('#unblocked-faq')).toBeVisible();
+  await expect(page.locator('#geo-faq')).toHaveCount(0);
+  await expect(
+    page.getByRole('heading', { name: 'Online Minesweeper, Zero Setup' }),
+  ).toBeVisible();
 });

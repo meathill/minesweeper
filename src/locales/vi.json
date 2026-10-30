@@ -155,5 +155,56 @@
     "ogTitle": "Meathill Minesweeper - Dò Mìn vừa chơi vừa học",
     "ogDescription": "Chế độ học hiển thị bản đồ nhiệt xanh-vàng-đỏ 75% cho từng ô, ghi RPM và hiệu quả — không cần chuột phải, nháy đúp mở dây chuyền (tối ưu Apple/touchpad).",
     "twitterDescription": "Thấy xác suất từng ô, chấm điểm từng quyết định — Dò Mìn mà bạn thật sự học được."
+  },
+  "unblocked": {
+    "title": "Dò Mìn online - chơi miễn phí ngay trên trình duyệt - Meathill Minesweeper",
+    "description": "Chơi Dò Mìn ngay trên trình duyệt: không tải về, không cài đặt, không đăng nhập, không quảng cáo bật lên. Nhấn giữ để cắm cờ, không cần chuột phải, ba độ khó kèm Chế độ học. Mở ra là chơi ngay.",
+    "ogTitle": "Dò Mìn online - chơi miễn phí không tải về",
+    "ogDescription": "Chơi Dò Mìn ngay trên trình duyệt: không tải về, không cài đặt, ba độ khó kèm Chế độ học."
+  },
+  "unblockedContent": {
+    "title": "Dò Mìn online, không cần thiết lập",
+    "lede": "Đây là trò chơi Dò Mìn chạy trực tiếp trên trình duyệt: không cần tải về, không cần tài khoản, bàn cờ hoàn chỉnh nằm ngay phía trên — bấm là chơi.",
+    "featuresTitle": "Đặc điểm nổi bật",
+    "features": [
+      {
+        "title": "Không tải về, không cài đặt",
+        "desc": "Một trang web thông thường chứa toàn bộ trò chơi, không lưu tệp rác hay yêu cầu quyền hạn."
+      },
+      {
+        "title": "Không cửa sổ bật lên làm phiền",
+        "desc": "Trải nghiệm chơi sạch sẽ, không quảng cáo chen ngang, tải xong là chạy mượt mà ngay trên máy."
+      },
+      {
+        "title": "Thân thiện với cảm ứng và trackpad",
+        "desc": "Nhấn giữ để cắm cờ, nháy đúp để mở hàng loạt — thiết kế không cần chuột phải cực kỳ tiện lợi."
+      },
+      {
+        "title": "Chế độ học tập và xem lại ván đấu",
+        "desc": "Bản đồ nhiệt xác suất trực tiếp, chấm điểm hiệu quả từng nước đi và biểu đồ xem lại chi tiết sau trận."
+      }
+    ],
+    "networkTitle": "Mạng nào chơi được?",
+    "networkDesc": "Trang này là website HTTPS chuẩn, truy cập bình thường từ mạng gia đình hay văn phòng. Nếu trường học hoặc công ty bạn giới hạn trang game, vui lòng tuân thủ quy định; khi mất mạng tạm thời, trò chơi vẫn chạy ổn định trong bộ nhớ trình duyệt.",
+    "faqTitle": "Câu hỏi thường gặp (FAQ)",
+    "faqItems": [
+      {
+        "q": "Có phải tải gì về không?",
+        "a": "Không. Trang này chính là trò chơi: mở bằng trình duyệt là chơi — không cài đặt, không tài khoản, không plugin."
+      },
+      {
+        "q": "Mất mạng giữa ván thì sao?",
+        "a": "Sau khi trang tải xong, trò chơi chạy hoàn toàn trên thiết bị của bạn. Mất mạng chốc lát không ảnh hưởng ván đang chơi; tải lại trang là bắt đầu ván mới."
+      },
+      {
+        "q": "Cắm cờ trên điện thoại hoặc trackpad thế nào?",
+        "a": "Nhấn giữ vào ô để cắm cờ. Khi số cờ bằng con số, nháy đúp vào con số sẽ mở hết các ô kề còn lại — không cần chuột phải ở bất kỳ đâu."
+      },
+      {
+        "q": "Chơi toàn màn hình hoặc đổi độ khó thế nào?",
+        "a": "Bấm F11 trên trình duyệt máy tính để bật chế độ toàn màn hình. Bạn có thể đổi độ khó Dễ, Vừa, Khó bất kỳ lúc nào ở menu phía trên."
+      }
+    ],
+    "guidesTitle": "Hướng dẫn & Công cụ"
   }
 }

@@ -155,5 +155,56 @@
     "ogTitle": "Meathill Minesweeper - Minesweeper zum Lernen beim Spielen",
     "ogDescription": "Der Lernmodus zeigt eine grün-gelb-rote Heatmap (75 %) pro Feld und zeichnet RPM und Effizienz auf — ohne rechte Maustaste, Chording per Doppelklick (Apple/Trackpad optimiert).",
     "twitterDescription": "Sieh die Wahrscheinlichkeit jedes Feldes, bewerte jeden Zug — Minesweeper, von dem du wirklich lernst."
+  },
+  "unblocked": {
+    "title": "Minesweeper online spielen - kostenlos, ohne Download - Meathill Minesweeper",
+    "description": "Minesweeper direkt im Browser spielen: kein Download, keine Installation, keine Anmeldung, keine Pop-ups. Langes Drücken setzt Flaggen, keine rechte Maustaste, drei Schwierigkeiten plus Lernmodus. Sofort im Web spielen.",
+    "ogTitle": "Minesweeper online spielen - kostenlos ohne Download",
+    "ogDescription": "Minesweeper direkt im Browser spielen: kein Download, keine Installation, drei Schwierigkeiten plus Lernmodus."
+  },
+  "unblockedContent": {
+    "title": "Online Minesweeper, null Einrichtung",
+    "lede": "Das ist Minesweeper direkt im Browser: nichts herunterladen, nichts installieren, kein Login. Das Spielfeld befindet sich direkt oben — anklicken und loslegen.",
+    "featuresTitle": "Hauptmerkmale",
+    "features": [
+      {
+        "title": "Kein Download, keine Installation",
+        "desc": "Eine reguläre Webseite, die das vollständige Spiel enthält; speichert nichts auf deinem Gerät."
+      },
+      {
+        "title": "Keine störenden Pop-ups",
+        "desc": "Sauberes Spielerlebnis ohne störende Unterbrechungen; läuft nach dem Laden komplett lokal ohne Eingabeverzögerung."
+      },
+      {
+        "title": "Touch- und Trackpad-freundlich",
+        "desc": "Gedrückt halten für Flaggen, Doppelklick für Akkord-Öffnung — komplett ohne rechte Maustaste bedienbar."
+      },
+      {
+        "title": "Lernmodus & Zug-Replay",
+        "desc": "Echtzeit-Wahrscheinlichkeits-Heatmap, Effizienzbewertung für jeden Zug und detaillierte Replay-Graphen."
+      }
+    ],
+    "networkTitle": "Aus welchen Netzwerken spielbar?",
+    "networkDesc": "Diese Seite ist eine gewöhnliche HTTPS-Webseite und funktioniert im Heimnetzwerk sowie in typischen Büroumgebungen. Sollte dein Schul- oder Firmennetzwerk Spieleseiten einschränken, beachte bitte die jeweiligen Richtlinien; im Offline-Zustand läuft das Spiel im Speicher deines Browsers weiter.",
+    "faqTitle": "Häufig gestellte Fragen (FAQ)",
+    "faqItems": [
+      {
+        "q": "Muss ich etwas herunterladen?",
+        "a": "Nein. Diese Seite ist das Spiel selbst: im Browser öffnen und spielen — nichts zu installieren, kein Konto, keine Plugins."
+      },
+      {
+        "q": "Was, wenn mitten im Spiel die Verbindung abbricht?",
+        "a": "Nach dem Laden der Seite läuft das Spiel komplett auf deinem Gerät. Eine kurze Unterbrechung berührt das laufende Spiel nicht; ein Neuladen startet ein neues."
+      },
+      {
+        "q": "Wie setzt man am Handy oder Trackpad Flaggen?",
+        "a": "Feld gedrückt halten, um eine Flagge zu setzen. Stimmen die Flaggen mit einer Zahl überein, öffnet ein Doppelklick die restlichen Nachbarn — ohne rechte Maustaste."
+      },
+      {
+        "q": "Wie spielt man im Vollbild oder ändert den Schwierigkeitsgrad?",
+        "a": "Drücke F11 am Desktop-Browser für den Vollbildmodus. Den Schwierigkeitsgrad (Anfänger, Fortgeschritten, Profi) kannst du jederzeit oben im Menü umschalten."
+      }
+    ],
+    "guidesTitle": "Anleitungen & Tools"
   }
 }

@@ -16,7 +16,6 @@ const CONTENT_ROUTES = [
   'guide/google-minesweeper.astro',
   'guide/how-to-play.astro',
   'tools/probability-calculator.astro',
-  'unblocked.astro',
 ] as const;
 
 function resolveAstroPagePath(
@@ -29,7 +28,7 @@ function resolveAstroPagePath(
 }
 
 describe('多语言内容子站与 SEO 验收约束', () => {
-  test('8 种语言的 4 类内容页全部齐备，确保双向 hreflang 零死链', () => {
+  test('8 种语言的 3 类 Astro 教程/工具页全部齐备，确保双向 hreflang 零死链', () => {
     for (const locale of LOCALES) {
       for (const route of CONTENT_ROUTES) {
         const fullPath = resolveAstroPagePath(locale, route);
@@ -39,6 +38,54 @@ describe('多语言内容子站与 SEO 验收约束', () => {
           `缺少内容页: ${path.relative(ROOT_DIR, fullPath)}`,
         );
       }
+    }
+  });
+
+  test('8 种语言的 unblocked 独立全屏 SPA 页面齐备，双向 hreflang 与 #app 容器完整', () => {
+    for (const locale of LOCALES) {
+      const fullPath =
+        locale === 'zh'
+          ? path.join(ROOT_DIR, 'public/unblocked/index.html')
+          : path.join(ROOT_DIR, 'public', locale, 'unblocked/index.html');
+      assert.equal(
+        fs.existsSync(fullPath),
+        true,
+        `缺少 unblocked SPA 独立页: ${path.relative(ROOT_DIR, fullPath)}`,
+      );
+      const html = fs.readFileSync(fullPath, 'utf8');
+      assert.ok(html.includes('<div id="app">'), `${locale} 缺少 #app 挂载点`);
+      assert.ok(
+        html.includes('id="ssr-hero"'),
+        `${locale} 缺少 #ssr-hero 预渲染块`,
+      );
+      assert.ok(
+        html.includes('/src/main.js'),
+        `${locale} 缺少 /src/main.js 脚本引用`,
+      );
+      const expectedCanonical =
+        locale === 'zh'
+          ? 'https://minesweeper.meathill.com/unblocked/'
+          : `https://minesweeper.meathill.com/${locale}/unblocked/`;
+      assert.ok(
+        html.includes(`rel="canonical" href="${expectedCanonical}"`),
+        `${locale} canonical 应为 ${expectedCanonical}`,
+      );
+      for (const target of LOCALES) {
+        const expectedHref =
+          target === 'zh'
+            ? 'https://minesweeper.meathill.com/unblocked/'
+            : `https://minesweeper.meathill.com/${target}/unblocked/`;
+        assert.ok(
+          html.includes(`hreflang="${target}" href="${expectedHref}"`),
+          `${locale} 缺少指向 ${target} 的 hreflang: ${expectedHref}`,
+        );
+      }
+      assert.ok(
+        html.includes(
+          'hreflang="x-default" href="https://minesweeper.meathill.com/unblocked/"',
+        ),
+        `${locale} 缺少 x-default hreflang`,
+      );
     }
   });
 

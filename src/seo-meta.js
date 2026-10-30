@@ -33,31 +33,45 @@ export function localeFromPath(pathname) {
 }
 
 export function updateSeoMeta(loc, t) {
+  const isUnblocked =
+    typeof window !== 'undefined' &&
+    window.location.pathname.includes('/unblocked');
   const homePath = LOCALES.find((item) => item.code === loc)?.path ?? '/';
-  const homeUrl = `https://minesweeper.meathill.com${homePath}`;
-  document.title = t('meta.title');
-  const desc = t('meta.description');
+  const pagePath = isUnblocked
+    ? loc === 'zh'
+      ? '/unblocked/'
+      : `/${loc}/unblocked/`
+    : homePath;
+  const pageUrl = `https://minesweeper.meathill.com${pagePath}`;
+  const title = isUnblocked ? t('unblocked.title') : t('meta.title');
+  const desc = isUnblocked ? t('unblocked.description') : t('meta.description');
+  const ogTitle = isUnblocked ? t('unblocked.ogTitle') : t('meta.ogTitle');
+  const ogDesc = isUnblocked
+    ? t('unblocked.ogDescription')
+    : t('meta.ogDescription');
+
+  document.title = title;
   document
     .querySelector('meta[name="description"]')
     ?.setAttribute('content', desc);
   document
     .querySelector('link[rel="canonical"]')
-    ?.setAttribute('href', homeUrl);
+    ?.setAttribute('href', pageUrl);
   document
     .querySelector('meta[property="og:url"]')
-    ?.setAttribute('content', homeUrl);
+    ?.setAttribute('content', pageUrl);
   document
     .querySelector('meta[property="og:title"]')
-    ?.setAttribute('content', t('meta.ogTitle'));
+    ?.setAttribute('content', ogTitle);
   document
     .querySelector('meta[property="og:description"]')
-    ?.setAttribute('content', t('meta.ogDescription'));
+    ?.setAttribute('content', ogDesc);
   document
     .querySelector('meta[name="twitter:title"]')
-    ?.setAttribute('content', t('meta.ogTitle'));
+    ?.setAttribute('content', ogTitle);
   document
     .querySelector('meta[name="twitter:description"]')
-    ?.setAttribute('content', t('meta.twitterDescription'));
+    ?.setAttribute('content', ogDesc);
   document.documentElement.lang = HTML_LANG[loc] ?? 'zh-CN';
   // hreflang 全语言互指
   for (const { code, path } of LOCALES) {
@@ -68,7 +82,12 @@ export function updateSeoMeta(loc, t) {
       link.hreflang = code;
       document.head.appendChild(link);
     }
-    link.href = `https://minesweeper.meathill.com${path}`;
+    const targetPath = isUnblocked
+      ? code === 'zh'
+        ? '/unblocked/'
+        : `/${code}/unblocked/`
+      : path;
+    link.href = `https://minesweeper.meathill.com${targetPath}`;
   }
   let linkX = document.querySelector('link[hreflang="x-default"]');
   if (!linkX) {
@@ -77,5 +96,7 @@ export function updateSeoMeta(loc, t) {
     linkX.hreflang = 'x-default';
     document.head.appendChild(linkX);
   }
-  linkX.href = 'https://minesweeper.meathill.com/';
+  linkX.href = isUnblocked
+    ? 'https://minesweeper.meathill.com/unblocked/'
+    : 'https://minesweeper.meathill.com/';
 }

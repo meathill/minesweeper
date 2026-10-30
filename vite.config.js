@@ -40,7 +40,9 @@ function googleAnalyticsPlugin() {
     closeBundle() {
       for (const code of GAME_LOCALES) {
         patchFile(path.join(outDir, code, 'index.html'));
+        patchFile(path.join(outDir, code, 'unblocked', 'index.html'));
       }
+      patchFile(path.join(outDir, 'unblocked', 'index.html'));
     },
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
@@ -49,6 +51,24 @@ function googleAnalyticsPlugin() {
           return;
         }
         const url = req.url?.split('?')[0] ?? '';
+        const unblockedMatch = url.match(
+          /^\/(?:(en|es|ru|vi|de|pt|fr)\/)?unblocked(?:\/(?:index\.html)?)?$/,
+        );
+        if (unblockedMatch) {
+          const lang = unblockedMatch[1];
+          const file = lang
+            ? path.join(root, 'public', lang, 'unblocked', 'index.html')
+            : path.join(root, 'public', 'unblocked', 'index.html');
+          if (existsSync(file)) {
+            const html = applyGoogleAnalytics(
+              readFileSync(file, 'utf8'),
+              measurementId,
+            );
+            res.setHeader('Content-Type', 'text/html; charset=utf-8');
+            res.end(req.method === 'HEAD' ? undefined : html);
+            return;
+          }
+        }
         const match = url.match(
           /^\/(en|es|ru|vi|de|pt|fr)(?:\/(?:index\.html)?)?$/,
         );

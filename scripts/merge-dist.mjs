@@ -33,8 +33,16 @@ function patchLocaleGameHtmlAssets() {
   const headInject = [...cssLinks, ...modulePreloads].join('\n    ');
   const bodyInject = moduleScripts.join('\n    ');
 
-  for (const lang of ['en', 'es', 'ru', 'vi', 'de', 'pt', 'fr']) {
-    const file = path.join(distDir, lang, 'index.html');
+  const locales = ['en', 'es', 'ru', 'vi', 'de', 'pt', 'fr'];
+  const targets = [
+    ...locales.map((lang) => path.join(distDir, lang, 'index.html')),
+    path.join(distDir, 'unblocked', 'index.html'),
+    ...locales.map((lang) =>
+      path.join(distDir, lang, 'unblocked', 'index.html'),
+    ),
+  ];
+
+  for (const file of targets) {
     if (!existsSync(file)) continue;
     let html = readFileSync(file, 'utf8');
     html = html.replace(
@@ -49,7 +57,9 @@ function patchLocaleGameHtmlAssets() {
     }
     writeFileSync(file, html);
   }
-  console.log('patched locale game HTML asset tags from dist/index.html');
+  console.log(
+    `patched ${targets.length} game SPA HTML asset tags from dist/index.html`,
+  );
 }
 
 if (!existsSync(distDir) || !existsSync(contentDistDir)) {
@@ -59,7 +69,7 @@ if (!existsSync(distDir) || !existsSync(contentDistDir)) {
 
 patchLocaleGameHtmlAssets();
 
-// 防呆：内容子站不得生成与游戏 SPA 同名的页面（各语言首页由游戏 SPA 的 public/<lang>/ 提供）
+// 防呆：内容子站不得生成与游戏 SPA 同名的页面（各语言首页与 unblocked 独立落地页由游戏 SPA 提供）
 for (const reserved of [
   'index.html',
   'en/index.html',
@@ -69,6 +79,14 @@ for (const reserved of [
   'de/index.html',
   'pt/index.html',
   'fr/index.html',
+  'unblocked/index.html',
+  'en/unblocked/index.html',
+  'es/unblocked/index.html',
+  'ru/unblocked/index.html',
+  'vi/unblocked/index.html',
+  'de/unblocked/index.html',
+  'pt/unblocked/index.html',
+  'fr/unblocked/index.html',
 ]) {
   if (existsSync(path.join(contentDistDir, reserved))) {
     console.error(`site/dist/${reserved} 与游戏 SPA 页面冲突，请移除该页面`);
@@ -101,6 +119,20 @@ const urls = [
   { loc: '/', priority: '1.0' },
   // 游戏多语言首页由 public/<lang>/index.html 提供静态文件，需手动列入 sitemap
   ...['/en/', '/es/', '/ru/', '/vi/', '/de/', '/pt/', '/fr/'].map((loc) => ({
+    loc,
+    priority: '0.8',
+  })),
+  // 游戏多语言 unblocked 独立全屏落地页由 public/(<lang>/)unblocked/index.html 提供静态文件
+  ...[
+    '/unblocked/',
+    '/en/unblocked/',
+    '/es/unblocked/',
+    '/ru/unblocked/',
+    '/vi/unblocked/',
+    '/de/unblocked/',
+    '/pt/unblocked/',
+    '/fr/unblocked/',
+  ].map((loc) => ({
     loc,
     priority: '0.8',
   })),

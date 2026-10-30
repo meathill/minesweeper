@@ -155,5 +155,56 @@
     "ogTitle": "Meathill Minesweeper - Buscaminas para aprender jugando",
     "ogDescription": "El Modo Aprendizaje muestra un mapa de calor 75% verde-amarillo-rojo por casilla y registra RPM y eficiencia — sin clic derecho, doble clic para encadenar (Apple/trackpad optimizado).",
     "twitterDescription": "Ve la probabilidad de cada casilla, puntúa cada decisión — un Buscaminas del que de verdad aprendes."
+  },
+  "unblocked": {
+    "title": "Buscaminas online sin descargar - Juega gratis en el navegador - Meathill Minesweeper",
+    "description": "Juega al Buscaminas directamente en tu navegador: sin descargas, sin instalación, sin registro, sin ventanas emergentes. Pulsación larga para bandera, tres dificultades y modo aprendizaje. Tablero completo para jugar online.",
+    "ogTitle": "Buscaminas online sin descargar - Juega gratis",
+    "ogDescription": "Juega al Buscaminas directamente en tu navegador: sin descargas, sin instalación, sin registro, tres dificultades y modo aprendizaje."
+  },
+  "unblockedContent": {
+    "title": "Buscaminas online, sin instalación",
+    "lede": "Este es el Buscaminas jugado directamente en el navegador: nada que descargar, sin registro previo y el tablero completo está justo arriba — clic y a jugar.",
+    "featuresTitle": "Características principales",
+    "features": [
+      {
+        "title": "Sin descargas ni instalación",
+        "desc": "Una página web estándar que es el juego completo; no escribe nada en tu dispositivo ni pide permisos."
+      },
+      {
+        "title": "Sin ventanas emergentes",
+        "desc": "Experiencia limpia sin pop-ups invasivos; una vez cargado se ejecuta localmente con cero retardo."
+      },
+      {
+        "title": "Compatible con táctil y trackpad",
+        "desc": "Pulsación larga para marcar, doble clic para despejar en cadena — sin necesidad de clic derecho."
+      },
+      {
+        "title": "Modo aprendizaje y repetición",
+        "desc": "Mapa de calor de probabilidades en vivo, puntuación de eficiencia y gráfica de repaso al terminar la partida."
+      }
+    ],
+    "networkTitle": "¿Desde qué redes se puede jugar?",
+    "networkDesc": "Esta página es un sitio web HTTPS estándar y carga en redes domésticas y de oficina habituales. Si la red de tu escuela o centro de trabajo restringe sitios de juegos, respeta sus normas; una vez cargado, el juego se ejecuta en la memoria local.",
+    "faqTitle": "Preguntas frecuentes (FAQ)",
+    "faqItems": [
+      {
+        "q": "¿Hay que descargar algo para jugar?",
+        "a": "No. Esta página es el juego en sí: ábrela en el navegador y juega — nada que instalar, sin cuenta y sin extensiones."
+      },
+      {
+        "q": "¿Qué pasa si pierdo la conexión a mitad de partida?",
+        "a": "Una vez cargada la página, el juego funciona por completo en tu dispositivo. Un corte breve no afecta a la partida en curso; al recargar empieza una nueva."
+      },
+      {
+        "q": "¿Cómo se marcan las minas en el móvil o trackpad?",
+        "a": "Pulsación larga sobre la casilla para poner bandera. Cuando las banderas igualan un número, doble clic abre el resto de vecinas — sin clic derecho en ningún momento."
+      },
+      {
+        "q": "¿Cómo jugar a pantalla completa o cambiar dificultad?",
+        "a": "Pulsa F11 en un navegador de escritorio para pantalla completa. En el menú superior puedes alternar entre Principiante, Intermedio y Experto en cualquier momento."
+      }
+    ],
+    "guidesTitle": "Guías y herramientas"
   }
 }

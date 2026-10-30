@@ -24,7 +24,13 @@
 
 ## 多语言
 
-- 游戏 UI 与内容子站全栈对齐 **8 语言**（`zh/en/es/ru/vi/de/pt/fr`）：游戏侧为 `src/locales/*.json` + `src/i18n.js` + `public/<lang>/index.html`（中文在根 `index.html`）；内容侧为 `site/src/pages`（每语种 4 页：`guide/how-to-play`、`guide/google-minesweeper`、`tools/probability-calculator`、`unblocked`，整站 `sitemap.xml` 共 40 个 URL）。`site/src/i18n.ts` 的 `gameHomePath()` 按语言返回对应游戏首页。
+- 游戏 UI 与内容子站全栈对齐 **8 语言**（`zh/en/es/ru/vi/de/pt/fr`）：游戏侧为 `src/locales/*.json` + `src/i18n.js` + `public/<lang>/index.html` 与 `public/(<lang>/)unblocked/index.html`（独立全屏 SPA 落地页，彻底废弃 iframe 方案）；内容侧为 `site/src/pages`（每语种 3 页：`guide/how-to-play`、`guide/google-minesweeper`、`tools/probability-calculator`，整站 `sitemap.xml` 共 40 个 URL）。`site/src/i18n.ts` 的 `gameHomePath()` 按语言返回对应游戏首页。
+- **Unblocked 独立落地页架构决策**：`/unblocked/` 与各语种 `/<lang>/unblocked/` 原本套用 Astro 文章模板内嵌 `<iframe src="/">`，导致棋盘被截断、双重顶栏和双重滚动条。改造后直接作为游戏 SPA 的独立全屏落地页（无 iframe、无文章壳、全尺寸棋盘舒展展开），通过定制专属的 Title、Description、Keywords 与 `#ssr-hero` 预渲染块承接海外及本土 SEO 流量，并在语言切换时保持在 unblocked 路径上无缝跳转。
+- **核心游戏组件与多页面 SEO 文案解耦**：原本 `App.vue` 混合了 340+ 行游戏主循环、顶栏逻辑与固化的首页长文，导致 `/unblocked/` 加载时在棋盘下方显示了 100% 相同的首页教程，产生严重的搜索引擎重复页面 / 门页风险。拆分后：
+  - `minesweeper-game.vue`：独立封装操作区（Toolbar）、棋盘网格（`#stage`）、局后复盘图表（`operation-chart`）与全局快捷键（F2/H/L），高内聚纯粹；
+  - `app-header.vue`：独立承载品牌徽标、教程与多语言下拉（含 `/` 与 `/unblocked/` 同步跳转）、站点切换与难度选择；
+  - `seo-home-content.vue` 与 `seo-unblocked-content.vue`：分别承载首页与 unblocked 专属的 SEO 教学、网络环境说明与完全独立的 FAQ 词条（8 语种对齐，互不雷同）；
+  - `App.vue`：退化为干净轻量的顶层路由编排器（<60 行），单文件控制在 300 行规范内。
 - 语言唯一来源：`SUPPORTED_LOCALES` 与 `LOCALES`（含 URL path）定义在 `src/i18n.js` / `src/seo-meta.js`，`App.vue` 只消费不重复定义。内容子站侧组件 Props 只认 `SiteLang` 联合类型（`site/src/i18n.ts`），新增语言时同步改它；`SiteNav`/`SeoHead` 保持 `string` + fallback，刻意宽容。`document.lang` 映射（`zh→zh-CN`、`pt→pt-BR`）与 hreflang 互指逻辑集中维护。
 - 游戏壳的 locale 只由 pathname 决定，不用 `localStorage` 或 `navigator.language`。否则英文爬虫打开 `/` 会把 canonical 改写成 `/en/`。语言切换仍 `pushState` 到对应首页。
 - SEO 与合规：内容页 `SeoHead`/`GuideLayout` 自动生成 Organization + BreadcrumbList + FAQPage + HowTo；首页 JSON-LD 用 WebSite + WebPage，不伪造评分（2026-09 降级决策）。因游戏 SPA 接入了 Google AdSense，全站多语言文案严禁宣称“无广告 / Ad-Free / sin anuncios”（由 `src/seo-content-site.test.ts` 守卫）。

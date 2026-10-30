@@ -155,5 +155,56 @@
     "ogTitle": "Meathill Minesweeper - Campo Minado para Aprender Jogando",
     "ogDescription": "O Modo Aprendizado mostra um mapa de calor 75% verde-amarelo-vermelho por casa e registra RPM e eficiência — sem botão direito, duplo clique no trackpad.",
     "twitterDescription": "Veja a probabilidade de cada casa e avalie cada decisão — um Campo Minado para evoluir de verdade."
+  },
+  "unblocked": {
+    "title": "Campo Minado Online Grátis - Jogar no Navegador sem Download - Meathill Minesweeper",
+    "description": "Jogue Campo Minado direto no navegador: sem download, sem instalação, sem login, sem pop-ups. Toque longo para bandeira, 3 dificuldades e Modo de Aprendizado. Jogo completo e gratuito.",
+    "ogTitle": "Campo Minado Online Grátis - Jogar no Navegador",
+    "ogDescription": "Jogue Campo Minado direto no navegador sem download, sem instalação e com Modo de Aprendizado."
+  },
+  "unblockedContent": {
+    "title": "Campo Minado direto no navegador",
+    "lede": "Jogue Campo Minado diretamente no navegador sem instalar nada: o tabuleiro completo está logo acima, pronto para o primeiro clique sem cadastro nem burocracia.",
+    "featuresTitle": "Destaques do jogo",
+    "features": [
+      {
+        "title": "Zero instalação",
+        "desc": "Abre rápido em qualquer navegador moderno no PC, Mac, Chromebook ou celular, sem downloads."
+      },
+      {
+        "title": "Sem pop-ups intrusivos",
+        "desc": "Foco total na partida; uma vez carregado, todo o processamento roda localmente com resposta instantânea."
+      },
+      {
+        "title": "Amigável para trackpad e toque",
+        "desc": "Toque longo para bandeira e duplo clique para abertura em cadeia sem botão direito."
+      },
+      {
+        "title": "Modo Aprendizado integrado",
+        "desc": "Ative o mapa de calor de probabilidades em tempo real e avalie sua eficiência de decisão com gráficos pós-jogo."
+      }
+    ],
+    "networkTitle": "Onde é possível jogar?",
+    "networkDesc": "Esta é uma página HTTPS padrão acessível em redes residenciais e corporativas convencionais. Em redes escolares ou empresariais com restrições, respeite as normas locais; uma vez aberta, a partida segue rodando na memória do seu navegador.",
+    "faqTitle": "Perguntas frequentes (FAQ)",
+    "faqItems": [
+      {
+        "q": "Preciso baixar algum programa para jogar?",
+        "a": "Não. O jogo completo roda direto nesta página do navegador — sem download, sem cadastro e sem plugins."
+      },
+      {
+        "q": "E se a internet cair no meio da partida?",
+        "a": "Assim que a página carrega, toda a lógica roda localmente no seu aparelho. Uma oscilação de rede não interrompe sua partida atual."
+      },
+      {
+        "q": "Como colocar bandeira no celular ou notebook?",
+        "a": "Segure o dedo sobre a casa no celular ou use dois dedos no trackpad. Quando as bandeiras igualam um número, dê duplo clique nele para abrir as vizinhas seguras."
+      },
+      {
+        "q": "Como jogar em tela cheia ou trocar a dificuldade?",
+        "a": "Pressione F11 no navegador do computador para tela cheia. Você pode alternar entre Iniciante, Intermediário e Especialista a qualquer momento no menu superior."
+      }
+    ],
+    "guidesTitle": "Guias e ferramentas"
   }
 }
