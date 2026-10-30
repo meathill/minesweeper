@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { brandNetwork } from './brand-network.js';
+import CossDropdown from './coss-dropdown.vue';
 
 const { locale } = useI18n();
 
@@ -20,19 +21,21 @@ const labels = computed(() => COPY[locale.value] ?? COPY.en);
 </script>
 
 <template>
-  <details class="brand-switcher">
-    <summary>{{ labels.network }}</summary>
-    <div class="brand-switcher-panel">
-      <a
-        v-for="site in brandNetwork.sites"
-        :key="site.id"
-        :aria-current="site.id === 'minesweeper' ? 'page' : undefined"
-        :href="site.url"
-      >
-        {{ site.name }}
-        <small v-if="site.id === 'minesweeper'">{{ labels.current }}</small>
-      </a>
-      <a class="all-products" :href="brandNetwork.allProductsUrl">{{ labels.all }}</a>
-    </div>
-  </details>
+  <CossDropdown :label="labels.network" panel-class="coss-dropdown-wide">
+    <a
+      v-for="site in brandNetwork.sites"
+      :key="site.id"
+      class="coss-dropdown-item"
+      :aria-current="site.id === 'minesweeper' ? 'page' : undefined"
+      :href="site.url"
+    >
+      <span>{{ site.name }}</span>
+      <small v-if="site.id === 'minesweeper'" class="coss-dropdown-badge">{{ labels.current }}</small>
+    </a>
+    <hr class="coss-dropdown-separator" />
+    <a class="coss-dropdown-item coss-dropdown-directory" :href="brandNetwork.allProductsUrl">
+      <span>{{ labels.all }}</span>
+      <span aria-hidden="true">→</span>
+    </a>
+  </CossDropdown>
 </template>

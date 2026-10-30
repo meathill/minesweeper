@@ -19,6 +19,27 @@ test('扫雷品牌导航排除当前站、服务端点和重复产品', () => {
     new Set(brandNetwork.sites.map((site) => site.id)).size,
     brandNetwork.sites.length,
   );
+  for (const excludedId of ['muiad', 'waka', 'muirpg']) {
+    assert.equal(
+      brandNetwork.sites.some((site) => site.id === excludedId),
+      false,
+      `brandNetwork.sites 不应包含 ${excludedId}`,
+    );
+    assert.equal(
+      brandNetwork.footerLinks.some((site) => site.id === excludedId),
+      false,
+      `brandNetwork.footerLinks 不应包含 ${excludedId}`,
+    );
+  }
+});
+
+test('Astro 页脚复用统一的过滤后品牌外链', async () => {
+  const footerSource = await fs.readFile(
+    new URL('../site/src/components/SiteFooter.astro', import.meta.url),
+    'utf8',
+  );
+  assert.match(footerSource, /brandNetwork\.footerLinks/);
+  assert.doesNotMatch(footerSource, /getBrandNetworkLinks/);
 });
 
 test('禁用 JavaScript 时仍提供母站和全部产品基础链接', async () => {

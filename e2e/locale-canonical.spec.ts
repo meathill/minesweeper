@@ -49,20 +49,61 @@ test('/pt/ 与 /fr/ 新语种首页自指且设置对应 lang', async ({ page })
   await expect(page.locator('header')).toContainText('Produits');
 });
 
-test('产品网络切换器与页脚不包含已下线的 MuiAD、Waka 与 MuiRPG', async ({
+test('顶栏 Coss UI 下拉支持锚点定位、Escape 关闭、难度切换且不含已下架站点', async ({
   page,
 }) => {
   await page.goto('/');
-  const networkDetails = page
-    .locator('header details.brand-switcher')
+  const networkTrigger = page
+    .locator('header .coss-dropdown-trigger')
     .filter({ hasText: '产品网络' });
-  await networkDetails.locator('summary').click();
-  const panel = networkDetails.locator('.brand-switcher-panel');
+  await expect(networkTrigger).toHaveAttribute('aria-expanded', 'false');
+  await networkTrigger.click();
+  await expect(networkTrigger).toHaveAttribute('aria-expanded', 'true');
+
+  const panelId = await networkTrigger.getAttribute('popovertarget');
+  expect(panelId).toBeTruthy();
+  const panel = page.locator(`#${panelId}`);
   await expect(panel).toBeVisible();
+
+  const triggerBox = await networkTrigger.boundingBox();
+  const panelBox = await panel.boundingBox();
+  expect(triggerBox).toBeTruthy();
+  expect(panelBox).toBeTruthy();
+  if (triggerBox && panelBox) {
+    expect(
+      Math.abs(panelBox.y - (triggerBox.y + triggerBox.height)),
+    ).toBeLessThan(20);
+  }
+
   for (const removed of ['MuiAD', 'Waka', 'MuiRPG']) {
     await expect(panel).not.toContainText(removed);
     await expect(page.locator('.brand-footer-links')).not.toContainText(
       removed,
     );
   }
+
+  await page.keyboard.press('Escape');
+  await expect(panel).toBeHidden();
+  await expect(networkTrigger).toHaveAttribute('aria-expanded', 'false');
+
+  const levelTrigger = page
+    .locator('header .coss-dropdown-trigger')
+    .filter({ hasText: '简单' });
+  await levelTrigger.click();
+  const levelPanelId = await levelTrigger.getAttribute('popovertarget');
+  const levelPanel = page.locator(`#${levelPanelId}`);
+  await expect(levelPanel).toBeVisible();
+  await levelPanel.getByRole('button', { name: /中等/ }).click();
+  await expect(levelPanel).toBeHidden();
+  await expect(page.locator('#stage .grid-item')).toHaveCount(256);
+
+  const learnTrigger = page.locator('.coss-dropdown-trigger-toolbar');
+  await expect(learnTrigger).toHaveAttribute('aria-expanded', 'false');
+  await learnTrigger.click();
+  await expect(learnTrigger).toHaveAttribute('aria-expanded', 'true');
+  const learnPanelId = await learnTrigger.getAttribute('popovertarget');
+  const learnPanel = page.locator(`#${learnPanelId}`);
+  await expect(learnPanel).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(learnPanel).toBeHidden();
 });

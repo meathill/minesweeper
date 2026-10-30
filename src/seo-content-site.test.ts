@@ -204,4 +204,17 @@ describe('多语言内容子站与 SEO 验收约束', () => {
     assert.ok(switcher.includes('useI18n'));
     assert.ok(footer.includes('useI18n'));
   });
+
+  test('内容子站顶栏提供首页链接与 Coss UI Popover 导航', () => {
+    const siteNav = fs.readFileSync(
+      path.join(ROOT_DIR, 'site/src/components/SiteNav.astro'),
+      'utf8',
+    );
+    assert.ok(siteNav.includes('href={homePath}'));
+    assert.ok(siteNav.includes('{homeLabel[lang] ?? homeLabel.en}'));
+    assert.ok(siteNav.includes('popovertarget="site-guides-menu"'));
+    assert.ok(siteNav.includes('popovertarget="site-lang-menu"'));
+    assert.ok(siteNav.includes('popover="auto"'));
+    assert.ok(!siteNav.includes('<details'));
+  });
 });

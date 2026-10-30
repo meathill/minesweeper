@@ -1,5 +1,6 @@
 @import "meathill-brand/tokens.css";
 @import "tailwindcss";
+@import "../../../src/style/coss-dropdown.css";
 @plugin "@tailwindcss/typography";
 @plugin "daisyui" {
   themes:
@@ -70,69 +71,36 @@ body {
   font-size: 14px;
 }
 
-.site-nav-links a {
-  color: var(--meathill-ink-soft);
-  text-decoration: none;
-}
-
-.site-nav-links a:hover {
-  color: var(--meathill-yellow-deep);
-}
-
-.lang-switch {
-  position: relative;
-  font-size: 14px;
-}
-
-.lang-switch summary {
-  border-radius: var(--meathill-radius);
-  padding: 6px 8px;
-  color: var(--meathill-ink-soft);
-  cursor: pointer;
-  list-style: none;
-}
-
-.lang-switch summary::-webkit-details-marker {
-  display: none;
-}
-
-.lang-switch summary:hover,
-.lang-switch[open] summary {
-  background: var(--meathill-fluff);
+.site-nav-links > a:not(.site-nav-cta) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 8px;
   color: var(--meathill-ink);
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 6px;
+  transition:
+    color 140ms ease,
+    background 140ms ease;
 }
 
-.lang-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  z-index: 40;
-  display: grid;
-  min-width: 140px;
-  border: 1px solid var(--meathill-rule-strong);
-  border-radius: var(--meathill-radius-large);
-  padding: 6px;
-  background: var(--meathill-paper);
-  box-shadow: 0 10px 20px -5px rgb(58 46 35 / 0.16);
-}
-
-.lang-menu a {
-  border-radius: var(--meathill-radius);
-  padding: 6px 10px;
-  white-space: nowrap;
-}
-
-.lang-menu a:hover {
+.site-nav-links > a:not(.site-nav-cta):hover,
+.site-nav-links > a:not(.site-nav-cta):focus-visible {
+  color: var(--meathill-ink);
   background: var(--meathill-fluff);
-  color: var(--meathill-ink) !important;
 }
 
 .site-nav-cta {
-  border-radius: var(--meathill-radius);
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  border-radius: 8px;
   background: var(--meathill-yellow-deep);
-  padding: 6px 14px;
+  padding: 0 14px;
   color: var(--meathill-cream);
   font-weight: 700;
+  text-decoration: none;
 }
 
 .site-nav-cta:hover {

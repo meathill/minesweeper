@@ -1,5 +1,5 @@
 ---
-import { brandCatalog, getBrandNetworkLinks } from 'meathill-brand';
+import { brandNetwork } from '../../../src/brand-network.js';
 import type { SiteLang } from '../i18n';
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
 const { lang } = Astro.props;
 // 游戏与子站只有 zh 为中文，其余语言复用英文页脚文案
 const isEn = lang !== 'zh';
-const productLinks = getBrandNetworkLinks('minesweeper');
+const productLinks = brandNetwork.footerLinks;
 const legalLinks = isEn
   ? [
       { href: 'https://meathill.com/privacy', label: 'Privacy Policy' },
@@ -35,8 +35,8 @@ const copy = isEn
 <footer class="site-footer">
   <div class="site-footer-inner">
     <div>
-      <a class="site-footer-name" href={brandCatalog.organization.url}>{brandCatalog.organization.name}</a>
-      <p>© {new Date().getFullYear()} {brandCatalog.organization.legalName}. {copy.tagline}</p>
+      <a class="site-footer-name" href={brandNetwork.organization.url}>{brandNetwork.organization.name}</a>
+      <p>© {new Date().getFullYear()} {brandNetwork.organization.legalName}. {copy.tagline}</p>
       <p class="mt-2">
         {legalLinks.map((link, index) => (
           <>{index > 0 && ' · '}<a href={link.href}>{link.label}</a></>
@@ -45,7 +45,7 @@ const copy = isEn
     </div>
     <nav aria-label={copy.navLabel} class="site-footer-links">
       {productLinks.map((site) => <a href={site.url}>{site.name}</a>)}
-      <a href={brandCatalog.directoryUrl}>{copy.allProducts}</a>
+      <a href={brandNetwork.allProductsUrl}>{copy.allProducts}</a>
     </nav>
   </div>
 </footer>

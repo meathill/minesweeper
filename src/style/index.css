@@ -1,5 +1,6 @@
 @import "meathill-brand/tokens.css";
 @import "tailwindcss";
+@import "./coss-dropdown.css";
 
 @plugin "daisyui" {
   themes:
@@ -51,77 +52,6 @@
   background: var(--meathill-rule-strong);
 }
 
-.brand-switcher {
-  position: relative;
-  font-size: 14px;
-}
-
-.brand-switcher summary {
-  border-radius: var(--meathill-radius);
-  padding: 6px 8px;
-  color: var(--meathill-ink-soft);
-  cursor: pointer;
-  list-style: none;
-}
-
-.brand-switcher summary::-webkit-details-marker {
-  display: none;
-}
-
-.brand-switcher summary:hover,
-.brand-switcher[open] summary {
-  background: var(--meathill-fluff);
-  color: var(--meathill-ink);
-}
-
-.brand-switcher-panel {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  display: grid;
-  width: min(320px, calc(100vw - 32px));
-  max-height: min(480px, 70vh);
-  gap: 4px;
-  overflow-y: auto;
-  border: 1px solid var(--meathill-rule-strong);
-  border-radius: var(--meathill-radius-large);
-  padding: 8px;
-  background: var(--meathill-paper);
-  box-shadow: 0 10px 20px -5px rgb(58 46 35 / 0.16);
-}
-
-.brand-switcher-panel a {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
-  border-radius: var(--meathill-radius);
-  padding: 7px 10px;
-  color: var(--meathill-ink-soft);
-  text-decoration: none;
-}
-
-.brand-switcher-panel a:hover,
-.brand-switcher-panel a[aria-current="page"] {
-  background: var(--meathill-fluff);
-  color: var(--meathill-ink);
-}
-
-.brand-switcher-panel small {
-  color: var(--meathill-mute);
-  font-size: 12px;
-}
-
-.brand-switcher-panel .all-products {
-  margin-top: 4px;
-  border-top: 1px solid var(--meathill-rule);
-  border-radius: 0;
-  color: var(--meathill-yellow-deep);
-  font-weight: 700;
-}
-
-.brand-switcher summary:focus-visible,
-.brand-switcher-panel a:focus-visible,
 .brand-studio:focus-visible,
 .brand-footer a:focus-visible {
   outline: none;

@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "astro": "^5.0.0",
-    "meathill-brand": "^0.1.0"
+    "meathill-brand": "^0.2.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",

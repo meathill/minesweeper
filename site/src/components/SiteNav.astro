@@ -12,6 +12,103 @@ const { lang, path } = Astro.props;
 const locale = getLocaleMeta(lang);
 const homePath = gameHomePath(lang);
 const brandName = lang === 'zh' ? '肉山扫雷' : 'Meathill Minesweeper';
+
+const homeLabel: Record<string, string> = {
+  zh: '首页',
+  en: 'Home',
+  es: 'Inicio',
+  ru: 'Главная',
+  vi: 'Trang chủ',
+  de: 'Startseite',
+  pt: 'Início',
+  fr: 'Accueil',
+};
+
+const guidesLabel: Record<string, string> = {
+  zh: '教程与工具',
+  en: 'Guides & Tools',
+  es: 'Guías y herramientas',
+  ru: 'Гайды и инструменты',
+  vi: 'Hướng dẫn & công cụ',
+  de: 'Anleitungen & Tools',
+  pt: 'Guias e ferramentas',
+  fr: 'Guides et outils',
+};
+
+const guideItems: Record<string, { href: string; label: string }[]> = {
+  zh: [
+    { href: '/guide/how-to-play/', label: '扫雷怎么玩？新手技巧' },
+    { href: '/guide/google-minesweeper/', label: '谷歌扫雷怎么玩？' },
+    { href: '/tools/probability-calculator/', label: '扫雷概率计算器' },
+    { href: '/unblocked/', label: '扫雷在线玩（免下载）' },
+  ],
+  en: [
+    { href: '/en/guide/how-to-play/', label: 'How to Play Minesweeper' },
+    {
+      href: '/en/guide/google-minesweeper/',
+      label: 'Google Minesweeper Guide',
+    },
+    {
+      href: '/en/tools/probability-calculator/',
+      label: 'Probability Calculator',
+    },
+    { href: '/en/unblocked/', label: 'Play Unblocked Online' },
+  ],
+  es: [
+    { href: '/es/guide/how-to-play/', label: 'Cómo jugar al Buscaminas' },
+    { href: '/es/guide/google-minesweeper/', label: 'Buscaminas de Google' },
+    {
+      href: '/es/tools/probability-calculator/',
+      label: 'Calculadora de probabilidad',
+    },
+    { href: '/es/unblocked/', label: 'Jugar online gratis' },
+  ],
+  ru: [
+    { href: '/ru/guide/how-to-play/', label: 'Как играть в Сапёра' },
+    { href: '/ru/guide/google-minesweeper/', label: 'Сапёр от Google' },
+    {
+      href: '/ru/tools/probability-calculator/',
+      label: 'Калькулятор вероятностей',
+    },
+    { href: '/ru/unblocked/', label: 'Сапёр онлайн бесплатно' },
+  ],
+  vi: [
+    { href: '/vi/guide/how-to-play/', label: 'Cách chơi Dò Mìn' },
+    { href: '/vi/guide/google-minesweeper/', label: 'Dò Mìn Google' },
+    { href: '/vi/tools/probability-calculator/', label: 'Máy tính xác suất' },
+    { href: '/vi/unblocked/', label: 'Dò Mìn online miễn phí' },
+  ],
+  de: [
+    { href: '/de/guide/how-to-play/', label: 'Minesweeper spielen' },
+    { href: '/de/guide/google-minesweeper/', label: 'Google Minesweeper' },
+    {
+      href: '/de/tools/probability-calculator/',
+      label: 'Wahrscheinlichkeitsrechner',
+    },
+    { href: '/de/unblocked/', label: 'Minesweeper online' },
+  ],
+  pt: [
+    { href: '/pt/guide/how-to-play/', label: 'Como jogar Campo Minado' },
+    { href: '/pt/guide/google-minesweeper/', label: 'Campo Minado do Google' },
+    {
+      href: '/pt/tools/probability-calculator/',
+      label: 'Calculadora de probabilidade',
+    },
+    { href: '/pt/unblocked/', label: 'Jogar online grátis' },
+  ],
+  fr: [
+    { href: '/fr/guide/how-to-play/', label: 'Comment jouer au Démineur' },
+    { href: '/fr/guide/google-minesweeper/', label: 'Démineur de Google' },
+    {
+      href: '/fr/tools/probability-calculator/',
+      label: 'Calculateur de probabilité',
+    },
+    { href: '/fr/unblocked/', label: 'Démineur en ligne' },
+  ],
+};
+
+const currentGuides = guideItems[lang] ?? guideItems.en;
+
 const playLabel: Record<string, string> = {
   zh: '开始游戏',
   en: 'Play now',
@@ -41,26 +138,92 @@ const navLabel: Record<string, string> = {
       {brandName}
     </a>
     <nav class="site-nav-links" aria-label={navLabel[lang] ?? navLabel.en}>
-      <details class="lang-switch">
-        <summary aria-label={`Language: ${locale.name}`}>{locale.name}</summary>
-        <div class="lang-menu">
-          {LOCALES.filter((item) => item.code !== lang).map((item) => (
-            <a href={`${item.prefix}${path}`}>{item.name}</a>
+      <a class="site-nav-link" href={homePath}>{homeLabel[lang] ?? homeLabel.en}</a>
+      <div class="coss-dropdown hidden sm:inline-flex">
+        <button
+          type="button"
+          id="site-guides-trigger"
+          class="coss-dropdown-trigger"
+          popovertarget="site-guides-menu"
+          aria-expanded="false"
+          style="anchor-name: --coss-site-guides;"
+        >
+          <span>{guidesLabel[lang] ?? guidesLabel.en}</span>
+          <span class="coss-dropdown-chevron" aria-hidden="true"></span>
+        </button>
+        <div
+          id="site-guides-menu"
+          popover="auto"
+          class="coss-dropdown-popover coss-dropdown-wide"
+          style="position-anchor: --coss-site-guides;"
+        >
+          {currentGuides.map((item) => {
+            const isCurrent = path ? item.href.endsWith(path) : false;
+            return (
+              <a
+                class="coss-dropdown-item"
+                href={item.href}
+                aria-current={isCurrent ? 'page' : undefined}
+              >
+                <span>{item.label}</span>
+                {isCurrent && (
+                  <span class="coss-dropdown-check" aria-hidden="true">✓</span>
+                )}
+              </a>
+            );
+          })}
+        </div>
+      </div>
+      <div class="coss-dropdown">
+        <button
+          type="button"
+          id="site-lang-trigger"
+          class="coss-dropdown-trigger"
+          popovertarget="site-lang-menu"
+          aria-expanded="false"
+          aria-label={`Language: ${locale.name}`}
+          style="anchor-name: --coss-site-lang;"
+        >
+          <span>{locale.name}</span>
+          <span class="coss-dropdown-chevron" aria-hidden="true"></span>
+        </button>
+        <div
+          id="site-lang-menu"
+          popover="auto"
+          class="coss-dropdown-popover"
+          style="position-anchor: --coss-site-lang;"
+        >
+          {LOCALES.map((item) => (
+            <a
+              class="coss-dropdown-item"
+              href={`${item.prefix}${path}`}
+              aria-current={item.code === lang ? 'page' : undefined}
+            >
+              <span>{item.name}</span>
+              {item.code === lang && (
+                <span class="coss-dropdown-check" aria-hidden="true">✓</span>
+              )}
+            </a>
           ))}
         </div>
-      </details>
+      </div>
       <a class="site-nav-cta" href={homePath}>{playLabel[lang] ?? playLabel.en}</a>
     </nav>
   </div>
 </header>
-<script is:inline>
-  document.addEventListener('click', (event) => {
-    if (event.target instanceof Element && event.target.closest('details.lang-switch')) return;
-    document.querySelectorAll('details.lang-switch[open]').forEach((el) => el.removeAttribute('open'));
-  });
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-      document.querySelectorAll('details.lang-switch[open]').forEach((el) => el.removeAttribute('open'));
+<script>
+  import { syncDropdownPopover } from '../../../src/utils/popover-position';
+
+  for (const pair of [
+    ['site-lang-trigger', 'site-lang-menu'],
+    ['site-guides-trigger', 'site-guides-menu'],
+  ]) {
+    const trigger = document.getElementById(pair[0]);
+    const menu = document.getElementById(pair[1]);
+    if (trigger && menu) {
+      menu.addEventListener('toggle', () => {
+        syncDropdownPopover(trigger, menu);
+      });
     }
-  });
+  }
 </script>

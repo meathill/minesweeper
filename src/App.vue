@@ -13,6 +13,7 @@ import GridItem from './grid-item.vue';
 import CommentDialog from './comment-dialog.vue';
 import BrandFooter from './brand-footer.vue';
 import BrandSiteSwitcher from './brand-site-switcher.vue';
+import CossDropdown from './coss-dropdown.vue';
 import { Levels } from './data';
 import { matchShortcut } from './utils/shortcuts.js';
 import { useOperationRecordsStore } from './store/operationRecords';
@@ -38,32 +39,25 @@ function openComments() {
   commentDialogRef.value?.open();
 }
 
-function switchLocale(code) {
+function switchLocale(code, closeFn) {
+  closeFn?.();
   if (code === locale.value) return;
   setLocale(code);
   const target = LOCALES.find((item) => item.code === code)?.path ?? '/';
   if (location.pathname !== target) {
     history.pushState(null, '', target);
   }
-  closeBrandSwitchers();
   updateSeoMeta(code, t);
   trackEvent('locale_switch', { to_locale: code, level: game.level });
 }
-// 下拉菜单（<details>）点空白处关闭：原生 details 无此行为
-function closeBrandSwitchers() {
-  document
-    .querySelectorAll('details.brand-switcher[open]')
-    .forEach((el) => el.removeAttribute('open'));
+
+function selectLevel(key, closeFn) {
+  if (key === 'Custom') return;
+  game.level = key;
+  game.onLevelChange(key);
+  closeFn?.();
 }
-function handleOutsideClick(event) {
-  if (
-    event.target instanceof Element &&
-    event.target.closest('details.brand-switcher')
-  ) {
-    return;
-  }
-  closeBrandSwitchers();
-}
+
 // 学习模式开关埋点
 watch(
   () => learningStore.showProbability,
@@ -88,7 +82,6 @@ const faqItems = computed(() => tm('faq.items'));
 onMounted(() => {
   updateSeoMeta(locale.value, t);
   window.addEventListener('keydown', handleGlobalKeydown);
-  document.addEventListener('click', handleOutsideClick);
   // 延后生成棋盘：先让 header H1 / SSR 文案完成首屏绘制，避免格子 DOM 抢走 LCP
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
@@ -99,15 +92,10 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('keydown', handleGlobalKeydown);
-  document.removeEventListener('click', handleOutsideClick);
 });
 
 // 全局快捷键（Windows 对齐：F2 新开；H 提示、L 教学为本站扩展）
 function handleGlobalKeydown(event) {
-  if (event.key === 'Escape') {
-    closeBrandSwitchers();
-    return;
-  }
   const action = matchShortcut(event);
   if (!action) return;
   if (action === 'new') {
@@ -132,63 +120,62 @@ function handleGlobalKeydown(event) {
         <span class="text-xs opacity-60 whitespace-nowrap shrink-0">v{{version}}</span>
       </div>
       <div class="flex items-center gap-2 flex-wrap justify-end shrink-0">
-        <details class="brand-switcher">
-          <summary>{{ t('seo.guidesTitle') }}</summary>
-          <div class="brand-switcher-panel">
-            <a v-for="(item, idx) in seoGuideLinks" :key="idx" :href="item.href">{{ item.label }}</a>
-          </div>
-        </details>
-        <details class="brand-switcher">
-          <summary>{{ LOCALES.find((item) => item.code === locale)?.label }}</summary>
-          <div class="brand-switcher-panel">
+        <CossDropdown :label="t('seo.guidesTitle')" panel-class="coss-dropdown-wide">
+          <template #default="{ close }">
+            <a
+              v-for="(item, idx) in seoGuideLinks"
+              :key="idx"
+              class="coss-dropdown-item"
+              :href="item.href"
+              @click="close"
+            >
+              <span>{{ item.label }}</span>
+            </a>
+          </template>
+        </CossDropdown>
+        <CossDropdown :label="LOCALES.find((item) => item.code === locale)?.label">
+          <template #default="{ close }">
             <a
               v-for="item in LOCALES"
               :key="item.code"
+              class="coss-dropdown-item"
               :href="item.path"
               :aria-current="item.code === locale ? 'page' : undefined"
-              @click.prevent="switchLocale(item.code)"
+              @click.prevent="switchLocale(item.code, close)"
             >
-              {{ item.label }}
-              <small v-if="item.code === locale">✓</small>
+              <span>{{ item.label }}</span>
+              <span v-if="item.code === locale" class="coss-dropdown-check" aria-hidden="true">✓</span>
             </a>
-          </div>
-        </details>
+          </template>
+        </CossDropdown>
         <BrandSiteSwitcher />
         <button
           type="button"
           id="comment-toggle"
-          class="btn btn-ghost btn-sm px-2"
+          class="coss-header-btn"
+          :aria-label="t('header.comment')"
+          :title="t('header.comment')"
           @click="openComments"
         >
           <i class="bi bi-chat-dots" aria-hidden="true"></i>
           <span class="hidden sm:inline">{{ t('header.comment') }}</span>
         </button>
-        <div class="dropdown dropdown-end">
-          <label tabindex="0" class="btn btn-ghost btn-sm px-2">
-            {{ t(`header.levels.${game.level}`) }}
-            <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-              <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"/>
-            </svg>
-          </label>
-          <ul tabindex="0" class="mt-3 p-2 shadow menu menu-sm dropdown-content bg-base-200 rounded-box w-52">
-            <li v-for="(item, key) in Levels" :key="key">
-              <label class="flex items-center">
-                <input
-                  hidden
-                  type="radio"
-                  name="level"
-                  v-model="game.level"
-                  :value="key"
-                  :disabled="key === 'Custom'"
-                  @change="game.onLevelChange(key)"
-                />
-                <span>
-                <i class="bi mr-2" :class="game.level === key ? 'bi-check-lg' : 'bi-blank'" /> {{ t(`header.levels.${key}`) }}
-                </span>
-              </label>
-            </li>
-          </ul>
-        </div>
+        <CossDropdown :label="t(`header.levels.${game.level}`)">
+          <template #default="{ close }">
+            <button
+              v-for="(item, key) in Levels"
+              :key="key"
+              type="button"
+              class="coss-dropdown-item"
+              :class="{ 'is-active': game.level === key }"
+              :disabled="key === 'Custom'"
+              @click="selectLevel(key, close)"
+            >
+              <span>{{ t(`header.levels.${key}`) }}</span>
+              <span v-if="game.level === key" class="coss-dropdown-check" aria-hidden="true">✓</span>
+            </button>
+          </template>
+        </CossDropdown>
       </div>
     </div>
   </header>
@@ -215,9 +202,17 @@ function handleGlobalKeydown(event) {
       <!-- 右侧：提示 + 学习模式（对齐高级难度游戏区右缘） -->
       <div class="flex items-center gap-1 sm:gap-2 shrink-0 ml-2">
         <button class="btn btn-xs sm:btn-sm btn-warning" aria-keyshortcuts="h" :title="t('toolbar.hintTitle')" @click="prob.handleHint" :disabled="!game.isRealStart || !prob.probabilities.size">{{ t('toolbar.hint') }} <kbd class="kbd kbd-xs hidden sm:inline-flex">H</kbd></button>
-        <div class="dropdown dropdown-end">
-          <label tabindex="0" class="btn btn-xs sm:btn-sm btn-primary" aria-keyshortcuts="l" :title="t('toolbar.learnTitle')">{{ t('toolbar.learningMode') }} <kbd class="kbd kbd-xs hidden sm:inline-flex">L</kbd></label>
-          <div tabindex="0" class="dropdown-content mt-3 p-3 shadow menu bg-base-100 text-base-content rounded-box w-56">
+        <CossDropdown
+          trigger-class="coss-dropdown-trigger-toolbar"
+          panel-class="coss-dropdown-learning"
+          aria-keyshortcuts="l"
+          :title="t('toolbar.learnTitle')"
+        >
+          <template #trigger>
+            <span>{{ t('toolbar.learningMode') }}</span>
+            <kbd class="kbd kbd-xs hidden sm:inline-flex">L</kbd>
+          </template>
+          <div class="coss-learning-body">
             <label class="flex items-center gap-2 text-sm cursor-pointer">
               <input type="checkbox" class="toggle toggle-sm toggle-primary" v-model="learningStore.showProbability" />
               <span>{{ t('toolbar.learningDropdown.enableHeatmap') }}</span>
@@ -229,16 +224,16 @@ function handleGlobalKeydown(event) {
               </div>
               <label class="flex items-center gap-2 text-sm cursor-pointer">
                 <input type="checkbox" class="checkbox checkbox-xs" v-model="learningStore.showPercent" />
-                {{ t('toolbar.learningDropdown.showPercent') }}
+                <span>{{ t('toolbar.learningDropdown.showPercent') }}</span>
               </label>
               <label class="flex items-center gap-2 text-sm cursor-pointer">
                 <input type="checkbox" class="checkbox checkbox-xs" v-model="learningStore.showFraction" />
-                {{ t('toolbar.learningDropdown.showFraction') }}
+                <span>{{ t('toolbar.learningDropdown.showFraction') }}</span>
               </label>
             </div>
             <p v-else class="text-xs opacity-60 mt-2">{{ t('toolbar.learningDropdown.disabledHint') }}</p>
           </div>
-        </div>
+        </CossDropdown>
       </div>
     </div>
   </div>
