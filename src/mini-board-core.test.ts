@@ -11,6 +11,16 @@ import {
   toggleMiniFlag,
 } from '../site/src/scripts/mini-board-core.ts';
 
+function createSeededRng(seed = 42): () => number {
+  let state = seed >>> 0;
+  return function nextRandom(): number {
+    state = (state + 0x6d2b79f5) | 0;
+    let t = Math.imul(state ^ (state >>> 15), 1 | state);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 describe('mini-board-core', () => {
   it('初始化 9×9 空闲棋盘', () => {
     const state = createMiniBoard();
@@ -25,7 +35,7 @@ describe('mini-board-core', () => {
   it('首击保证 3×3 禁雷并触发空白洪水展开', () => {
     const state = createMiniBoard();
     const center = 40;
-    const action = handlePrimaryCellAction(state, center);
+    const action = handlePrimaryCellAction(state, center, createSeededRng(11));
     assert.equal(action, 'started');
     assert.equal(state.status, 'playing');
     assert.equal(
@@ -46,8 +56,9 @@ describe('mini-board-core', () => {
   });
 
   it('插旗模式与手动插旗遵循雷数上限', () => {
-    const state = createMiniBoard(5, 5, 2);
-    openMiniCell(state, 12);
+    const state = createMiniBoard(6, 6, 2);
+    openMiniCell(state, 0, createSeededRng(7));
+    assert.equal(state.status, 'playing');
     const closedIndices = state.cells
       .filter((cell) => !cell.isOpen)
       .map((cell) => cell.index);
@@ -72,7 +83,7 @@ describe('mini-board-core', () => {
 
   it('双击连开在旗数匹配时翻开其余邻格，全开后自动补旗获胜', () => {
     const state = createMiniBoard();
-    openMiniCell(state, 40);
+    openMiniCell(state, 40, createSeededRng(19));
 
     // 标记所有真实地雷，对前沿数字格执行双击连开
     for (const cell of state.cells) {
@@ -99,7 +110,7 @@ describe('mini-board-core', () => {
 
   it('踩雷进入失败终局且后续点击被忽略', () => {
     const state = createMiniBoard();
-    openMiniCell(state, 0);
+    openMiniCell(state, 0, createSeededRng(23));
     const mineCell = state.cells.find((cell) => cell.isMine);
     assert.ok(mineCell);
     const safeClosed = state.cells.find((cell) => !cell.isMine && !cell.isOpen);

@@ -23,7 +23,7 @@ const faq: FaqItem[] = [
   {
     question: 'Les drapeaux modifient-ils les probabilités calculées ?',
     answer:
-      'Non. Comme un drapeau posé par le joueur peut être erroné, le solveur s’appuie uniquement sur les chiffres ouverts et le total de mines pour garantir un calcul incorruptible.',
+      'Oui par défaut : lorsque « Compter 🚩 comme mines connues » est coché, les drapeaux sont déduits des chiffres voisins et du nombre de mines restantes. Décochez cette option à tout moment pour vérifier la probabilité réelle d’un drapeau incertain.',
   },
 ];
 ---
@@ -36,16 +36,16 @@ const faq: FaqItem[] = [
   path="/tools/probability-calculator/"
   keywords="calculateur démineur, solveur démineur, probabilité démineur, aide démineur en ligne"
   updated="2026-10-30"
-  lede="Reproduisez votre position en cliquant sur les cases pour placer chiffres et drapeaux : le solveur affiche aussitôt la probabilité exacte (%) de mine sur chaque case fermée."
+  lede="Reproduisez votre position en cliquant sur les cases pour placer drapeaux 🚩, cases vides (0) et chiffres 1–8 : le solveur affiche aussitôt la probabilité exacte (%) de mine sur chaque case fermée."
   faq={faq}
 >
   <Calculator lang="fr" />
 
   <h2>Comment utiliser le calculateur</h2>
   <ol>
-    <li>Choisissez un préréglage (Facile, Moyen, Difficile) ou saisissez vos dimensions et le nombre total de mines.</li>
-    <li><strong>Cliquez sur les cases pour faire défiler</strong> : fermée → 🚩 → chiffres 1–8 (clic droit pour revenir en arrière) jusqu’à recréer votre plateau.</li>
-    <li>Consultez le pourcentage affiché sur chaque case cachée (vert = risque faible, rouge = forte probabilité de mine) et jouez le coup optimal.</li>
+    <li>Sélectionnez la difficulté dans le menu déroulant (Facile, Moyen, Difficile) ou saisissez vos dimensions et le nombre total de mines.</li>
+    <li><strong>Cliquez sur les cases pour faire défiler</strong> : fermée → 🚩 → vide (0) → chiffres 1–8 (clic droit pour reculer, ou touches <code>0–8</code> / <code>F</code>).</li>
+    <li>Consultez le pourcentage affiché sur chaque case cachée (vert = risque faible, rouge = forte probabilité de mine) et décochez « Compter 🚩 comme mines connues » pour auditer vos propres drapeaux.</li>
   </ol>
 
   <h2>Comment fonctionne le solveur</h2>

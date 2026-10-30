@@ -4,7 +4,7 @@
 
 ## 求解器（`src/solver/probability.js`）
 
-- **旗不可信**：旗只是玩家猜测、可能插错。约束只看已打开的数字格，`need` 不扣减旗数；剩余雷数恒为 `bombNumber`；所有未开格（含旗/问号）都是未知变量。后果：中残局前沿易连成上百变量的巨大分量，无界 DFS 会卡死主线程十几秒。
+- **旗信任策略分场景**：实时对局（学习模式）默认 `trustFlags=false`，旗只是玩家猜测、可能插错，约束只看已打开数字格、剩余雷数恒为 `bombNumber`，避免错旗误导玩家点雷（中残局前沿易连成上百变量的大分量，需配合有界搜索）；静态概率计算器（`Calculator.astro`）默认传入 `{ trustFlags: true, constrainZeroCells: true }`，把玩家手动录入的 `🚩` 与空白 `0` 格作为已知条件参与消减，同时提供开关切回 `trustFlags=false` 验错模式。
 - **有界搜索**：单次 `computeProbabilities` 总节点预算 `CALL_NODE_BUDGET=100000`，目标最坏情况 <500ms。预算耗尽回退 forced 检查 + 平均近似，保证必有界。
 - **计算顺序**：O(n) 约束传播先行（定死格直接落子）→ 分量拆分 → 小分量精确枚举 → 大分量近似。重叠边界规则取代子集规则（2026-09 实测更紧）。
 - **后台精算**：同步只给近似的大分量，用 `createForcedRefiner` 在 `requestIdleCallback`（Safari 退化为 `setTimeout`）分片补找 forced，找到即覆盖显示。`refinedMap` 只对当前 `boardVersion` 有效，开格变化即作废；插旗/拔旗不改变约束，不作废。
@@ -20,7 +20,7 @@
 - `pnpm build` = vite build（游戏 SPA）→ astro build（`site/` workspace 子包，静态 HTML、零框架 JS）→ `scripts/merge-dist.mjs` 并入 `dist/` 并重生成整站 `sitemap.xml`。游戏 SPA 不动，内容页纯静态。
 - `dist/` 不进仓（gitignored），本地有构建产物属正常。
 - IndexNow key 放在 `public/<key>.txt`，文件名即内容，随静态资源公开。`pnpm indexnow` 必须等该文件在线上返回 200 后再跑；构建期提交会被拒。
-- `meathill-brand` 走 npm registry，不提交 tgz。
+- `meathill-brand` 走 npm registry，不提交 tgz；站点级屏蔽清单（`EXCLUDED_BRAND_SITE_IDS`）统一收敛在 `src/brand-network.js`，游戏顶栏/页脚与 Astro `SiteFooter.astro` 共享同一份过滤结果。
 
 ## 多语言
 

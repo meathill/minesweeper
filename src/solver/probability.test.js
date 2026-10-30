@@ -678,3 +678,105 @@ describe('computeProbabilities - 大分量无 forced 不丢格（前沿灰带回
     }
   });
 });
+
+describe('computeProbabilities - 计算器模式（trustFlags 与空白 0 格约束）', () => {
+  it('9x9·10 标满 10 面旗时，trustFlags 模式下旗格为 100%、其余 71 格全为 0%', () => {
+    const g = makeGrid(9, 9, (grid) => {
+      for (let i = 0; i < 10; i++) {
+        grid[i].isFlag = true;
+      }
+    });
+    const { map, hasContradiction } = computeProbabilities(g, 9, 9, 10, {
+      trustFlags: true,
+      constrainZeroCells: true,
+    });
+    assert.equal(hasContradiction, false);
+    for (let i = 0; i < 81; i++) {
+      assert.equal(map.get(i), i < 10 ? 1 : 0, `格子 ${i} 概率不符`);
+    }
+  });
+
+  it('9x9·10 标记 5 面旗时，剩余 5 颗雷均摊到其余 76 格', () => {
+    const g = makeGrid(9, 9, (grid) => {
+      for (let i = 0; i < 5; i++) {
+        grid[i].isFlag = true;
+      }
+    });
+    const { map, hasContradiction } = computeProbabilities(g, 9, 9, 10, {
+      trustFlags: true,
+    });
+    assert.equal(hasContradiction, false);
+    for (let i = 0; i < 5; i++) {
+      assert.equal(map.get(i), 1);
+    }
+    for (let i = 5; i < 81; i++) {
+      assert.ok(approxEqual(map.get(i), 5 / 76), `格子 ${i} 应为 5/76`);
+    }
+  });
+
+  it('数字 1 旁标 1 面旗后，其余相邻未知格推导为 0% 安全', () => {
+    const g = makeGrid(5, 5, (grid) => {
+      grid[idx(2, 2, 5)].isOpen = true;
+      grid[idx(2, 2, 5)].count = 1;
+      grid[idx(1, 1, 5)].isFlag = true;
+    });
+    const { map, hasContradiction } = computeProbabilities(g, 5, 5, 3, {
+      trustFlags: true,
+      constrainZeroCells: true,
+    });
+    assert.equal(hasContradiction, false);
+    assert.equal(map.get(idx(1, 1, 5)), 1);
+    // (2,2) 其余 7 个邻居均应为 0%
+    const safeNeighbors = [
+      idx(1, 2, 5),
+      idx(1, 3, 5),
+      idx(2, 1, 5),
+      idx(2, 3, 5),
+      idx(3, 1, 5),
+      idx(3, 2, 5),
+      idx(3, 3, 5),
+    ];
+    for (const n of safeNeighbors) {
+      assert.equal(map.get(n), 0, `邻居 ${n} 应为 0%`);
+    }
+    // 外圈 16 格均摊剩余 2 颗雷 => 2/16 = 0.125
+    assert.ok(approxEqual(map.get(idx(0, 0, 5)), 2 / 16));
+  });
+
+  it('constrainZeroCells 开启时，已翻开空白 0 格约束周围未开格为 0%', () => {
+    const g = makeGrid(5, 5, (grid) => {
+      grid[idx(2, 2, 5)].isOpen = true;
+      grid[idx(2, 2, 5)].count = 0;
+    });
+    const { map, hasContradiction } = computeProbabilities(g, 5, 5, 4, {
+      constrainZeroCells: true,
+    });
+    assert.equal(hasContradiction, false);
+    assert.equal(map.get(idx(1, 1, 5)), 0);
+    assert.equal(map.get(idx(2, 3, 5)), 0);
+    // 25 格中 1 格已开、8 格邻接 0% 安全，其余 16 格均摊 4 颗雷 = 0.25
+    assert.ok(approxEqual(map.get(idx(0, 0, 5)), 4 / 16));
+  });
+
+  it('盘面矛盾检测：数字 1 旁标 2 面旗或总标旗超总雷数时返回 hasContradiction=true', () => {
+    const gOverFlagged = makeGrid(3, 3, (grid) => {
+      grid[idx(1, 1, 3)].isOpen = true;
+      grid[idx(1, 1, 3)].count = 1;
+      grid[idx(0, 0, 3)].isFlag = true;
+      grid[idx(0, 1, 3)].isFlag = true;
+    });
+    const r1 = computeProbabilities(gOverFlagged, 3, 3, 5, {
+      trustFlags: true,
+    });
+    assert.equal(r1.hasContradiction, true);
+
+    const gTooManyTotal = makeGrid(3, 3, (grid) => {
+      grid[0].isFlag = true;
+      grid[1].isFlag = true;
+    });
+    const r2 = computeProbabilities(gTooManyTotal, 3, 3, 1, {
+      trustFlags: true,
+    });
+    assert.equal(r2.hasContradiction, true);
+  });
+});

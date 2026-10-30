@@ -22,7 +22,7 @@ const faq: FaqItem[] = [
   {
     question: 'Wirken sich Flaggen auf die Berechnung aus?',
     answer:
-      'Nein. Flaggen sind nur deine eigenen Markierungen und können falsch sein — der Solver ignoriert sie komplett: Jedes verdeckte Feld bekommt seine Wahrscheinlichkeit ausschließlich aus den offenen Zahlen und der Gesamtminen­zahl. Eine falsche Flagge kann das Ergebnis nie vergiften, und markierte Felder zeigen die Wahrscheinlichkeit direkt neben der Flagge.',
+      'Standardmäßig ja: Solange „🚩 als bekannte Minen zählen“ aktiviert ist, werden gesetzte Flaggen von benachbarten Zahlen und der Restminenzahl abgezogen. Deaktiviere die Option jederzeit, um unsichere Flaggen zu überprüfen — der Solver ignoriert dann alle Flaggen und zeigt deren reale Wahrscheinlichkeit.',
   },
 ];
 ---
@@ -34,23 +34,23 @@ const faq: FaqItem[] = [
   description="Kostenloser online Minesweeper Wahrscheinlichkeitsrechner: Rekonstruiere jede Position und erhalte die exakte Minenwahrscheinlichkeit jedes verdeckten Feldes. Derselbe Solver wie der Lernmodus in Meathill Minesweeper."
   path="/tools/probability-calculator/"
   keywords="minesweeper wahrscheinlichkeitsrechner, minesweeper solver, minesweeper wahrscheinlichkeit, minesweeper rechner"
-  updated="2026-09-03"
-  lede="Baue die gesehene Position nach — klicke, um Zahlen zu markieren und Flaggen zu setzen — und der Rechner berechnet die exakte Minenwahrscheinlichkeit jedes verdeckten Feldes, mit demselben Solver wie der Lernmodus in Meathill Minesweeper. Flaggen gelten als deine Vermutung, nicht als Fakt."
+  updated="2026-10-30"
+  lede="Baue die gesehene Position nach — klicke, um Flaggen 🚩, leere Felder (0) und Zahlen 1–8 zu setzen — und der Rechner ermittelt sofort die exakte Minenwahrscheinlichkeit jedes verdeckten Feldes."
   faq={faq}
 >
   <Calculator lang="de" />
 
   <h2>So benutzt du den Rechner</h2>
   <ol>
-    <li>Wähle ein Preset oder setze eigene Zeilen, Spalten und Minenzahl.</li>
-    <li><strong>Klicke Felder an, um den Zustand zu wechseln</strong>: verdeckt → 🚩 (deine Flagge) → Zahl 1–8; Rechtsklick rückwärts, bis das Brett dem Bild entspricht.</li>
-    <li>Jedes verdeckte Feld — mit oder ohne Flagge — zeigt live seine Minenwahrscheinlichkeit (%), grün niedrig → rot hoch. Flaggen ändern die Wahrscheinlichkeiten nie; sie markieren nur, wo du <em>vermutest</em>, dass Minen liegen.</li>
+    <li>Wähle eine Schwierigkeit im Dropdown-Menü oder setze eigene Zeilen, Spalten und Minenzahl.</li>
+    <li><strong>Klicke Felder an, um den Zustand zu wechseln</strong>: verdeckt → 🚩 → leer (0) → Zahl 1–8; Rechtsklick rückwärts (oder Taste <code>0–8</code> / <code>F</code>).</li>
+    <li>Jedes verdeckte Feld zeigt live seine Minenwahrscheinlichkeit (%), grün niedrig → rot hoch. Deaktiviere „🚩 als bekannte Minen zählen“, wenn du eigene Flaggen auf Fehler prüfen möchtest.</li>
     <li>Festgefahren? Spiele den niedrigsten Prozentsatz — das ist der Zug mit dem besten Erwartungswert.</li>
   </ol>
 
   <h2>Wie die Wahrscheinlichkeiten berechnet werden</h2>
   <p>
-    Jede offene Zahl ist eine Bedingung: „genau <code>Zahl</code> Minen unter meinen verdeckten Nachbarn“. Flaggen werden ignoriert — sie können falsch sein, ihnen zu vertrauen würde das Ergebnis verfälschen. Der Solver teilt
+    Jedes geöffnete Feld (auch ein leeres <code>0</code>-Feld) bildet eine exakte Bedingung über seine verdeckten Nachbarn unter Abzug bekannter Flaggen. Der Solver teilt
     verbundene Bedingungen in unabhängige Komponenten und <strong>zählt jede exakt mit Beschneidung durch</strong>, indem er
     registriert, wie oft ein Feld über alle gültigen Verteilungen hinweg Mine ist; isolierte Felder teilen sich die restlichen
     Minen gleichmäßig. Komponenten über 28 Feldern wechseln zu Sicherheitserkennung plus Näherung — klar auf der Seite markiert.

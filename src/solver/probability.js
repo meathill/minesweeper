@@ -1,7 +1,7 @@
 // 扫雷概率求解器：基于约束枚举 + 分量拆分 + 孤立格均摊
 // 输入的 grid 为 App.vue 的 grid.value 数组，元素含 {isOpen,isFlag,count}
-// 不依赖 isBomb（玩家视角）。旗只是玩家的猜测、可能插错，因此不参与概率计算：
-// 约束只看已打开的数字，剩余雷数恒为 bombNumber，所有未开格（含插旗/问号）都参与推理。
+// 不依赖 isBomb（玩家视角）。默认对局模式下旗只是玩家猜测、可能插错，因此不参与概率计算；
+// 概率计算器可通过 options.trustFlags / options.constrainZeroCells 启用已知旗扣减与空白 0 格约束。
 
 function getNeighbors(index, row, column) {
   const x = index % column;
@@ -16,23 +16,40 @@ function getNeighbors(index, row, column) {
   return out;
 }
 
-function buildConstraints(grid, row, column) {
+function buildConstraints(
+  grid,
+  row,
+  column,
+  { trustFlags = false, constrainZeroCells = false } = {},
+) {
   const constraints = [];
+  let hasContradiction = false;
   for (let idx = 0; idx < grid.length; idx++) {
     const cell = grid[idx];
-    if (!cell.isOpen || cell.count === 0) continue;
+    if (!cell.isOpen) continue;
+    const count = cell.count || 0;
+    if (count === 0 && !constrainZeroCells) continue;
     const neighbors = getNeighbors(idx, row, column);
     const unknown = [];
+    let adjacentFlags = 0;
     for (const n of neighbors) {
-      // 旗可能是错的：未开格（无论有无旗/问号）都是未知变量
-      if (!grid[n].isOpen) unknown.push(n);
+      if (!grid[n].isOpen) {
+        if (trustFlags && grid[n].isFlag) adjacentFlags++;
+        else unknown.push(n);
+      }
     }
-    if (unknown.length === 0) continue;
-    const need = cell.count;
-    if (need < 0 || need > unknown.length) continue; // 脏数据，跳过
+    const need = count - adjacentFlags;
+    if (unknown.length === 0) {
+      if (need !== 0) hasContradiction = true;
+      continue;
+    }
+    if (need < 0 || need > unknown.length) {
+      hasContradiction = true;
+      continue;
+    }
     constraints.push({ vars: unknown, need });
   }
-  return constraints;
+  return { constraints, hasContradiction };
 }
 
 function splitComponents(constraints) {
@@ -454,15 +471,11 @@ const REFINE_PER_CHECK_NODES = 30000;
 // 精算快筛预算：与同步快筛同量级，总是跑完（约 1ms），不计入 fuel。
 const REFINE_QUICK_NODES = 1000;
 
-/**
- * 为同步算出近似值的大分量创建后台精算器。
- * 按变量分片推进，可随时中断丢弃（调用方用版本号判定过期）。
- * 注意指数级全枚举摊不开——精算只补做 forced 检查（UNSAT 证明），不做全枚举；
- * 同步已确定（decidedSet）的格子直接跳过。
- * @returns {{ total: number, step: (opts?: {fuelNodes?: number, wallMs?: number}) => { newly: Map<number, 0|1>, done: boolean } }}
- */
+// 为同步算出近似值的大分量创建后台精算器。
+// 按变量分片推进，可随时中断丢弃（调用方用版本号判定过期）。
+// 同步已确定（decidedSet）的格子直接跳过。
 export function createForcedRefiner(grid, row, column, skipSet = new Set()) {
-  const rawConstraints = buildConstraints(grid, row, column);
+  const { constraints: rawConstraints } = buildConstraints(grid, row, column);
   // 传播先行：O(n) 定死的格子第一步就交付，不占用搜索预算
   const { decided: propDecided, constraints: simplified } =
     propagateConstraints(rawConstraints);
@@ -565,31 +578,51 @@ export function createForcedRefiner(grid, row, column, skipSet = new Set()) {
   };
 }
 
-/**
- * 计算所有未翻开格的雷概率
- * @param {Array} grid
- * @param {number} row
- * @param {number} column
- * @param {number} bombNumber
- * @returns {{map: Map<number, number>, isApproximate: boolean}}
- */
-export function computeProbabilities(grid, row, column, bombNumber) {
-  // 旗不参与计算：剩余雷数恒为总雷数，未开格（含插旗/问号）全部视为未知
-  const remainingMines = bombNumber;
-  const rawConstraints = buildConstraints(grid, row, column);
+// 计算未翻开格的雷概率；options.trustFlags 与 options.constrainZeroCells 供概率计算器按需启用
+export function computeProbabilities(
+  grid,
+  row,
+  column,
+  bombNumber,
+  options = {},
+) {
+  const trustFlags = Boolean(options.trustFlags);
+  const constrainZeroCells = Boolean(options.constrainZeroCells);
+  const flaggedCells = [];
+  if (trustFlags) {
+    for (let i = 0; i < grid.length; i++) {
+      if (!grid[i].isOpen && grid[i].isFlag) flaggedCells.push(i);
+    }
+  }
+  const remainingMines = trustFlags
+    ? bombNumber - flaggedCells.length
+    : bombNumber;
+  const { constraints: rawConstraints, hasContradiction: rawContradiction } =
+    buildConstraints(grid, row, column, { trustFlags, constrainZeroCells });
 
   const frontierSet = new Set();
   for (const c of rawConstraints) for (const v of c.vars) frontierSet.add(v);
 
   const isolated = [];
   for (let i = 0; i < grid.length; i++) {
-    if (!grid[i].isOpen && !frontierSet.has(i)) isolated.push(i);
+    if (
+      !grid[i].isOpen &&
+      !(trustFlags && grid[i].isFlag) &&
+      !frontierSet.has(i)
+    ) {
+      isolated.push(i);
+    }
   }
 
   const result = new Map();
   let isApproximate = false;
-  // 已确定格（精确枚举的分量全体 + 传播/SAT 定死的 forced）
+  let hasContradiction = remainingMines < 0 || rawContradiction;
+  // 已确定格（精确枚举的分量全体 + 传播/SAT 定死的 forced + 信任模式下的已知旗）
   const decidedSet = new Set();
+  for (const f of flaggedCells) {
+    result.set(f, 1);
+    decidedSet.add(f);
+  }
   // 整局共享一份搜索预算：多个大分量叠加也不会卡死主线程
   const budget = { remaining: CALL_NODE_BUDGET };
 
@@ -599,19 +632,31 @@ export function computeProbabilities(grid, row, column, bombNumber) {
     constraints,
     contradiction,
   } = propagateConstraints(rawConstraints);
-  if (contradiction) isApproximate = true; // 脏盘面（真实对局不可能）：精确性无从谈起
+  if (contradiction) {
+    isApproximate = true; // 脏盘面（真实对局不可能）：精确性无从谈起
+    hasContradiction = true;
+  }
   for (const [v, val] of propDecided) {
     result.set(v, val);
     decidedSet.add(v);
   }
 
   if (frontierSet.size === 0) {
+    if (remainingMines > isolated.length) {
+      hasContradiction = true;
+    }
     if (isolated.length > 0) {
-      const p = isolated.length ? remainingMines / isolated.length : 0;
+      const p = Math.max(0, remainingMines) / isolated.length;
       const clamped = Math.max(0, Math.min(1, p));
       for (const v of isolated) result.set(v, clamped);
     }
-    return { map: result, isApproximate, frontierSet, decidedSet };
+    return {
+      map: result,
+      isApproximate,
+      frontierSet,
+      decidedSet,
+      hasContradiction,
+    };
   }
 
   const components = splitComponents(constraints);
@@ -627,6 +672,7 @@ export function computeProbabilities(grid, row, column, bombNumber) {
     if (n > 28) {
       isApproximate = true;
       const large = solveLargeComponent(comp.vars, comp.constraints, budget);
+      if (large.forced === null) hasContradiction = true;
       if (large.hasForced) {
         for (const [v, p] of large.forced) {
           frontierProbs.set(v, p);
@@ -651,6 +697,7 @@ export function computeProbabilities(grid, row, column, bombNumber) {
       // 枚举超预算：改走 forced 检查（共享剩余预算），剩不下的用平均近似
       isApproximate = true;
       const large = solveLargeComponent(comp.vars, comp.constraints, budget);
+      if (large.forced === null) hasContradiction = true;
       const probs = large.hasForced
         ? large.forced
         : approximateComponent(comp.vars, comp.constraints);
@@ -665,6 +712,7 @@ export function computeProbabilities(grid, row, column, bombNumber) {
     if (total === 0) {
       // 无解，脏盘面，近似兜底
       isApproximate = true;
+      hasContradiction = true;
       const approx = approximateComponent(comp.vars, comp.constraints);
       for (const [v, p] of approx) {
         frontierProbs.set(v, p);
@@ -685,8 +733,16 @@ export function computeProbabilities(grid, row, column, bombNumber) {
 
   for (const [v, p] of frontierProbs) result.set(v, p);
 
+  const remainingForIsolated = remainingMines - expectedFrontierMines;
+  if (
+    remainingForIsolated < -1e-6 ||
+    remainingForIsolated > isolated.length + 1e-6
+  ) {
+    hasContradiction = true;
+  }
+
   if (isolated.length > 0) {
-    const isolatedMines = Math.max(0, remainingMines - expectedFrontierMines);
+    const isolatedMines = Math.max(0, remainingForIsolated);
     const pIso = isolated.length ? isolatedMines / isolated.length : 0;
     const clamped = Math.max(0, Math.min(1, pIso));
     for (const v of isolated) result.set(v, clamped);
@@ -696,7 +752,13 @@ export function computeProbabilities(grid, row, column, bombNumber) {
     }
   }
 
-  return { map: result, isApproximate, frontierSet, decidedSet };
+  return {
+    map: result,
+    isApproximate,
+    frontierSet,
+    decidedSet,
+    hasContradiction,
+  };
 }
 
 export function getBestProbs(map) {

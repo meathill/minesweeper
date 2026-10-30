@@ -48,3 +48,21 @@ test('/pt/ 与 /fr/ 新语种首页自指且设置对应 lang', async ({ page })
   await expect(page.locator('header')).not.toContainText('产品网络');
   await expect(page.locator('header')).toContainText('Produits');
 });
+
+test('产品网络切换器与页脚不包含已下线的 MuiAD、Waka 与 MuiRPG', async ({
+  page,
+}) => {
+  await page.goto('/');
+  const networkDetails = page
+    .locator('header details.brand-switcher')
+    .filter({ hasText: '产品网络' });
+  await networkDetails.locator('summary').click();
+  const panel = networkDetails.locator('.brand-switcher-panel');
+  await expect(panel).toBeVisible();
+  for (const removed of ['MuiAD', 'Waka', 'MuiRPG']) {
+    await expect(panel).not.toContainText(removed);
+    await expect(page.locator('.brand-footer-links')).not.toContainText(
+      removed,
+    );
+  }
+});

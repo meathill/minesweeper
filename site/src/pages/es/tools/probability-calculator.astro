@@ -23,7 +23,7 @@ const faq: FaqItem[] = [
   {
     question: '¿Afectan las banderas al cálculo?',
     answer:
-      'No. Las banderas son solo marcas tuyas y pueden estar mal, así que el solver las ignora por completo: cada casilla cerrada — con bandera o sin ella — obtiene su probabilidad únicamente de los números abiertos y del total de minas. Una bandera errónea nunca puede contaminar el resultado, y las casillas marcadas muestran su probabilidad junto a la bandera.',
+      'Sí por defecto: con «Contar 🚩 como minas conocidas» activado, las banderas se descuentan de los números vecinos y del total de minas restantes. Si dudas de alguna bandera, desmarca la opción para verificar su probabilidad real sin asumirla como cierta.',
   },
 ];
 ---
@@ -35,23 +35,23 @@ const faq: FaqItem[] = [
   description="Calculadora de probabilidad del Buscaminas gratis y online: reconstruye cualquier posición y obtén la probabilidad exacta de mina de cada casilla cerrada. El mismo solver que el Modo Aprendizaje de Meathill Minesweeper."
   path="/tools/probability-calculator/"
   keywords="calculadora probabilidad buscaminas, buscaminas solver, probabilidad buscaminas, resolvedor de buscaminas"
-  updated="2026-09-03"
-  lede="Reconstruye la posición que ves — haz clic para marcar números y poner banderas — y la calculadora obtendrá la probabilidad exacta de mina de cada casilla cerrada, con el mismo solver que el Modo Aprendizaje de Meathill Minesweeper. Las banderas se tratan como tus suposiciones, no como hechos."
+  updated="2026-10-30"
+  lede="Reconstruye la posición que ves — haz clic para marcar banderas 🚩, casillas vacías (0) y números 1–8 — y la calculadora obtendrá la probabilidad exacta de mina de cada casilla cerrada."
   faq={faq}
 >
   <Calculator lang="es" />
 
   <h2>Cómo usar la calculadora</h2>
   <ol>
-    <li>Elige un preajuste de dificultad o configura filas, columnas y minas totales.</li>
-    <li><strong>Haz clic en las casillas para ciclar</strong>: oculta → 🚩 (tu bandera) → número 1–8; el clic derecho cicla al revés, hasta que el tablero reproduzca lo que ves.</li>
-    <li>Cada casilla cerrada — con bandera o sin ella — muestra su probabilidad de mina en vivo (%), verde bajo → rojo alto. Las banderas nunca cambian las probabilidades; solo marcan dónde <em>crees</em> que hay minas.</li>
+    <li>Elige un nivel en el desplegable de dificultad o configura filas, columnas y minas totales.</li>
+    <li><strong>Haz clic en las casillas para ciclar</strong>: oculta → 🚩 → vacía (0) → número 1–8; el clic derecho cicla al revés (o usa las teclas <code>0–8</code> y <code>F</code>).</li>
+    <li>Cada casilla cerrada muestra su probabilidad de mina en vivo (%), verde bajo → rojo alto. Desmarca «Contar 🚩 como minas conocidas» si quieres auditar tus propias banderas.</li>
     <li>¿Atascado? Juega el porcentaje más bajo: es la jugada de mejor valor esperado.</li>
   </ol>
 
   <h2>Cómo se calculan las probabilidades</h2>
   <p>
-    Cada número abierto es una restricción: «exactamente <code>número</code> minas entre mis vecinas cerradas». Las banderas se ignoran — podrían estar mal y confiar en ellas contaminaría el resultado. El solver separa
+    Cada casilla abierta (incluidas las vacías <code>0</code>) impone una restricción exacta sobre sus vecinas cerradas, descontando las banderas conocidas cuando esa opción está activa. El solver separa
     las restricciones conectadas en componentes independientes y <strong>enumera cada uno de forma exacta con poda</strong>,
     contando cuántas veces es mina cada casilla entre todas las colocaciones válidas; las casillas aisladas reparten las minas
     restantes. Los componentes de más de 28 casillas pasan a detección forzada más aproximación, indicada en la página.

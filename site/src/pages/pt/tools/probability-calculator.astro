@@ -22,7 +22,7 @@ const faq: FaqItem[] = [
   {
     question: 'As bandeiras mudam o cálculo de probabilidade?',
     answer:
-      'Não. Como bandeiras do jogador podem estar erradas, o solver usa apenas os números abertos e o total de minas, garantindo que um palpite equivocado nunca contamine o resultado.',
+      'Sim por padrão: com «Contar 🚩 como minas conhecidas» marcado, cada bandeira desconta das casas vizinhas e do total restante. Se quiser conferir se alguma bandeira está errada, basta desmarcar essa opção.',
   },
 ];
 ---
@@ -35,16 +35,16 @@ const faq: FaqItem[] = [
   path="/tools/probability-calculator/"
   keywords="calculadora campo minado, solver campo minado, probabilidade campo minado, resolvedor campo minado"
   updated="2026-10-30"
-  lede="Monte qualquer posição clicando nas casas para inserir números e bandeiras: o solver calcula na hora a probabilidade exata (%) de mina em cada quadrado fechado."
+  lede="Monte qualquer posição clicando nas casas para inserir bandeiras 🚩, casas vazias (0) e números 1–8: o solver calcula na hora a probabilidade exata (%) de mina em cada quadrado fechado."
   faq={faq}
 >
   <Calculator lang="pt" />
 
   <h2>Como usar a calculadora</h2>
   <ol>
-    <li>Escolha Fácil, Médio ou Difícil, ou defina linhas, colunas e minas manualmente.</li>
-    <li><strong>Clique nas casas para alternar</strong>: fechada → 🚩 → números 1–8 (clique direito volta um passo) até reproduzir seu tabuleiro.</li>
-    <li>Leia a porcentagem em cada casa fechada (verde = mais segura, vermelho = alta chance de mina) e escolha o menor risco.</li>
+    <li>Selecione Fácil, Médio ou Difícil no menu suspenso, ou defina linhas, colunas e minas manualmente.</li>
+    <li><strong>Clique nas casas para alternar</strong>: fechada → 🚩 → vazia (0) → números 1–8 (clique direito volta um passo, ou use as teclas <code>0–8</code> e <code>F</code>).</li>
+    <li>Leia a porcentagem em cada casa fechada (verde = mais segura, vermelho = alta chance de mina) e desmarque «Contar 🚩 como minas conhecidas» quando quiser auditar palpites duvidosos.</li>
   </ol>
 
   <h2>Como o cálculo funciona</h2>
