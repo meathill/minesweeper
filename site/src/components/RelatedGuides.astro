@@ -1,0 +1,274 @@
+---
+import { getLocaleMeta } from '../i18n';
+import type { SiteLang } from '../i18n';
+
+interface Props {
+  lang: SiteLang;
+  currentPath: string;
+}
+
+interface GuideEntry {
+  path: string;
+  label: string;
+  desc: string;
+}
+
+const { lang, currentPath } = Astro.props;
+const prefix = getLocaleMeta(lang).prefix;
+
+const HEADINGS: Record<SiteLang, string> = {
+  zh: '更多扫雷指南与工具',
+  en: 'Related Minesweeper Guides & Tools',
+  es: 'Más guías y herramientas del Buscaminas',
+  ru: 'Другие гайды и инструменты Сапёра',
+  vi: 'Hướng dẫn và công cụ Dò Mìn liên quan',
+  de: 'Weitere Minesweeper-Anleitungen & Tools',
+  pt: 'Mais guias e ferramentas de Campo Minado',
+  fr: 'Autres guides et outils Démineur',
+};
+
+const LINKS: Record<SiteLang, GuideEntry[]> = {
+  zh: [
+    {
+      path: '/guide/google-minesweeper/',
+      label: '谷歌扫雷怎么玩：打开方式、无鼠标触摸板插旗详解',
+      desc: 'MacBook、Windows 触摸板与手机免鼠标插旗速查表。',
+    },
+    {
+      path: '/guide/how-to-play/',
+      label: '扫雷怎么玩：新手规则、双击连开与 1-2-1 定式',
+      desc: '从数字含义到概率判断的完整进阶教程。',
+    },
+    {
+      path: '/tools/probability-calculator/',
+      label: '扫雷概率计算器（在线精确求解器）',
+      desc: '还原任意残局，实时计算每格是雷的数学概率。',
+    },
+    {
+      path: '/unblocked/',
+      label: '在线扫雷网页版 — 免下载即开即玩',
+      desc: '浏览器内直接开局，支持触屏长按与学习模式。',
+    },
+  ],
+  en: [
+    {
+      path: '/guide/google-minesweeper/',
+      label: 'How to Play Minesweeper on Google: Place Flags & No-Mouse Guide',
+      desc: 'Trackpad, Chromebook, MacBook, and mobile flagging controls.',
+    },
+    {
+      path: '/guide/how-to-play/',
+      label: 'How to Play Minesweeper: Rules, Chording & 1-2-1 Pattern',
+      desc: 'Step-by-step beginner rules, common mistakes, and logic patterns.',
+    },
+    {
+      path: '/tools/probability-calculator/',
+      label: 'Minesweeper Probability Calculator & Exact Solver',
+      desc: 'Recreate any board position and compute exact mine odds per cell.',
+    },
+    {
+      path: '/unblocked/',
+      label: 'Play Minesweeper Unblocked Online in Browser',
+      desc: 'Zero-install browser board with touch controls and Learn Mode.',
+    },
+  ],
+  es: [
+    {
+      path: '/guide/google-minesweeper/',
+      label: 'Buscaminas de Google: cómo jugar gratis, controles y banderas',
+      desc: 'Guía rápida para PC, laptop sin ratón, Chromebook y celular.',
+    },
+    {
+      path: '/guide/how-to-play/',
+      label: 'Cómo jugar al Buscaminas: reglas, trucos y patrón 1-2-1',
+      desc: 'Aprende el significado de los números y la apertura en cadena.',
+    },
+    {
+      path: '/tools/probability-calculator/',
+      label: 'Calculadora de probabilidad del Buscaminas (solver online)',
+      desc: 'Calcula el porcentaje exacto de mina en jugadas 50/50.',
+    },
+    {
+      path: '/unblocked/',
+      label: 'Buscaminas online gratis — jugar sin descargar',
+      desc: 'Tablero directo en el navegador compatible con pantalla táctil.',
+    },
+  ],
+  ru: [
+    {
+      path: '/guide/google-minesweeper/',
+      label: 'Сапёр от Google: как открыть, ставить флажки и играть без мыши',
+      desc: 'Управление на ПК, ноутбуке с тачпадом и смартфоне.',
+    },
+    {
+      path: '/guide/how-to-play/',
+      label: 'Как играть в Сапёра: правила, чординг и паттерн 1-2-1',
+      desc: 'Пошаговое руководство от первого хода до расчёта вероятностей.',
+    },
+    {
+      path: '/tools/probability-calculator/',
+      label: 'Калькулятор вероятностей Сапёра (точный солвер)',
+      desc: 'Воссоздайте позицию и узнайте точный шанс мины в каждой клетке.',
+    },
+    {
+      path: '/unblocked/',
+      label: 'Сапёр онлайн бесплатно — играть в браузере без скачивания',
+      desc: 'Мгновенный старт в браузере с поддержкой режима обучения.',
+    },
+  ],
+  vi: [
+    {
+      path: '/guide/google-minesweeper/',
+      label: 'Dò Mìn Google: cách chơi miễn phí và cắm cờ không cần chuột',
+      desc: 'Bảng điều khiển chi tiết trên PC, touchpad laptop và điện thoại.',
+    },
+    {
+      path: '/guide/how-to-play/',
+      label: 'Cách chơi Dò Mìn: luật cơ bản, mở dây chuyền và mẫu 1-2-1',
+      desc: 'Hướng dẫn từ con số đầu tiên đến tư duy xác suất nâng cao.',
+    },
+    {
+      path: '/tools/probability-calculator/',
+      label: 'Máy tính xác suất Dò Mìn (công cụ giải thế cờ chính xác)',
+      desc: 'Dựng lại bàn chơi và xem phần trăm có mìn của từng ô ẩn.',
+    },
+    {
+      path: '/unblocked/',
+      label: 'Dò Mìn online miễn phí — chơi ngay trên trình duyệt',
+      desc: 'Không cần cài đặt, hỗ trợ cảm ứng và bản đồ nhiệt xác suất.',
+    },
+  ],
+  de: [
+    {
+      path: '/guide/google-minesweeper/',
+      label: 'Google Minesweeper: kostenlos spielen, Flaggen & ohne Maus',
+      desc: 'Alle Gesten für PC, MacBook-Trackpad, Chromebook und Smartphone.',
+    },
+    {
+      path: '/guide/how-to-play/',
+      label: 'Minesweeper spielen: Regeln, Chording & 1-2-1-Muster',
+      desc: 'Schritt-für-Schritt-Anleitung für Einsteiger und Fortgeschrittene.',
+    },
+    {
+      path: '/tools/probability-calculator/',
+      label: 'Minesweeper-Wahrscheinlichkeitsrechner (exakter Solver)',
+      desc: 'Beliebige Stellung nachbauen und exakte Minenchancen berechnen.',
+    },
+    {
+      path: '/unblocked/',
+      label: 'Minesweeper online kostenlos im Browser spielen',
+      desc: 'Sofort losspielen ohne Download — inklusive Live-Lernmodus.',
+    },
+  ],
+  pt: [
+    {
+      path: '/guide/google-minesweeper/',
+      label: 'Campo Minado do Google: como jogar grátis, bandeiras e controles',
+      desc: 'Comandos exatos no PC, notebook sem mouse, Chromebook e celular.',
+    },
+    {
+      path: '/guide/how-to-play/',
+      label: 'Como jogar Campo Minado: regras, dicas e padrão 1-2-1',
+      desc: 'Domine a lógica dos números e a abertura rápida em cadeia.',
+    },
+    {
+      path: '/tools/probability-calculator/',
+      label: 'Calculadora de Probabilidade do Campo Minado (solver exato)',
+      desc: 'Descubra a chance matemática real de mina em qualquer posição.',
+    },
+    {
+      path: '/unblocked/',
+      label: 'Campo Minado online grátis — jogar no navegador sem baixar',
+      desc: 'Partida instantânea otimizada para toque e trackpad.',
+    },
+  ],
+  fr: [
+    {
+      path: '/guide/google-minesweeper/',
+      label:
+        'Démineur Google : comment jouer gratuitement, drapeaux et astuces',
+      desc: 'Commandes complètes sur PC, trackpad MacBook, Chromebook et mobile.',
+    },
+    {
+      path: '/guide/how-to-play/',
+      label: 'Comment jouer au Démineur : règles, accords et motif 1-2-1',
+      desc: 'Toutes les bases logiques pour gagner sans deviner au hasard.',
+    },
+    {
+      path: '/tools/probability-calculator/',
+      label: 'Calculateur de probabilité Démineur (solveur exact)',
+      desc: 'Recréez votre grille et affichez le risque exact de chaque case.',
+    },
+    {
+      path: '/unblocked/',
+      label: 'Démineur en ligne gratuit — jouer sans téléchargement',
+      desc: 'Grille jouable immédiatement avec Mode Apprentissage intégré.',
+    },
+  ],
+};
+
+const items = (LINKS[lang] ?? LINKS.en).filter(
+  (entry) => entry.path !== currentPath,
+);
+---
+
+<nav class="related-guides mt-10" aria-label={HEADINGS[lang] ?? HEADINGS.en}>
+  <h2 class="related-guides-title">{HEADINGS[lang] ?? HEADINGS.en}</h2>
+  <ul class="related-guides-grid">
+    {items.map((item) => (
+      <li>
+        <a class="related-guide-card" href={`${prefix}${item.path}`}>
+          <strong>{item.label}</strong>
+          <span>{item.desc}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  .related-guides-title {
+    margin: 0 0 12px;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--meathill-ink);
+  }
+
+  .related-guides-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .related-guide-card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    height: 100%;
+    border: 1px solid var(--meathill-rule);
+    border-radius: var(--meathill-radius-large);
+    background: var(--meathill-paper);
+    padding: 12px 14px;
+    text-decoration: none;
+    transition: border-color 0.15s ease;
+  }
+
+  .related-guide-card:hover {
+    border-color: var(--meathill-yellow-deep);
+  }
+
+  .related-guide-card strong {
+    color: var(--meathill-yellow-deep);
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .related-guide-card span {
+    color: var(--meathill-mute);
+    font-size: 12.5px;
+    line-height: 1.45;
+  }
+</style>

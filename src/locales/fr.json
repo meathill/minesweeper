@@ -1,0 +1,159 @@
+{
+  "brand": {
+    "studio": "Meathill Studio"
+  },
+  "header": {
+    "title": "Meathill Minesweeper",
+    "comment": "Commentaires",
+    "level": "Niveau",
+    "levels": {
+      "Easy": "Facile",
+      "Medium": "Moyen",
+      "Hard": "Difficile",
+      "Custom": "Personnalisé"
+    }
+  },
+  "toolbar": {
+    "mines": "Mines : {count}",
+    "hint": "Indice",
+    "hintTitle": "Indice (H)",
+    "learningMode": "Mode Apprentissage",
+    "learnTitle": "Activer/désactiver le Mode Apprentissage (L)",
+    "newGameTitle": "Nouvelle partie (F2 / N)",
+    "learningDropdown": {
+      "enableHeatmap": "Carte thermique",
+      "showPercent": "Afficher %",
+      "showFraction": "Afficher fraction",
+      "gradient": "0%→100%",
+      "disabledHint": "Affiche la probabilité de mine en temps réel"
+    }
+  },
+  "game": {
+    "flag": "🚩",
+    "bomb": "💥",
+    "revealedBomb": "💣"
+  },
+  "chart": {
+    "title": "⭐ Performance et Efficacité de Décision (cliquez pour rejouer le plateau)",
+    "download": "⬇ Télécharger les données (JSON)",
+    "openSafe": "Ouverture sûre",
+    "openExact": "Ouverture (exacte)",
+    "flag": "Drapeau",
+    "flagExact": "Drapeaux (exact)",
+    "efficiency": "Efficacité",
+    "mineProb": "Prob. de mine",
+    "rpm": "RPM (actions/min)",
+    "efficiencyAxis": "Efficacité / Prob. de mine ×10",
+    "time": "Temps",
+    "timeMinutes": "Temps (min)",
+    "timeSeconds": "Temps (s)",
+    "selected": "Sélectionné",
+    "cell": "Case",
+    "clearSelection": "Effacer",
+    "clickHint": "Cliquez sur n'importe quel point d'action pour restaurer le plateau à cet instant précis — cases ouvertes, drapeaux et points d'interrogation",
+    "legendTitle": "Légende · 2 aires + 2 courbes",
+    "legendAria": "Légende du replay : ouverture sûre, drapeau, efficacité, prob. de mine",
+    "bucket": "tranche",
+    "legendArea": "aire (RPM)",
+    "legendExact": "instant exact",
+    "legendLeftAxis": "Gauche : vitesse (aire RPM)",
+    "legendRightAxis": "Droite : qualité (courbes 0-10)",
+    "legendClickHint": "Cliquez sur un point pour revoir · rouge<6 orange<9 vert supérieur",
+    "replayed": "Plateau restauré à cet instant",
+    "backToFinal": "Retour à la fin",
+    "resetWindow": "Réinitialiser",
+    "lowScoreList": "Coups à faible score · cliquez ici",
+    "lowScoreHint": "Triés par score <9 — cliquez sur un bouton pour restaurer le plateau juste après ce coup"
+  },
+  "seo": {
+    "whatIsTitle": "Qu'est-ce que Meathill Minesweeper ?",
+    "whatIsDesc": "Un <strong>Démineur moderne pour apprendre en jouant</strong>. Plateaux classiques 9×9 / 16×16 / 16×30 avec drapeaux, enrichis d'un <strong>Mode Apprentissage</strong> qui calcule en temps réel la probabilité de mine de chaque case fermée, superpose une carte thermique vert-jaune-rouge à 75 % et note chaque coup de 0 à 10 par rapport au choix optimal. Sans clic droit obligatoire — double-clic pour ouvrir en chaîne, idéal sur trackpad et mobile.",
+    "howToPlayTitle": "Comment jouer au Démineur",
+    "howToPlay": [
+      "<strong>Clic gauche</strong> pour révéler une case. Le premier clic ne tombe jamais sur une mine ; chaque chiffre indique le nombre de mines dans les 8 cases voisines.",
+      "<strong>Clic droit à trois états</strong> : alterne <strong>rien → 🚩 → ❓ → rien</strong>. 🚩 marque une mine certaine, ❓ note un doute (ne consomme pas de drapeau et reste ouvrable) ; l'en-tête affiche les mines restantes. Sur mobile, l'appui long remplace le clic droit.",
+      "<strong>Double-clic en chaîne (optimisé Apple / trackpad)</strong> : le chording classique demande gauche+droit simultanés. Ici, dès que les drapeaux autour d'un chiffre égalent ce chiffre, un <strong>double-clic sur le chiffre</strong> ouvre le reste — sans clic droit. L'accord gauche+droit fonctionne toujours sur PC et vaut la note parfaite de 10.",
+      "Ouvrez toutes les cases sans mine pour gagner ; toucher une mine révèle le plateau.",
+      "<strong>Raccourcis clavier</strong> : <kbd class=\"kbd kbd-xs\">F2</kbd>/<kbd class=\"kbd kbd-xs\">N</kbd> nouvelle partie, <kbd class=\"kbd kbd-xs\">H</kbd> indice, <kbd class=\"kbd kbd-xs\">L</kbd> Mode Apprentissage (F2 comme sur le Démineur Windows classique ; désactivés pendant la saisie)."
+    ],
+    "learningTitle": "Qu'est-ce que le Mode Apprentissage ?",
+    "heatmapTitle": "Carte thermique des probabilités : visualiser le risque",
+    "heatmapDesc": "Lorsque le Mode Apprentissage est activé, le solveur construit les contraintes uniquement à partir des chiffres ouverts (<code>exactement ce nombre de mines parmi les voisines fermées</code> ; vos drapeaux sont ignorés car ils peuvent être faux), découpe la frontière en composantes et les énumère exactement, tandis que les cases isolées se partagent les mines restantes. Chaque case reçoit <code>P(mine) 0-1</code> en <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#22c55e\"></span> vert (0 %) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#eab308\"></span> jaune (50 %) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#ef4444\"></span> rouge (100 %) à 75 % d'opacité. Affichez <code>%</code> et <code>fraction</code> séparément — la couleur seule forge l'intuition.",
+    "efficiencyTitle": "Efficacité de décision : ce coup était-il optimal ?",
+    "efficiencyDesc": "Notation par écart fixe : mesure uniquement l'écart avec la <strong>meilleure option à cet instant</strong> — <code>score = 10 × (1 − |prob. choisie − prob. optimale| ÷ 0,5)</code>. Ouvrir est comparé à la plus faible probabilité <code>pMin</code>, poser un drapeau à <code>pMax</code>. Un écart de 5 points ne coûte qu'un point : <strong>les grilles faciles ne vous pénalisent jamais</strong> ; 50 points d'écart ramènent la note à 0. Le double-clic en chaîne vaut toujours <strong>10</strong>.",
+    "chartTitle": "Comment lire le graphique de replay",
+    "chartDesc": "Il s'affiche en fin de partie avec un <strong>curseur temporel</strong> (zoomez sur n'importe quel passage) et un <strong>export JSON</strong>. Axe X = <strong>temps</strong>, axe Y gauche = vitesse (aires), axe Y droit = qualité (courbes) —",
+    "chartBullets": [
+      "<strong class=\"text-[#4bc0c0]\">Ouverture sûre (aire turquoise · gauche)</strong> : RPM par tranches de 6 s — plus l'aire est haute, plus les ouvertures s'enchaînent vite.",
+      "<strong class=\"text-[#FF6B6B]\">Drapeau (aire rouge · gauche)</strong> : RPM par tranches de 6 s — vos phases de marquage.",
+      "<strong class=\"text-[#f59e0b]\">Efficacité (points orange + courbe · droite 0-10)</strong> : <strong>placée à la milliseconde près du clic</strong>. 10 = choix optimal ; <6 rouge, <9 orange. <strong>Cliquez sur un point pour restaurer tout le plateau juste après ce coup</strong>.",
+      "<strong class=\"text-[#a855f7]\">Prob. de mine (triangles violets, pointillés · droite 0-10 = prob×10)</strong> : probabilité P(mine) lors d'une ouverture. Violet haut + orange bas = pari risqué."
+    ],
+    "chartHint": "<strong>Astuce :</strong> repérez les creux orange accompagnés d'un pic violet — c'est le coup clé à analyser. Cliquez dessus pour revoir le plateau, zoomez avec le <strong>curseur temporel</strong> ou téléchargez le JSON complet.",
+    "progressTitle": "De débutant à expert",
+    "progressSteps": [
+      "Débutez avec la carte thermique pour ancrer le réflexe vert = ouvrir, rouge = drapeau ;",
+      "Masquez % et fraction pour décider uniquement à la couleur en visant 10 ;",
+      "Coupez le Mode Apprentissage et attaquez le mode Difficile 16×30 avec un score orange ≥ 9."
+    ],
+    "guides": [
+      {
+        "label": "Comment jouer au Démineur : règles, astuces et guide",
+        "href": "/fr/guide/how-to-play/"
+      },
+      {
+        "label": "Démineur Google : comment l'ouvrir, drapeaux et jouer sans souris",
+        "href": "/fr/guide/google-minesweeper/"
+      },
+      {
+        "label": "Calculateur de probabilité Démineur (cotes exactes)",
+        "href": "/fr/tools/probability-calculator/"
+      },
+      {
+        "label": "Démineur en ligne gratuit — jouer sans téléchargement",
+        "href": "/fr/unblocked/"
+      }
+    ],
+    "guidesTitle": "Guides et outils",
+    "keywords": "Mots-clés : Meathill Minesweeper · Démineur · apprendre en jouant · probabilité de mine · astuces démineur · sans clic droit · trackpad · Mode Apprentissage · efficacité de décision"
+  },
+  "faq": {
+    "title": "Questions fréquentes",
+    "items": [
+      {
+        "q": "Qu'est-ce que Meathill Minesweeper ?",
+        "a": "Meathill Minesweeper (minesweeper.meathill.com) est un Démineur pensé pour progresser en jouant : grilles 9×9/16×16/16×30, marquage à trois états, double-clic d'ouverture en chaîne et Mode Apprentissage avec carte thermique des probabilités en direct, score d'efficacité et replay complet."
+      },
+      {
+        "q": "Comment la probabilité est-elle calculée ?",
+        "a": "Les contraintes proviennent uniquement des chiffres ouverts (vos drapeaux sont ignorés car potentiellement erronés). Les cases frontalières sont découpées en composantes et énumérées exactement ; les cases isolées se partagent les mines restantes, donnant P(mine) de 0 à 1 en superposition vert→jaune→rouge à 75 %."
+      },
+      {
+        "q": "Que signifie l'efficacité de 0 à 10 ?",
+        "a": "Une notation à écart fixe par rapport au meilleur coup disponible à cet instant : score = 10 × (1 − écart ÷ 0,5). 5 points d'écart coûtent 1 point ; 50 points coûtent 10. Le double-clic en chaîne vaut toujours 10."
+      },
+      {
+        "q": "Comment ouvrir en chaîne sur Mac / trackpad ?",
+        "a": "Pas besoin de clic gauche+droit : faites un double-clic sur un chiffre ouvert dont le nombre de drapeaux correspond pour révéler toutes les cases voisines restantes."
+      },
+      {
+        "q": "Comment lire le graphique de replay ?",
+        "a": "Axe gauche = vitesse (aires RPM sur 6 s), axe droit = qualité (courbes 0-10). Les points orange indiquent l'efficacité, les triangles violets la probabilité ×10. <strong>Cliquez sur un point pour revoir le plateau à cet instant précis</strong>."
+      },
+      {
+        "q": "À qui s'adresse ce jeu ?",
+        "a": "Aux débutants qui veulent comprendre la logique, aux joueurs intermédiaires qui affinent leur intuition et aux experts visant la régularité en 16×30.<br/>Site : <a class=\"link\" href=\"https://minesweeper.meathill.com/fr/\">https://minesweeper.meathill.com/fr/</a> · Studio : <a class=\"link\" href=\"https://meathill.com\">Meathill Studio</a>"
+      }
+    ]
+  },
+  "footer": {
+    "rights": "Apprendre en jouant."
+  },
+  "meta": {
+    "title": "Meathill Minesweeper - Démineur pour Apprendre en Jouant | Carte Thermique & Efficacité",
+    "description": "Démineur moderne pour apprendre en jouant : sans clic droit, ouverture en chaîne au double-clic (optimisé Apple/trackpad), carte thermique de probabilité en direct et score d'efficacité 0-10. Facile/Moyen/Difficile + replay.",
+    "ogTitle": "Meathill Minesweeper - Démineur pour Apprendre en Jouant",
+    "ogDescription": "Le Mode Apprentissage affiche une carte thermique 75 % vert-jaune-rouge par case et mesure RPM et efficacité — sans clic droit, double-clic sur trackpad.",
+    "twitterDescription": "Visualisez la probabilité de chaque case et notez chaque décision — le Démineur qui fait vraiment progresser."
+  }
+}

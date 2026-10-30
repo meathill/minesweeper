@@ -119,6 +119,42 @@ const labels: Record<string, Record<string, string>> = {
       '* Große Bereiche sind genähert (sichere Minen/Felder bleiben exakt).',
     labelTemplate: 'Feld {x},{y}',
   },
+  pt: {
+    difficulty: 'Dificuldade',
+    easy: 'Fácil 9×9 · 10',
+    medium: 'Médio 16×16 · 40',
+    hard: 'Difícil 16×30 · 99',
+    rows: 'Linhas',
+    cols: 'Colunas',
+    mines: 'Minas totais',
+    reset: 'Redefinir',
+    flagged: 'Bandeiras',
+    remaining: 'Minas restantes',
+    warn: 'Mais bandeiras que o total de minas — ajuste a contagem.',
+    legend:
+      'Clique em uma casa para alternar: oculta → 🚩 → número 1–8; clique direito volta. A porcentagem mostra a probabilidade de mina (verde baixa → vermelho alta).',
+    approx:
+      '* Regiões muito grandes usam aproximação (minas e casas seguras forçadas continuam exatas).',
+    labelTemplate: 'Casa {x},{y}',
+  },
+  fr: {
+    difficulty: 'Difficulté',
+    easy: 'Facile 9×9 · 10',
+    medium: 'Moyen 16×16 · 40',
+    hard: 'Difficile 16×30 · 99',
+    rows: 'Lignes',
+    cols: 'Colonnes',
+    mines: 'Mines totales',
+    reset: 'Réinitialiser',
+    flagged: 'Drapeaux',
+    remaining: 'Mines restantes',
+    warn: 'Plus de drapeaux que de mines au total — ajustez le nombre.',
+    legend:
+      'Cliquez sur une case pour faire défiler : cachée → 🚩 → chiffre 1–8 ; clic droit en sens inverse. Le pourcentage indique la probabilité de mine (vert faible → rouge élevé).',
+    approx:
+      '* Les grandes zones sont approximées (les mines et cases sûres forcées restent exactes).',
+    labelTemplate: 'Case {x},{y}',
+  },
 };
 const t = labels[lang] ?? labels.en;
 ---

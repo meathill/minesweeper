@@ -11,7 +11,7 @@ describe('localeFromPath', () => {
   });
 
   test('语言前缀只匹配完整段', () => {
-    for (const code of ['en', 'es', 'ru', 'vi', 'de']) {
+    for (const code of ['en', 'es', 'ru', 'vi', 'de', 'pt', 'fr']) {
       assert.equal(localeFromPath(`/${code}`), code);
       assert.equal(localeFromPath(`/${code}/`), code);
       assert.equal(localeFromPath(`/${code}/guide/how-to-play/`), code);

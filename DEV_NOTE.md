@@ -24,14 +24,19 @@
 
 ## 多语言
 
-- 游戏 UI 6 语言（`src/locales` + `src/i18n.js`，zh/en/es/ru/vi/de）；内容页 6 语言（`site/src/pages`）。各语言首页为 `public/<lang>/index.html` 真实静态文件（中文在根），`site/src/i18n.ts` 的 `gameHomePath()` 按语言返回对应首页。
-- 语言唯一来源：`SUPPORTED_LOCALES` 与 `LOCALES`（含 URL path）定义在 `src/i18n/` 相关模块，`App.vue` 只消费不重复定义。内容子站侧组件 Props 只认 `SiteLang` 联合类型（`site/src/i18n.ts`），新增语言时同步改它；`SiteNav`/`SeoHead` 保持 `string` + fallback，刻意宽容。`document.lang` 映射（zh→zh-CN）与 hreflang 互指逻辑集中在一处。
+- 游戏 UI 与内容子站全栈对齐 **8 语言**（`zh/en/es/ru/vi/de/pt/fr`）：游戏侧为 `src/locales/*.json` + `src/i18n.js` + `public/<lang>/index.html`（中文在根 `index.html`）；内容侧为 `site/src/pages`（每语种 4 页：`guide/how-to-play`、`guide/google-minesweeper`、`tools/probability-calculator`、`unblocked`，整站 `sitemap.xml` 共 40 个 URL）。`site/src/i18n.ts` 的 `gameHomePath()` 按语言返回对应游戏首页。
+- 语言唯一来源：`SUPPORTED_LOCALES` 与 `LOCALES`（含 URL path）定义在 `src/i18n.js` / `src/seo-meta.js`，`App.vue` 只消费不重复定义。内容子站侧组件 Props 只认 `SiteLang` 联合类型（`site/src/i18n.ts`），新增语言时同步改它；`SiteNav`/`SeoHead` 保持 `string` + fallback，刻意宽容。`document.lang` 映射（`zh→zh-CN`、`pt→pt-BR`）与 hreflang 互指逻辑集中维护。
 - 游戏壳的 locale 只由 pathname 决定，不用 `localStorage` 或 `navigator.language`。否则英文爬虫打开 `/` 会把 canonical 改写成 `/en/`。语言切换仍 `pushState` 到对应首页。
-- SEO：内容页 `SeoHead`/`GuideLayout` 自动生成 Organization + BreadcrumbList + FAQPage + HowTo；首页 JSON-LD 用 WebSite + WebPage，不伪造评分（2026-09 降级决策）。
+- SEO 与合规：内容页 `SeoHead`/`GuideLayout` 自动生成 Organization + BreadcrumbList + FAQPage + HowTo；首页 JSON-LD 用 WebSite + WebPage，不伪造评分（2026-09 降级决策）。因游戏 SPA 接入了 Google AdSense，全站多语言文案严禁宣称“无广告 / Ad-Free / sin anuncios”（由 `src/seo-content-site.test.ts` 守卫）。
+
+## 教程页即时转化（`MiniBoard` + `StickyPlayCta`）
+
+- `/guide/*` 教程页首屏挂载轻量原生 TS 的 9×9（10 雷）初级微缩棋盘（`site/src/components/MiniBoard.astro` + `mini-board-core.ts`，独立于 Vue 主包，gzip ~2.5 kB）：容器设 `contain: layout style paint` 并固定 9×9 网格占位高度保证 `CLS = 0`；81 个按钮延后到双 `requestAnimationFrame` 挂载，确保 H1 与首段继续作为 LCP。
+- `StickyPlayCta.astro` 采用被动滚动监听 + `requestAnimationFrame` 节流，页面滚动超 30% 时滑出转化条，并通过 `IntersectionObserver` 在文末 `.cta-box` 进入视口时自动收起（收起态同步切换 `inert` 避免焦点落入屏外）。
 
 ## 首页 SSR / LCP（issue-12）
 
-- 游戏首页不是真正的服务端渲染：各语言静态 HTML（根 `index.html` + `public/<lang>/index.html`）在 `#app` 内预置 `#ssr-hero`（H1 + `.ssr-intro`），供爬虫/PSI 在无 JS 时也能看到标题与介绍；Vue mount 后整段被替换。
+- 游戏首页不是真正的服务端渲染：各语言静态 HTML（根 `index.html` + `public/<lang>/index.html`）在 `#app` 内预置 `#ssr-hero`（H1 + `.ssr-intro` + `.ssr-guides` 教程内链），供爬虫/PSI 在无 JS 时也能看到标题、介绍与核心内容页内链；Vue mount 后整段被替换。
 - 棋盘 `game.doStart` 延后到双 `requestAnimationFrame`，让 header H1 先成为 LCP，避免首屏被大量格子 DOM 抢走。
 - `public/<lang>/index.html` 经 Vite 原样拷贝，脚本仍写 `/src/main.js`；`merge-dist.mjs` 的 `patchLocaleGameHtmlAssets` 在构建后把根页的 `/assets/*` CSS/JS 同步进去（否则线上 /en/ 等语言首页 JS 404、NO_LCP）。
 - 首页 JSON-LD 已去掉 HowTo；Organization 补 `logo`。内容页 Guide 的 HowTo 保留。

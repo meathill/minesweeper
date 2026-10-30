@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meathill Minesweeper - Campo Minado para Aprender Jogando | Mapa de Calor e Eficiência</title>
+    <meta name="description" content="Campo Minado moderno para aprender jogando: sem botão direito, abertura em cadeia com duplo clique (otimizado para Apple/trackpad), mapa de calor de probabilidade ao vivo e nota de eficiência 0-10. Fácil/Médio/Difícil + replay." />
+    <meta name="keywords" content="Meathill Minesweeper, campo minado online, aprender campo minado, probabilidade de mina, dicas campo minado, sem botão direito, trackpad, Modo Aprendizado, eficiência de decisão" />
+    <meta name="theme-color" content="#f2f2f2" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/icon-192.png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="canonical" href="https://minesweeper.meathill.com/pt/" />
+    <link rel="alternate" hreflang="zh" href="https://minesweeper.meathill.com/" />
+    <link rel="alternate" hreflang="en" href="https://minesweeper.meathill.com/en/" />
+    <link rel="alternate" hreflang="es" href="https://minesweeper.meathill.com/es/" />
+    <link rel="alternate" hreflang="ru" href="https://minesweeper.meathill.com/ru/" />
+    <link rel="alternate" hreflang="vi" href="https://minesweeper.meathill.com/vi/" />
+    <link rel="alternate" hreflang="de" href="https://minesweeper.meathill.com/de/" />
+    <link rel="alternate" hreflang="pt" href="https://minesweeper.meathill.com/pt/" />
+    <link rel="alternate" hreflang="fr" href="https://minesweeper.meathill.com/fr/" />
+    <link rel="alternate" hreflang="x-default" href="https://minesweeper.meathill.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Meathill Minesweeper - Campo Minado para Aprender Jogando" />
+    <meta property="og:description" content="O Modo Aprendizado mostra um mapa de calor 75% verde-amarelo-vermelho por casa e registra RPM e eficiência — sem botão direito, duplo clique no trackpad." />
+    <meta property="og:url" content="https://minesweeper.meathill.com/pt/" />
+    <meta property="og:image" content="https://minesweeper.meathill.com/og-image-pt.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Meathill Minesweeper - Campo Minado para Aprender Jogando" />
+    <meta property="og:site_name" content="Meathill Minesweeper" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:locale:alternate" content="zh_CN" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Meathill Minesweeper - Campo Minado para Aprender Jogando" />
+    <meta name="twitter:description" content="Veja a probabilidade de cada casa e avalie cada decisão — um Campo Minado para evoluir de verdade." />
+    <meta name="twitter:image" content="https://minesweeper.meathill.com/og-image-pt.png" />
+    <meta name="twitter:image:alt" content="Meathill Minesweeper - Campo Minado para Aprender Jogando" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://meathill.com/#organization",
+            "name": "Meathill Studio",
+            "legalName": "Meathill LLC",
+            "url": "https://meathill.com",
+            "logo": "https://minesweeper.meathill.com/icon-512.png"
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://minesweeper.meathill.com/pt/#website",
+            "name": "Meathill Minesweeper",
+            "alternateName": "Oficina de Campo Minado Meathill",
+            "url": "https://minesweeper.meathill.com/pt/",
+            "inLanguage": "pt-BR",
+            "publisher": { "@id": "https://meathill.com/#organization" }
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://minesweeper.meathill.com/pt/#webpage",
+            "name": "Meathill Minesweeper",
+            "url": "https://minesweeper.meathill.com/pt/",
+            "description": "Campo Minado moderno para aprender jogando: sem botão direito, abertura em cadeia com duplo clique (otimizado para Apple/trackpad), mapa de calor de probabilidade ao vivo e nota de eficiência 0-10. Fácil/Médio/Difícil + replay.",
+            "inLanguage": "pt-BR",
+            "isPartOf": { "@id": "https://minesweeper.meathill.com/pt/#website" },
+            "publisher": { "@id": "https://meathill.com/#organization" }
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "O que é o Meathill Minesweeper?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Meathill Minesweeper (minesweeper.meathill.com) é um Campo Minado para aprender jogando com tabuleiros de 9×9/16×16/16×30, sem precisar de botão direito, abertura em cadeia com duplo clique e Modo Aprendizado: mapa de calor de probabilidade ao vivo + nota de eficiência e replay completo."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Como a probabilidade é calculada?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "As restrições vêm apenas dos números abertos (bandeiras são ignoradas pois podem estar erradas). As casas de fronteira são divididas em componentes e enumeradas com exatidão, gerando P(mina) 0-1 como camada verde→amarela→vermelha a 75%."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "O que significa eficiência 0-10?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Pontuação por diferença fixa em relação à melhor opção do momento: abrir é comparado com a menor probabilidade pMin, bandeira com pMax; 5 pontos de diferença custam 1 ponto e 50 pontos zeram a nota. Duplo clique em cadeia vale sempre 10."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Como abrir em cadeia no Mac / trackpad?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Otimizado: dê duplo clique em qualquer número aberto cujas bandeiras igualem o número para abrir o restante. Clique direito, toque longo e trackpad funcionam, além do celular."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+    <!-- ga:start -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '__GA_ID__');
+    </script>
+    <!-- ga:end -->
+    <script>
+      try {
+        const mo = new MutationObserver(() => {
+          if (document.body.getAttribute('aria-hidden') === 'true') {
+            document.body.removeAttribute('aria-hidden');
+            document.body.setAttribute('aria-hidden', 'false');
+          }
+        });
+        mo.observe(document.body, { attributes: true, attributeFilter: ['aria-hidden'] });
+      } catch(e) {}
+    </script>
+    <style id="ssr-hero-css">
+      #ssr-hero{box-sizing:border-box;margin:0 auto;max-width:48rem;padding:1.25rem 1rem 0.75rem;font-family:system-ui,-apple-system,sans-serif;color:#0f172a}
+      #ssr-hero h1{font-size:clamp(1.35rem,3.5vw,1.75rem);line-height:1.25;margin:0 0 0.5rem;font-weight:700}
+      #ssr-hero .ssr-intro{font-size:1rem;line-height:1.65;margin:0;color:#334155}
+      #ssr-hero .ssr-guides{display:flex;flex-wrap:wrap;gap:0.5rem 1rem;margin-top:0.75rem;font-size:0.9rem}
+      #ssr-hero .ssr-guides a{color:#1d4ed8;text-decoration:underline}
+    </style>
+  </head>
+  <body>
+    <noscript>
+      <nav aria-label="Rede de produtos Meathill Studio">
+        <a href="https://meathill.com">Meathill Studio</a>
+        · <a href="https://meathill.com/app">Todos os produtos</a>
+      </nav>
+    </noscript>
+    <div id="app">
+      <main id="ssr-hero">
+        <h1>Meathill Minesweeper</h1>
+        <p class="ssr-intro">Campo Minado moderno para aprender jogando: sem botão direito, abertura em cadeia com duplo clique (otimizado para Apple/trackpad), mapa de calor de probabilidade ao vivo e nota de eficiência 0-10. Fácil/Médio/Difícil + replay.</p>
+        <nav class="ssr-guides" aria-label="Guias e ferramentas de Campo Minado">
+          <a href="/pt/guide/how-to-play/">Como jogar Campo Minado: regras e dicas</a>
+          <a href="/pt/guide/google-minesweeper/">Campo Minado do Google: como abrir, bandeiras e jogar sem mouse</a>
+          <a href="/pt/tools/probability-calculator/">Calculadora de Probabilidade do Campo Minado</a>
+          <a href="/pt/unblocked/">Campo Minado Online</a>
+        </nav>
+      </main>
+    </div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+    <script type="module" src="/src/main.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9946806099979342" crossorigin="anonymous"></script>
+  </body>
+</html>

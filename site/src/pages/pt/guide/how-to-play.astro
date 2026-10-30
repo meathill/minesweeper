@@ -1,0 +1,85 @@
+---
+import GuideLayout from '../../../layouts/GuideLayout.astro';
+import type { FaqItem, HowToData } from '../../../types';
+
+const faq: FaqItem[] = [
+  {
+    question: 'O primeiro clique pode acertar uma mina?',
+    answer:
+      'Nas versões modernas, não. No Meathill Minesweeper o primeiro clique sempre abre uma casa vazia (zero) e garante uma área 3×3 livre de minas para começar com espaço.',
+  },
+  {
+    question: 'O que significam os números no Campo Minado?',
+    answer:
+      'Cada número mostra quantas minas existem nas 8 casas imediatamente ao redor dele (horizontal, vertical e diagonal).',
+  },
+  {
+    question: 'Como jogar Campo Minado sem mouse?',
+    answer:
+      'No celular, segure o dedo para colocar bandeira; no trackpad, use toque com dois dedos. No Meathill Minesweeper basta dar duplo clique em um número já satisfeito por bandeiras para abrir o restante sem botão direito.',
+  },
+  {
+    question: 'Campo Minado é pura sorte?',
+    answer:
+      'Não — quase toda partida é resolvida cruzando pistas de números vizinhos. Quando sobra dúvida, o Modo Aprendizado calcula a probabilidade matemática exata de cada casa.',
+  },
+  {
+    question: 'O que é abertura em cadeia (chording)?',
+    answer:
+      'Quando o número de bandeiras ao redor de uma casa aberta é igual ao número dela, dar duplo clique nessa casa abre todas as outras vizinhas fechadas de uma só vez.',
+  },
+];
+
+const howTo: HowToData = {
+  name: 'Como jogar Campo Minado',
+  steps: [
+    'Inicie uma partida e clique em qualquer casa — o primeiro clique é sempre seguro.',
+    'Leia os números abertos: cada um indica quantas minas há nas 8 casas vizinhas.',
+    'Marque as minas certas com bandeira (clique direito ou toque longo) e dê duplo clique nos números completos para abrir em cadeia.',
+    'Revele todas as casas sem mina para vencer. Se travar, ligue o Modo Aprendizado para ver o mapa de calor.',
+  ],
+};
+---
+
+<GuideLayout
+  lang="pt"
+  title="Como Jogar Campo Minado: Regras, Padrões e Dicas para Iniciantes - Meathill Minesweeper"
+  heading="Como jogar Campo Minado"
+  description="Aprenda como jogar Campo Minado passo a passo: significado dos números, bandeiras, abertura em cadeia, padrões 1-1 e 1-2-1 e cálculo de probabilidades."
+  path="/guide/how-to-play/"
+  keywords="como jogar campo minado, regras campo minado, dicas campo minado, padrões campo minado, campo minado iniciantes"
+  updated="2026-10-30"
+  lede="O objetivo do Campo Minado é abrir todas as casas seguras sem clicar em nenhuma mina: cada número revela quantas minas cercam aquela posição. Domine as regras, os gestos rápidos e os padrões clássicos para vencer com consistência."
+  faq={faq}
+  howTo={howTo}
+>
+  <h2>Qual é o objetivo do Campo Minado?</h2>
+  <p>
+    O tabuleiro esconde um número fixo de minas e todas as demais casas são seguras. Sua missão é <strong>revelar todas as casas livres</strong>: clicar em uma mina encerra a partida na hora, abrir todas as outras garante a vitória. Cada número é uma pista lógica, não um jogo de adivinhação.
+  </p>
+
+  <h2>Regras fundamentais</h2>
+  <ul>
+    <li><strong>Números (1 a 8)</strong>: contam quantas minas estão escondidas nas 8 casas vizinhas.</li>
+    <li><strong>Bandeiras 🚩</strong>: marcam casas onde você tem certeza absoluta de que há mina, evitando cliques acidentais.</li>
+    <li><strong>Primeiro clique seguro</strong>: no <a href="/pt/">Meathill Minesweeper</a>, toda partida começa abrindo uma região 3×3 sem minas.</li>
+    <li><strong>Vitória</strong>: todas as casas sem mina abertas (mesmo que falte marcar alguma bandeira).</li>
+  </ul>
+
+  <h2>Os três comandos essenciais: abrir, marcar e encadear</h2>
+  <ol>
+    <li><strong>Abrir</strong>: clique esquerdo (ou toque simples) em uma casa fechada.</li>
+    <li><strong>Marcar bandeira</strong>: clique direito no PC ou toque longo no celular. Jogando a versão da busca? Veja também nosso guia do <a href="/pt/guide/google-minesweeper/">Campo Minado do Google e controles sem mouse</a>.</li>
+    <li><strong>Abrir em cadeia (Chording)</strong>: quando um número já tem todas as suas minas marcadas com bandeira, dê <strong>duplo clique no número</strong> para abrir todas as vizinhas restantes instantaneamente.</li>
+  </ol>
+
+  <h2>Padrões clássicos que dobram sua taxa de vitória</h2>
+  <ul>
+    <li><strong>Padrão 1-1 na borda</strong>: dois números 1 vizinhos compartilhando as mesmas casas fechadas liberam a terceira casa ao lado como 100% segura.</li>
+    <li><strong>Padrão 1-2-1</strong>: em uma linha fechada diante de <code>1-2-1</code>, as minas estão sempre nas duas pontas (em frente aos 1s), e o meio (em frente ao 2) é seguro.</li>
+  </ul>
+  <p>
+    Quando os padrões acabam, entra a matemática: teste posições reais na <a href="/pt/tools/probability-calculator/">Calculadora de Probabilidade do Campo Minado</a> ou jogue com o <a href="/pt/">Modo Aprendizado ao vivo</a>.
+  </p>
+</GuideLayout>
+

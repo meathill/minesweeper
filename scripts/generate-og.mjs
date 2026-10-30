@@ -42,6 +42,22 @@ const COPY = {
     sub2: 'Ohne Rechtsklick · Doppelklick · Trackpad & Handy',
     pills: ['75% Heatmap', '0–10 Effizienz', '6s Replay', '🎯 Trackpad'],
   },
+  pt: {
+    badge: 'Aprenda jogando',
+    titleW: 'Meathill',
+    titleY: 'Minesweeper',
+    sub1: 'Campo Minado moderno · Mapa de calor · Eficiência',
+    sub2: 'Sem botão direito · Duplo clique · Trackpad e celular',
+    pills: ['75% Calor', '0–10 Eficiência', '6s Replay', '🎯 Trackpad'],
+  },
+  fr: {
+    badge: 'Apprendre en jouant',
+    titleW: 'Meathill',
+    titleY: 'Minesweeper',
+    sub1: 'Démineur moderne · Carte thermique · Efficacité',
+    sub2: 'Sans clic droit · Double-clic · Trackpad et mobile',
+    pills: ['75% Carte', '0–10 Score', '6s Replay', '🎯 Trackpad'],
+  },
 };
 
 const langs =

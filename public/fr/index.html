@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meathill Minesweeper - Démineur pour Apprendre en Jouant | Carte Thermique & Efficacité</title>
+    <meta name="description" content="Démineur moderne pour apprendre en jouant : sans clic droit, ouverture en chaîne au double-clic (optimisé Apple/trackpad), carte thermique de probabilité en direct et score d'efficacité 0-10. Facile/Moyen/Difficile + replay." />
+    <meta name="keywords" content="Meathill Minesweeper, démineur en ligne, apprendre démineur, probabilité de mine, astuces démineur, sans clic droit, trackpad, Mode Apprentissage, efficacité de décision" />
+    <meta name="theme-color" content="#f2f2f2" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/icon-192.png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="canonical" href="https://minesweeper.meathill.com/fr/" />
+    <link rel="alternate" hreflang="zh" href="https://minesweeper.meathill.com/" />
+    <link rel="alternate" hreflang="en" href="https://minesweeper.meathill.com/en/" />
+    <link rel="alternate" hreflang="es" href="https://minesweeper.meathill.com/es/" />
+    <link rel="alternate" hreflang="ru" href="https://minesweeper.meathill.com/ru/" />
+    <link rel="alternate" hreflang="vi" href="https://minesweeper.meathill.com/vi/" />
+    <link rel="alternate" hreflang="de" href="https://minesweeper.meathill.com/de/" />
+    <link rel="alternate" hreflang="pt" href="https://minesweeper.meathill.com/pt/" />
+    <link rel="alternate" hreflang="fr" href="https://minesweeper.meathill.com/fr/" />
+    <link rel="alternate" hreflang="x-default" href="https://minesweeper.meathill.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Meathill Minesweeper - Démineur pour Apprendre en Jouant" />
+    <meta property="og:description" content="Le Mode Apprentissage affiche une carte thermique 75 % vert-jaune-rouge par case et mesure RPM et efficacité — sans clic droit, double-clic sur trackpad." />
+    <meta property="og:url" content="https://minesweeper.meathill.com/fr/" />
+    <meta property="og:image" content="https://minesweeper.meathill.com/og-image-fr.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Meathill Minesweeper - Démineur pour Apprendre en Jouant" />
+    <meta property="og:site_name" content="Meathill Minesweeper" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:locale:alternate" content="zh_CN" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Meathill Minesweeper - Démineur pour Apprendre en Jouant" />
+    <meta name="twitter:description" content="Visualisez la probabilité de chaque case et notez chaque décision — le Démineur qui fait vraiment progresser." />
+    <meta name="twitter:image" content="https://minesweeper.meathill.com/og-image-fr.png" />
+    <meta name="twitter:image:alt" content="Meathill Minesweeper - Démineur pour Apprendre en Jouant" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://meathill.com/#organization",
+            "name": "Meathill Studio",
+            "legalName": "Meathill LLC",
+            "url": "https://meathill.com",
+            "logo": "https://minesweeper.meathill.com/icon-512.png"
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://minesweeper.meathill.com/fr/#website",
+            "name": "Meathill Minesweeper",
+            "alternateName": "Atelier Démineur Meathill",
+            "url": "https://minesweeper.meathill.com/fr/",
+            "inLanguage": "fr",
+            "publisher": { "@id": "https://meathill.com/#organization" }
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://minesweeper.meathill.com/fr/#webpage",
+            "name": "Meathill Minesweeper",
+            "url": "https://minesweeper.meathill.com/fr/",
+            "description": "Démineur moderne pour apprendre en jouant : sans clic droit, ouverture en chaîne au double-clic (optimisé Apple/trackpad), carte thermique de probabilité en direct et score d'efficacité 0-10. Facile/Moyen/Difficile + replay.",
+            "inLanguage": "fr",
+            "isPartOf": { "@id": "https://minesweeper.meathill.com/fr/#website" },
+            "publisher": { "@id": "https://meathill.com/#organization" }
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Qu'est-ce que Meathill Minesweeper ?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Meathill Minesweeper (minesweeper.meathill.com) est un Démineur pensé pour progresser en jouant : grilles 9×9/16×16/16×30, sans clic droit obligatoire, double-clic en chaîne et Mode Apprentissage avec carte thermique des probabilités en direct, score d'efficacité et replay complet."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Comment la probabilité est-elle calculée ?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Les contraintes proviennent uniquement des chiffres ouverts (les drapeaux sont ignorés car potentiellement erronés). Les cases frontalières sont énumérées avec exactitude, donnant P(mine) de 0 à 1 en superposition vert→jaune→rouge à 75 %."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Que signifie l'efficacité 0-10 ?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Notation par écart fixe par rapport au meilleur coup disponible : ouvrir est comparé à la plus faible probabilité pMin, poser un drapeau à pMax ; 5 points d'écart coûtent 1 point et 50 points ramènent la note à 0. Le double-clic en chaîne vaut toujours 10."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Comment ouvrir en chaîne sur Mac / trackpad ?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Optimisé : double-clic sur n'importe quel chiffre ouvert dont les drapeaux correspondent pour révéler le reste. Clic droit, appui long et trackpad fonctionnent, ainsi que sur mobile."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+    <!-- ga:start -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=__GA_ID__"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '__GA_ID__');
+    </script>
+    <!-- ga:end -->
+    <script>
+      try {
+        const mo = new MutationObserver(() => {
+          if (document.body.getAttribute('aria-hidden') === 'true') {
+            document.body.removeAttribute('aria-hidden');
+            document.body.setAttribute('aria-hidden', 'false');
+          }
+        });
+        mo.observe(document.body, { attributes: true, attributeFilter: ['aria-hidden'] });
+      } catch(e) {}
+    </script>
+    <style id="ssr-hero-css">
+      #ssr-hero{box-sizing:border-box;margin:0 auto;max-width:48rem;padding:1.25rem 1rem 0.75rem;font-family:system-ui,-apple-system,sans-serif;color:#0f172a}
+      #ssr-hero h1{font-size:clamp(1.35rem,3.5vw,1.75rem);line-height:1.25;margin:0 0 0.5rem;font-weight:700}
+      #ssr-hero .ssr-intro{font-size:1rem;line-height:1.65;margin:0;color:#334155}
+      #ssr-hero .ssr-guides{display:flex;flex-wrap:wrap;gap:0.5rem 1rem;margin-top:0.75rem;font-size:0.9rem}
+      #ssr-hero .ssr-guides a{color:#1d4ed8;text-decoration:underline}
+    </style>
+  </head>
+  <body>
+    <noscript>
+      <nav aria-label="Réseau de produits Meathill Studio">
+        <a href="https://meathill.com">Meathill Studio</a>
+        · <a href="https://meathill.com/app">Tous les produits</a>
+      </nav>
+    </noscript>
+    <div id="app">
+      <main id="ssr-hero">
+        <h1>Meathill Minesweeper</h1>
+        <p class="ssr-intro">Démineur moderne pour apprendre en jouant : sans clic droit, ouverture en chaîne au double-clic (optimisé Apple/trackpad), carte thermique de probabilité en direct et score d'efficacité 0-10. Facile/Moyen/Difficile + replay.</p>
+        <nav class="ssr-guides" aria-label="Guides et outils Démineur">
+          <a href="/fr/guide/how-to-play/">Comment jouer au Démineur : règles et astuces</a>
+          <a href="/fr/guide/google-minesweeper/">Démineur Google : comment l'ouvrir, drapeaux et jouer sans souris</a>
+          <a href="/fr/tools/probability-calculator/">Calculateur de probabilité Démineur</a>
+          <a href="/fr/unblocked/">Démineur en ligne gratuit</a>
+        </nav>
+      </main>
+    </div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+    <script type="module" src="/src/main.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9946806099979342" crossorigin="anonymous"></script>
+  </body>
+</html>

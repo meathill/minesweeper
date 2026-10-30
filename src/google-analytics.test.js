@@ -19,6 +19,8 @@ const SOURCE_FILES = [
   'public/ru/index.html',
   'public/vi/index.html',
   'public/de/index.html',
+  'public/pt/index.html',
+  'public/fr/index.html',
   'site/src/layouts/BaseLayout.astro',
 ];
 
@@ -46,7 +48,7 @@ describe('google analytics 注入', () => {
   });
 
   test('游戏壳保留占位块', () => {
-    for (const file of SOURCE_FILES.slice(0, 6)) {
+    for (const file of SOURCE_FILES.slice(0, -1)) {
       const text = readFileSync(new URL(`../${file}`, import.meta.url), 'utf8');
       assert.match(text, /<!-- ga:start -->/);
       assert.match(text, /__GA_ID__/);

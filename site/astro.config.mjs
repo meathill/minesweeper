@@ -8,7 +8,7 @@ export default defineConfig({
   site: 'https://minesweeper.meathill.com',
   i18n: {
     defaultLocale: 'zh',
-    locales: ['zh', 'en', 'es', 'ru', 'vi', 'de'],
+    locales: ['zh', 'en', 'es', 'ru', 'vi', 'de', 'pt', 'fr'],
     routing: { prefixDefaultLocale: false },
   },
   vite: {

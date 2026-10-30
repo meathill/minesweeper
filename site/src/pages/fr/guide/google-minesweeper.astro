@@ -1,0 +1,131 @@
+---
+import GuideLayout from '../../../layouts/GuideLayout.astro';
+import type { FaqItem, HowToData } from '../../../types';
+
+const faq: FaqItem[] = [
+  {
+    question: 'Comment ouvrir le Démineur Google ?',
+    answer:
+      'Tapez « démineur » ou « google minesweeper » dans la barre de recherche Google, puis cliquez sur « Jouer » dans l’encadré interactif tout en haut des résultats. Aucun téléchargement ni compte requis.',
+  },
+  {
+    question:
+      'Comment mettre un drapeau sur le Démineur Google (PC et téléphone) ?',
+    answer:
+      'Sur ordinateur avec souris, faites un clic droit. Sur un pavé tactile (trackpad), touchez avec deux doigts (ou Control + clic sur Mac / Alt + clic sur Chromebook). Sur mobile ou tablette, faites un appui long ou appuyez sur l’icône drapeau 🚩 en bas de la grille.',
+  },
+  {
+    question: 'Peut-on jouer au Démineur Google hors connexion ?',
+    answer:
+      'Le mini-jeu intégré à Google nécessite une connexion Internet pour charger la page de recherche. Une fois la grille chargée dans l’onglet — ou sur une version web locale comme Meathill Minesweeper — votre partie en cours continue même en cas de coupure réseau.',
+  },
+  {
+    question: 'Quels sont les niveaux du Démineur Google ?',
+    answer:
+      'Trois niveaux sont proposés : Facile (10×8, 10 mines), Moyen (18×14, 40 mines) et Difficile (24×20, 99 mines). Pour retrouver les formats officiels classiques (9×9, 16×16 et 16×30) avec statistiques et replay, jouez sur Meathill Minesweeper.',
+  },
+  {
+    question: 'Existe-t-il un raccourci Barre Espace sur le Démineur Google ?',
+    answer:
+      'Non. Contrairement à certains clones sur PC, la version officielle de Google ne prend pas en charge la barre d’espace ni les raccourcis clavier — appuyer sur Espace fait simplement défiler la page.',
+  },
+];
+
+const howTo: HowToData = {
+  name: 'Comment ouvrir et jouer au Démineur Google',
+  steps: [
+    'Tapez « démineur » dans Google et cliquez sur Jouer en haut de la page de résultats.',
+    'Choisissez un niveau (Facile, Moyen ou Difficile) puis cliquez sur n’importe quelle case : le premier clic est toujours sûr.',
+    'Analysez les chiffres affichés : chacun indique le nombre de mines présentes dans les 8 cases adjacentes.',
+    'Posez vos drapeaux (clic droit, tap à deux doigts ou appui long) et révélez toutes les cases sûres pour remporter la partie.',
+  ],
+};
+---
+
+<GuideLayout
+  lang="fr"
+  title="Démineur Google : Comment Jouer Gratuitement, Drapeaux et Commandes (2026)"
+  heading="Démineur Google : comment jouer, drapeaux et astuces"
+  description="Guide complet du Démineur Google (2026) : comment le lancer dans la recherche, poser des drapeaux sur PC, trackpad sans souris et mobile, niveaux et astuces."
+  path="/guide/google-minesweeper/"
+  keywords="démineur google, google démineur, comment jouer au démineur google, drapeau démineur google, démineur sans souris"
+  updated="2026-10-30"
+  lede="Le Démineur Google est l’easter egg caché directement dans le moteur de recherche : tapez « démineur » pour lancer une grille jouable gratuitement dans votre navigateur, sans rien installer. Voici comment l’ouvrir, poser des drapeaux sans souris et progresser rapidement."
+  faq={faq}
+  howTo={howTo}
+>
+  <p>
+    Le <strong>Démineur Google</strong> est un jeu de réflexion gratuit intégré directement aux résultats de recherche Google : il reprend les règles officielles du Démineur classique en trois niveaux (Facile, Moyen et Difficile), jouable instantanément sur ordinateur et smartphone sans téléchargement.
+  </p>
+
+  <h2>Comment lancer et jouer au Démineur Google étape par étape</h2>
+  <ol>
+    <li>Ouvrez Google et saisissez <strong>« démineur »</strong> ou <strong>« google minesweeper »</strong> dans la barre de recherche.</li>
+    <li>Cliquez sur le bouton bleu <strong>Jouer</strong> sur la carte interactive affichée au-dessus des résultats.</li>
+    <li>Sélectionnez la difficulté (<strong>Facile</strong>, <strong>Moyen</strong> ou <strong>Difficile</strong>) et cliquez sur une case au choix pour ouvrir une première zone garantie sans mine.</li>
+    <li>Utilisez les chiffres pour localiser les mines voisines, marquez-les d’un drapeau et dévoilez toutes les cases libres.</li>
+  </ol>
+
+  <h2>Comment poser un drapeau (PC, Trackpad sans souris et Mobile)</h2>
+  <p>
+    Attention : contrairement à plusieurs sites spécialisés, <strong>le Démineur Google ne gère pas la barre d’espace</strong> pour poser un drapeau (Espace fait défiler la page). Voici le geste exact selon votre appareil :
+  </p>
+  <div
+    tabindex="0"
+    role="region"
+    aria-labelledby="fr-controls-caption"
+    class="guide-table-wrapper not-prose"
+    style="--col-2: 'Révéler une case'; --col-3: 'Poser / retirer un drapeau 🚩';"
+  >
+    <table>
+      <caption id="fr-controls-caption">Commandes du Démineur Google par appareil</caption>
+      <thead>
+        <tr>
+          <th>Appareil</th>
+          <th>Révéler une case</th>
+          <th>Poser / retirer un drapeau 🚩</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>PC / Mac avec souris</th>
+          <td>Clic gauche</td>
+          <td>Clic droit sur la case fermée</td>
+        </tr>
+        <tr>
+          <th>MacBook (Trackpad)</th>
+          <td>Tap à 1 doigt</td>
+          <td>Tap à 2 doigts ou <code>Control + clic</code></td>
+        </tr>
+        <tr>
+          <th>PC portable Windows</th>
+          <td>Tap à 1 doigt</td>
+          <td>Tap à 2 doigts ou coin inférieur droit</td>
+        </tr>
+        <tr>
+          <th>Chromebook</th>
+          <td>Tap à 1 doigt</td>
+          <td>Tap à 2 doigts ou <code>Alt + clic</code></td>
+        </tr>
+        <tr>
+          <th>Smartphone & Tablette</th>
+          <td> Appui court</td>
+          <td>Appui long ou bouton bascule 🚩 / ⛏️ en bas</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    Vous jouez au pavé tactile ? Sur <a href="/fr/">Meathill Minesweeper</a>, vous n’avez plus besoin du clic droit pour accélérer : dès que les drapeaux autour d’un chiffre correspondent à sa valeur, <strong>un simple double-clic ouvre toutes les cases voisines sûres d’un coup</strong>.
+  </p>
+
+  <h2>Les limites de la version Google pour progresser</h2>
+  <ul>
+    <li><strong>Aucune probabilité affichée</strong> : face à un 50/50 apparent, impossible de savoir si une autre case était mathématiquement plus sûre.</li>
+    <li><strong>Pas de replay</strong> : une explosion met fin à la partie sans pouvoir revoir le coup décisif.</li>
+    <li><strong>Grilles non standard</strong> : Google utilise des formats 10×8, 18×14 et 24×20 au lieu des grilles officielles 9×9, 16×16 et 16×30.</li>
+  </ul>
+  <p>
+    Envie d’aller plus loin ? Lancez une partie sur <a href="/fr/">Meathill Minesweeper</a> avec le <strong>Mode Apprentissage</strong> en direct, testez une position complexe avec notre <a href="/fr/tools/probability-calculator/">Calculateur de probabilité Démineur</a>, ou révisez les motifs classiques dans le <a href="/fr/guide/how-to-play/">guide complet pour jouer au Démineur</a>.
+  </p>
+</GuideLayout>

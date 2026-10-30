@@ -1,0 +1,85 @@
+---
+import GuideLayout from '../../../layouts/GuideLayout.astro';
+import type { FaqItem, HowToData } from '../../../types';
+
+const faq: FaqItem[] = [
+  {
+    question: 'Le premier clic peut-il tomber sur une mine ?',
+    answer:
+      'Sur les versions modernes, jamais. Sur Meathill Minesweeper, le premier clic révèle toujours une case vide et libère une zone 3×3 sans aucune mine.',
+  },
+  {
+    question: 'Que signifient les chiffres au Démineur ?',
+    answer:
+      'Chaque chiffre indique exactement combien de mines se cachent parmi les 8 cases qui l’entourent (horizontalement, verticalement et en diagonale).',
+  },
+  {
+    question: 'Comment jouer au Démineur sans souris ?',
+    answer:
+      'Sur écran tactile, faites un appui long pour poser un drapeau ; sur trackpad, tapez à deux doigts. Sur Meathill Minesweeper, un double-clic sur un chiffre déjà complété ouvre toutes ses voisines sans clic droit.',
+  },
+  {
+    question: 'Le Démineur est-il un jeu de hasard ?',
+    answer:
+      'Non : l’immense majorité des grilles se résout par déduction logique en croisant les chiffres. Pour les rares fins de partie incertaines, le Mode Apprentissage affiche la probabilité exacte de chaque case.',
+  },
+  {
+    question: 'Qu’est-ce que l’ouverture en chaîne (chording) ?',
+    answer:
+      'Lorsque le nombre de drapeaux autour d’un chiffre ouvert égale ce chiffre, double-cliquer dessus révèle instantanément toutes les cases voisines restantes.',
+  },
+];
+
+const howTo: HowToData = {
+  name: 'Comment jouer au Démineur',
+  steps: [
+    'Démarrez une grille et cliquez sur n’importe quelle case — le premier coup est toujours sûr.',
+    'Lisez les chiffres révélés : chacun compte les mines dans les 8 cases adjacentes.',
+    'Marquez les mines certaines d’un drapeau (clic droit ou appui long) et double-cliquez sur les chiffres complétés pour ouvrir en chaîne.',
+    'Ouvrez toutes les cases sans mine pour gagner. En cas de blocage, activez le Mode Apprentissage pour voir la carte thermique.',
+  ],
+};
+---
+
+<GuideLayout
+  lang="fr"
+  title="Comment Jouer au Démineur : Règles, Motifs et Astuces Débutant - Meathill Minesweeper"
+  heading="Comment jouer au Démineur"
+  description="Apprenez à jouer au Démineur étape par étape : sens des chiffres, drapeaux, ouverture en chaîne, motifs 1-1 et 1-2-1 et calcul de probabilités."
+  path="/guide/how-to-play/"
+  keywords="comment jouer au démineur, règles démineur, astuces démineur, motifs démineur, démineur débutant"
+  updated="2026-10-30"
+  lede="Le but du Démineur est d’ouvrir toutes les cases sûres sans déclencher une seule mine : chaque chiffre indique combien de mines l’entourent. Maîtrisez les règles, les gestes rapides et deux motifs clés pour gagner régulièrement."
+  faq={faq}
+  howTo={howTo}
+>
+  <h2>Quel est l’objectif du Démineur ?</h2>
+  <p>
+    Une grille dissimule un nombre fixe de mines ; toutes les autres cases sont sûres. Votre mission consiste à <strong>dévoiler toutes les cases sans mine</strong> : cliquer sur une mine fait perdre immédiatement, ouvrir tout le reste donne la victoire. Chaque chiffre est un indice logique précis.
+  </p>
+
+  <h2>Les règles essentielles</h2>
+  <ul>
+    <li><strong>Les chiffres (1 à 8)</strong> : comptent les mines présentes dans les 8 cases voisines.</li>
+    <li><strong>Les drapeaux 🚩</strong> : signalent les mines identifiées avec certitude pour éviter les faux clics.</li>
+    <li><strong>Premier clic protégé</strong> : sur <a href="/fr/">Meathill Minesweeper</a>, le premier coup ouvre toujours une zone 3×3 dégagée.</li>
+    <li><strong>Victoire</strong> : dès que toutes les cases non minées sont ouvertes.</li>
+  </ul>
+
+  <h2>Les trois gestes de base : ouvrir, marquer et enchaîner</h2>
+  <ol>
+    <li><strong>Ouvrir</strong> : clic gauche (ou tap simple) sur une case fermée.</li>
+    <li><strong>Marquer un drapeau</strong> : clic droit sur PC ou appui long sur mobile. Vous jouez directement dans Google ? Consultez aussi notre guide du <a href="/fr/guide/google-minesweeper/">Démineur Google et de ses commandes sans souris</a>.</li>
+    <li><strong>Ouverture en chaîne (Chording)</strong> : quand un chiffre possède déjà tous ses drapeaux, un <strong>double-clic sur ce chiffre</strong> révèle d’un coup toutes les voisines sûres restantes.</li>
+  </ol>
+
+  <h2>Deux motifs classiques à connaître absolument</h2>
+  <ul>
+    <li><strong>Le motif 1-1 au bord</strong> : lorsque deux chiffres 1 voisins partagent les mêmes cases fermées, la troisième case adjacente au second 1 est garantie sans mine.</li>
+    <li><strong>Le motif 1-2-1</strong> : face à une ligne fermée devant <code>1-2-1</code>, les deux mines se trouvent toujours face aux deux 1, et la case centrale face au 2 est sûre.</li>
+  </ul>
+  <p>
+    Quand les motifs ne suffisent plus, place aux probabilités : analysez n’importe quelle grille avec le <a href="/fr/tools/probability-calculator/">Calculateur de probabilité Démineur</a> ou activez le <a href="/fr/">Mode Apprentissage en direct</a>.
+  </p>
+</GuideLayout>
+

@@ -10,7 +10,11 @@
     { "source": "/vi", "destination": "/vi/index.html" },
     { "source": "/vi/:path*", "destination": "/vi/index.html" },
     { "source": "/de", "destination": "/de/index.html" },
-    { "source": "/de/:path*", "destination": "/de/index.html" }
+    { "source": "/de/:path*", "destination": "/de/index.html" },
+    { "source": "/pt", "destination": "/pt/index.html" },
+    { "source": "/pt/:path*", "destination": "/pt/index.html" },
+    { "source": "/fr", "destination": "/fr/index.html" },
+    { "source": "/fr/:path*", "destination": "/fr/index.html" }
   ],
   "headers": [
     {

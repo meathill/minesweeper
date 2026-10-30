@@ -1,10 +1,27 @@
 <script setup>
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { brandNetwork } from './brand-network.js';
+
+const { locale } = useI18n();
+
+const COPY = {
+  zh: { network: '产品网络', current: '当前站点', all: '全部产品' },
+  en: { network: 'Apps', current: 'Current', all: 'All Products' },
+  es: { network: 'Productos', current: 'Actual', all: 'Todos los productos' },
+  ru: { network: 'Продукты', current: 'Текущий', all: 'Все продукты' },
+  vi: { network: 'Sản phẩm', current: 'Hiện tại', all: 'Tất cả sản phẩm' },
+  de: { network: 'Produkte', current: 'Aktuell', all: 'Alle Produkte' },
+  pt: { network: 'Produtos', current: 'Atual', all: 'Todos os produtos' },
+  fr: { network: 'Produits', current: 'Actuel', all: 'Tous les produits' },
+};
+
+const labels = computed(() => COPY[locale.value] ?? COPY.en);
 </script>
 
 <template>
   <details class="brand-switcher">
-    <summary>产品网络</summary>
+    <summary>{{ labels.network }}</summary>
     <div class="brand-switcher-panel">
       <a
         v-for="site in brandNetwork.sites"
@@ -13,9 +30,9 @@ import { brandNetwork } from './brand-network.js';
         :href="site.url"
       >
         {{ site.name }}
-        <small v-if="site.id === 'minesweeper'">当前站点</small>
+        <small v-if="site.id === 'minesweeper'">{{ labels.current }}</small>
       </a>
-      <a class="all-products" :href="brandNetwork.allProductsUrl">全部产品</a>
+      <a class="all-products" :href="brandNetwork.allProductsUrl">{{ labels.all }}</a>
     </div>
   </details>
 </template>

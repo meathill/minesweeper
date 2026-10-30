@@ -1,17 +1,17 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import MiniBoard from '../components/MiniBoard.astro';
+import RelatedGuides from '../components/RelatedGuides.astro';
+import StickyPlayCta from '../components/StickyPlayCta.astro';
 import { gameHomePath } from '../i18n';
 import type { SiteLang } from '../i18n';
 import type { FaqItem, HowToData } from '../types';
 
 interface Props {
   lang: SiteLang;
-  /** <title> 完整文案 */
   title: string;
-  /** 文章 H1 */
   heading: string;
   description: string;
-  /** 语言中立路径（含尾斜杠） */
   path: string;
   keywords?: string;
   updated?: string;
@@ -19,38 +19,69 @@ interface Props {
   faq?: FaqItem[];
   howTo?: HowToData;
   cta?: { href: string; label: string; text: string };
+  showMiniBoard?: boolean;
 }
 
-const { lang, heading, updated, lede, faq, cta, ...seo } = Astro.props;
+const { lang, heading, updated, lede, faq, cta, showMiniBoard, ...seo } =
+  Astro.props;
 const copy: Record<
-  string,
-  { home: string; faqHeading: string; updated: string }
+  SiteLang,
+  { home: string; faqHeading: string; updated: string; breadcrumb: string }
 > = {
-  zh: { home: '首页', faqHeading: '常见问题', updated: '最后更新' },
+  zh: {
+    home: '首页',
+    faqHeading: '常见问题',
+    updated: '最后更新',
+    breadcrumb: '面包屑',
+  },
   en: {
     home: 'Home',
     faqHeading: 'Frequently asked questions',
     updated: 'Last updated',
+    breadcrumb: 'Breadcrumb',
   },
   es: {
     home: 'Inicio',
     faqHeading: 'Preguntas frecuentes',
     updated: 'Última actualización',
+    breadcrumb: 'Ruta de navegación',
   },
-  ru: { home: 'Главная', faqHeading: 'Частые вопросы', updated: 'Обновлено' },
+  ru: {
+    home: 'Главная',
+    faqHeading: 'Частые вопросы',
+    updated: 'Обновлено',
+    breadcrumb: 'Навигационная цепочка',
+  },
   vi: {
     home: 'Trang chủ',
     faqHeading: 'Câu hỏi thường gặp',
     updated: 'Cập nhật',
+    breadcrumb: 'Đường dẫn',
   },
   de: {
     home: 'Startseite',
     faqHeading: 'Häufige Fragen',
     updated: 'Zuletzt aktualisiert',
+    breadcrumb: 'Brotkrümelnavigation',
+  },
+  pt: {
+    home: 'Início',
+    faqHeading: 'Perguntas frequentes',
+    updated: 'Última atualização',
+    breadcrumb: 'Navegação estrutural',
+  },
+  fr: {
+    home: 'Accueil',
+    faqHeading: 'Questions fréquentes',
+    updated: 'Dernière mise à jour',
+    breadcrumb: 'Fil d’Ariane',
   },
 };
 const strings = copy[lang] ?? copy.en;
 const homePath = gameHomePath(lang);
+const hasMiniBoard = showMiniBoard ?? seo.path.startsWith('/guide/');
+const hasStickyCta = seo.path !== '/unblocked/';
+const updatedSep = lang === 'zh' ? '：' : ': ';
 const breadcrumbs = [
   { name: strings.home, path: homePath },
   { name: heading, path: seo.path },
@@ -80,6 +111,14 @@ const defaultCta: Record<string, { label: string; text: string }> = {
     label: 'Kostenlos spielen',
     text: 'Öffne Meathill Minesweeper und übe direkt los — der Lernmodus zeigt die Minenwahrscheinlichkeit jedes Feldes.',
   },
+  pt: {
+    label: 'Jogar grátis',
+    text: 'Abra o Meathill Minesweeper e pratique agora mesmo — o Modo Aprendizado mostra a probabilidade de mina de cada casa.',
+  },
+  fr: {
+    label: 'Jouer gratuitement',
+    text: 'Ouvrez Meathill Minesweeper et entraînez-vous tout de suite — le Mode Apprentissage affiche la probabilité de mine de chaque case.',
+  },
 };
 const fallbackCta = defaultCta[lang] ?? defaultCta.en;
 const ctaBox = cta ?? { href: gameHomePath(lang), ...fallbackCta };
@@ -87,7 +126,7 @@ const ctaBox = cta ?? { href: gameHomePath(lang), ...fallbackCta };
 
 <BaseLayout lang={lang} {...seo} faq={faq} breadcrumbs={breadcrumbs}>
   <div class="mx-auto w-full max-w-3xl px-4">
-    <nav aria-label={lang === 'en' ? 'Breadcrumb' : '面包屑'} class="pt-6 text-sm">
+    <nav aria-label={strings.breadcrumb} class="pt-6 text-sm">
       <ol class="flex items-center gap-2">
         <li><a class="underline-offset-2 hover:underline" href={homePath}>{strings.home}</a></li>
         <li aria-hidden="true">/</li>
@@ -97,7 +136,8 @@ const ctaBox = cta ?? { href: gameHomePath(lang), ...fallbackCta };
     <article class="prose mt-4 max-w-none">
       <h1>{heading}</h1>
       {lede && <p class="lead">{lede}</p>}
-      {updated && <p class="text-sm opacity-60">{strings.updated}：{updated}</p>}
+      {updated && <p class="text-sm opacity-60">{strings.updated}{updatedSep}{updated}</p>}
+      {hasMiniBoard && <MiniBoard lang={lang} path={seo.path} />}
       <slot />
     </article>
     {faq && faq.length > 0 && (
@@ -111,9 +151,11 @@ const ctaBox = cta ?? { href: gameHomePath(lang), ...fallbackCta };
         ))}
       </section>
     )}
-    <aside class="cta-box mt-12">
+    <RelatedGuides lang={lang} currentPath={seo.path} />
+    <aside class="cta-box mt-8">
       <p>{ctaBox.text}</p>
       <a class="site-nav-cta" href={ctaBox.href}>{ctaBox.label}</a>
     </aside>
   </div>
+  {hasStickyCta && <StickyPlayCta lang={lang} path={seo.path} />}
 </BaseLayout>

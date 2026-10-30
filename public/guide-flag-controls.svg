@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 260" width="760" height="260" role="img" aria-label="How to place a flag in Google Minesweeper without a mouse on MacBook, Windows laptop, Chromebook, and mobile">
+  <title>How to Place a Flag in Google Minesweeper Without a Mouse</title>
+  <rect width="760" height="260" rx="16" fill="#fffaf0" stroke="#c8b69e" stroke-width="2"/>
+  <text x="24" y="34" font-family="ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="16" font-weight="800" fill="#2c2218">
+    🚩 How to Flag Mines Without a Mouse (Google Minesweeper Cheat Sheet)
+  </text>
+
+  <!-- Card 1: MacBook -->
+  <g transform="translate(20, 52)">
+    <rect width="170" height="150" rx="12" fill="#f5ecd8" stroke="#d5c4ac" stroke-width="1.5"/>
+    <text x="14" y="28" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="800" fill="#2c2218">MacBook Trackpad</text>
+    <rect x="14" y="42" width="142" height="46" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+    <circle cx="68" cy="65" r="9" fill="#f59e0b" opacity="0.85"/>
+    <circle cx="96" cy="65" r="9" fill="#f59e0b" opacity="0.85"/>
+    <text x="14" y="108" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" font-weight="700" fill="#1e293b">• Two-finger tap</text>
+    <text x="14" y="128" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#475569">• Or Control + Click</text>
+  </g>
+
+  <!-- Card 2: Windows Laptop -->
+  <g transform="translate(203, 52)">
+    <rect width="170" height="150" rx="12" fill="#f5ecd8" stroke="#d5c4ac" stroke-width="1.5"/>
+    <text x="14" y="28" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="800" fill="#2c2218">Windows Touchpad</text>
+    <rect x="14" y="42" width="142" height="46" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+    <line x1="85" y1="68" x2="85" y2="88" stroke="#94a3b8" stroke-width="1.5"/>
+    <rect x="87" y="70" width="67" height="16" rx="4" fill="#fde68a"/>
+    <circle cx="60" cy="58" r="8" fill="#f59e0b" opacity="0.85"/>
+    <circle cx="84" cy="58" r="8" fill="#f59e0b" opacity="0.85"/>
+    <text x="14" y="108" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" font-weight="700" fill="#1e293b">• Two-finger tap</text>
+    <text x="14" y="128" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#475569">• Or bottom-right corner</text>
+  </g>
+
+  <!-- Card 3: Chromebook -->
+  <g transform="translate(386, 52)">
+    <rect width="170" height="150" rx="12" fill="#f5ecd8" stroke="#d5c4ac" stroke-width="1.5"/>
+    <text x="14" y="28" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="800" fill="#2c2218">Chromebook</text>
+    <rect x="14" y="44" width="52" height="36" rx="6" fill="#1e293b"/>
+    <text x="27" y="67" font-family="ui-monospace, monospace" font-size="13" font-weight="700" fill="#f8fafc">Alt</text>
+    <text x="74" y="67" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="800" fill="#64748b">+</text>
+    <rect x="92" y="44" width="64" height="36" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="108" y="67" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" font-weight="700" fill="#1e293b">Click</text>
+    <text x="14" y="108" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" font-weight="700" fill="#1e293b">• Two-finger tap</text>
+    <text x="14" y="128" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#475569">• Or hold Alt + Click</text>
+  </g>
+
+  <!-- Card 4: Mobile / Touch -->
+  <g transform="translate(569, 52)">
+    <rect width="171" height="150" rx="12" fill="#f5ecd8" stroke="#d5c4ac" stroke-width="1.5"/>
+    <text x="14" y="28" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="800" fill="#2c2218">Phone &amp; Tablet</text>
+    <rect x="14" y="44" width="66" height="36" rx="6" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="24" y="67" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" font-weight="800" fill="#92400e">🚩 Flag</text>
+    <rect x="88" y="44" width="68" height="36" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="97" y="67" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" font-weight="700" fill="#475569">⛏️ Dig</text>
+    <text x="14" y="108" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" font-weight="700" fill="#1e293b">• Long-press a square</text>
+    <text x="14" y="128" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#475569">• Or tap 🚩 toggle bar</text>
+  </g>
+
+  <!-- Bottom note -->
+  <rect x="20" y="214" width="720" height="32" rx="8" fill="#fef3c7" stroke="#e6b240"/>
+  <text x="380" y="234" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" font-weight="700" fill="#78350f">
+    ⚠️ Google Search Minesweeper has NO Spacebar shortcut — use our 9×9 board above for 1-click 🚩!
+  </text>
+</svg>
+

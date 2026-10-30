@@ -53,12 +53,26 @@ export const LOCALES: LocaleMeta[] = [
     name: 'Deutsch',
     ogLocale: 'de_DE',
   },
+  {
+    code: 'pt',
+    prefix: '/pt',
+    htmlLang: 'pt-BR',
+    name: 'Português',
+    ogLocale: 'pt_BR',
+  },
+  {
+    code: 'fr',
+    prefix: '/fr',
+    htmlLang: 'fr',
+    name: 'Français',
+    ogLocale: 'fr_FR',
+  },
 ];
 
 export type LocaleCode = (typeof LOCALES)[number]['code'];
 
 /** 内容子站语言联合类型（新增语言时同步改这里 + LOCALES）：组件 Props 只认它，不用 string */
-export type SiteLang = 'zh' | 'en' | 'es' | 'ru' | 'vi' | 'de';
+export type SiteLang = 'zh' | 'en' | 'es' | 'ru' | 'vi' | 'de' | 'pt' | 'fr';
 
 export function getLocaleMeta(code: string): LocaleMeta {
   return LOCALES.find((locale) => locale.code === code) ?? LOCALES[0];

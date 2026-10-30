@@ -1,0 +1,258 @@
+---
+import { gameHomePath } from '../i18n';
+import type { SiteLang } from '../i18n';
+
+interface Props {
+  lang: SiteLang;
+  path: string;
+}
+
+interface StickyCopy {
+  text: string;
+  cta: string;
+  closeLabel: string;
+  regionLabel: string;
+}
+
+const { lang, path } = Astro.props;
+const playHref = gameHomePath(lang);
+
+const COPY: Record<SiteLang, StickyCopy> = {
+  zh: {
+    text: '看完技巧想实战一把？免下载即玩，支持触控板免右键连开与实时雷率提示',
+    cta: '免费开始扫雷 →',
+    closeLabel: '关闭提示条',
+    regionLabel: '快速开始游戏',
+  },
+  en: {
+    text: 'Ready to play? Instant browser Minesweeper — trackpad friendly + live probability hints',
+    cta: 'Play Free Online Now →',
+    closeLabel: 'Dismiss play banner',
+    regionLabel: 'Quick play shortcut',
+  },
+  es: {
+    text: '¿Listo para jugar? Juega al Buscaminas gratis online — ideal para trackpad/celular + pistas en vivo',
+    cta: 'Jugar al Buscaminas Gratis →',
+    closeLabel: 'Cerrar aviso',
+    regionLabel: 'Acceso rápido al juego',
+  },
+  ru: {
+    text: 'Готовы сыграть? Сапёр онлайн в браузере — удобно на тачпаде + живая карта вероятностей',
+    cta: 'Играть бесплатно →',
+    closeLabel: 'Закрыть панель',
+    regionLabel: 'Быстрый переход к игре',
+  },
+  vi: {
+    text: 'Sẵn sàng chơi thử? Dò Mìn online mượt trên touchpad & điện thoại + gợi ý xác suất trực tiếp',
+    cta: 'Chơi Dò Mìn Miễn Phí →',
+    closeLabel: 'Đóng thanh gợi ý',
+    regionLabel: 'Mở nhanh trò chơi',
+  },
+  de: {
+    text: 'Bereit für eine Runde? Direkt im Browser spielen — Trackpad-optimiert + Live-Wahrscheinlichkeiten',
+    cta: 'Jetzt kostenlos spielen →',
+    closeLabel: 'Banner schließen',
+    regionLabel: 'Schnellstart zum Spiel',
+  },
+  pt: {
+    text: 'Pronto para jogar? Campo Minado grátis no navegador — ótimo no trackpad/celular + dicas ao vivo',
+    cta: 'Jogar Campo Minado Grátis →',
+    closeLabel: 'Fechar aviso',
+    regionLabel: 'Atalho rápido para jogar',
+  },
+  fr: {
+    text: 'Prêt à jouer ? Démineur gratuit en ligne — pensé pour trackpad/mobile + probabilités en direct',
+    cta: 'Jouer au Démineur →',
+    closeLabel: 'Fermer la bannière',
+    regionLabel: 'Accès rapide au jeu',
+  },
+};
+
+const t = COPY[lang] ?? COPY.en;
+---
+
+<aside
+  class="sticky-play-cta"
+  data-sticky-cta
+  data-lang={lang}
+  data-path={path}
+  aria-label={t.regionLabel}
+  inert
+>
+  <div class="sticky-play-inner">
+    <p class="sticky-play-text">{t.text}</p>
+    <div class="sticky-play-actions">
+      <a class="site-nav-cta sticky-play-btn" data-sticky-slot="link" href={playHref}>
+        {t.cta}
+      </a>
+      <button
+        type="button"
+        class="sticky-play-close"
+        data-sticky-slot="close"
+        aria-label={t.closeLabel}
+      >
+        ×
+      </button>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .sticky-play-cta {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 35;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+    background: color-mix(in srgb, var(--meathill-paper) 95%, transparent);
+    border-top: 1px solid var(--meathill-rule-strong);
+    box-shadow: 0 -8px 24px -8px rgb(0 0 0 / 0.22);
+    backdrop-filter: blur(8px);
+    transform: translateY(110%);
+    opacity: 0;
+    transition:
+      transform 0.22s ease-out,
+      opacity 0.22s ease-out;
+    pointer-events: none;
+  }
+
+  .sticky-play-cta.is-visible {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .sticky-play-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 16px;
+    width: min(100%, 860px);
+    margin-inline: auto;
+  }
+
+  .sticky-play-text {
+    margin: 0;
+    flex: 1 1 240px;
+    color: var(--meathill-ink);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .sticky-play-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  .sticky-play-btn {
+    text-decoration: none;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .sticky-play-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--meathill-rule-strong);
+    border-radius: var(--meathill-radius);
+    background: transparent;
+    color: var(--meathill-mute);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .sticky-play-close:hover {
+    background: var(--meathill-fluff);
+    color: var(--meathill-ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sticky-play-cta {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import { trackGuideEvent } from '../scripts/mini-board';
+
+  const bar = document.querySelector<HTMLElement>('[data-sticky-cta]');
+  if (bar) {
+    const stickyBar = bar;
+    const closeBtn = stickyBar.querySelector<HTMLButtonElement>(
+      '[data-sticky-slot="close"]',
+    );
+    const linkEl = stickyBar.querySelector<HTMLAnchorElement>(
+      '[data-sticky-slot="link"]',
+    );
+    const bottomCta = document.querySelector<HTMLElement>('.cta-box');
+    const lang = stickyBar.dataset.lang ?? 'en';
+    const pagePath = stickyBar.dataset.path ?? '/';
+
+    let isDismissed = false;
+    let isBottomVisible = false;
+    let isTicking = false;
+
+    function setBarVisible(shouldShow: boolean): void {
+      stickyBar.classList.toggle('is-visible', shouldShow);
+      stickyBar.inert = !shouldShow;
+    }
+
+    function evaluateScroll(): void {
+      isTicking = false;
+      if (isDismissed || isBottomVisible) {
+        setBarVisible(false);
+        return;
+      }
+      const docEl = document.documentElement;
+      const scrollable = docEl.scrollHeight - window.innerHeight;
+      if (scrollable <= 160) {
+        setBarVisible(false);
+        return;
+      }
+      const ratio = window.scrollY / scrollable;
+      setBarVisible(ratio >= 0.3);
+    }
+
+    function handleScroll(): void {
+      if (isTicking) return;
+      isTicking = true;
+      window.requestAnimationFrame(evaluateScroll);
+    }
+
+    if (bottomCta && 'IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(function handleIntersect(entries) {
+        isBottomVisible = entries.some((entry) => entry.isIntersecting);
+        evaluateScroll();
+      });
+      observer.observe(bottomCta);
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function handleDismiss() {
+        isDismissed = true;
+        setBarVisible(false);
+      });
+    }
+
+    if (linkEl) {
+      linkEl.addEventListener('click', function handleCtaClick() {
+        trackGuideEvent('guide_sticky_cta_click', { lang, page_path: pagePath });
+      });
+    }
+
+    evaluateScroll();
+  }
+</script>
+

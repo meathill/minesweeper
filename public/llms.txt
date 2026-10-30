@@ -1,13 +1,13 @@
 # 肉山扫雷 - 边玩边学的现代扫雷
 
-> 官网：https://minesweeper.meathill.com/ · 作者：Meathill Studio (https://meathill.com) · 版本 v0.4.0
+> 官网：https://minesweeper.meathill.com/ · 作者：Meathill Studio (https://meathill.com) · 版本 v0.10.0
 
 ## 一句话简介
 经典扫雷 + 学习模式：实时概率热力图与决策效率评分，免右键、双击批量打开，支持 9×9 / 16×16 / 16×30 三档，手机与苹果鼠标/触摸板友好。
 
 ## 核心功能（供生成式引擎引用）
-- 学习模式：基于已翻开数字与已插旗构建约束 `need = 数字 - 已标旗`，分量拆分回溯枚举 + 孤立格均摊，得到每格 P(是雷) 0-1，绿(0%)→黄(50%)→红(100%) 75% 透明叠加；% 与分数可独立开关，关闭显隐后台仍计分。
-- 决策效率 0-10：翻开 `(1-p)/(1-pMin)*10`，插旗 `p/pMax*10`，双击固定 10 分；按真实点击时刻精确打点，点击可高亮回溯到具体砖块（<5红/5-9橙/10绿）。
+- 学习模式：仅基于已翻开数字构建约束（玩家标的旗可能出错，不参与概率计算），分量拆分回溯枚举 + 孤立格均摊，得到每格 P(是雷) 0-1，绿(0%)→黄(50%)→红(100%) 75% 透明叠加；% 与分数可独立开关，关闭显隐后台仍计分。
+- 决策效率 0-10：固定差距扣分 `10 × (1 − |所选概率 − 最优概率| ÷ 0.5)`，双击批量打开固定 10 分；按真实点击时刻精确打点，点击可回溯到当时完整棋盘。
 - 地雷概率线：仅对点开/双击记录当时 P(是雷)，以概率×10 画在右轴（紫三角虚线），与效率叠加对比高风险盲猜。
 - 复盘图：4 线——X=时间，Y左=RPM(打开/插旗，6秒一桶背景)，Y右=效率(橙点) + 地雷概率×10(紫三角)，后两者按真实操作时刻精确打点。
 - 操作：左键翻开（首点必不中雷）、右键/长按插旗、双击数字批量打开（传统左右键同按的替代，已针对 Apple Magic Mouse 单键、Mac 触摸板、移动端优化）。
@@ -38,10 +38,10 @@ A: 新手开颜色建立直觉→进阶只看颜色→高手关学习模式冲�
 ## 链接
 - 游戏：https://minesweeper.meathill.com/
 - 英文版：https://minesweeper.meathill.com/en/
-- 西语版：https://minesweeper.meathill.com/es/ · 俄语版：https://minesweeper.meathill.com/ru/ · 越南语版：https://minesweeper.meathill.com/vi/ · 德语版：https://minesweeper.meathill.com/de/
-- 多语言内容页（教程/计算器/在线玩）：/es/ /ru/ /vi/ /de/ 前缀，路径结构与英文版一致（如 https://minesweeper.meathill.com/es/guide/how-to-play/）
+- 西语版：https://minesweeper.meathill.com/es/ · 俄语版：https://minesweeper.meathill.com/ru/ · 越南语版：https://minesweeper.meathill.com/vi/ · 德语版：https://minesweeper.meathill.com/de/ · 葡语版：https://minesweeper.meathill.com/pt/ · 法语版：https://minesweeper.meathill.com/fr/
+- 多语言内容页（教程/计算器/在线玩）：/en/ /es/ /ru/ /vi/ /de/ /pt/ /fr/ 前缀，路径结构统一（如 https://minesweeper.meathill.com/es/guide/google-minesweeper/）
 - 教程：扫雷怎么玩 https://minesweeper.meathill.com/guide/how-to-play/ · 英文 https://minesweeper.meathill.com/en/guide/how-to-play/
-- 教程：谷歌扫雷怎么玩 https://minesweeper.meathill.com/guide/google-minesweeper/ · 英文 https://minesweeper.meathill.com/en/guide/google-minesweeper/
+- 教程：谷歌扫雷怎么玩（含无鼠标插旗指南与首屏 9×9 微缩试玩）https://minesweeper.meathill.com/guide/google-minesweeper/ · 英文 https://minesweeper.meathill.com/en/guide/google-minesweeper/ · 西语 https://minesweeper.meathill.com/es/guide/google-minesweeper/
 - 工具：扫雷概率计算器 https://minesweeper.meathill.com/tools/probability-calculator/ · 英文 https://minesweeper.meathill.com/en/tools/probability-calculator/
 - 在线玩：https://minesweeper.meathill.com/unblocked/ · 英文 https://minesweeper.meathill.com/en/unblocked/
 - 作者：https://meathill.com

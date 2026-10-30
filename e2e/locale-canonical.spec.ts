@@ -26,3 +26,25 @@ test('/en/ 的 canonical 自指英文首页', async ({ page }) => {
   );
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
 });
+
+test('/pt/ 与 /fr/ 新语种首页自指且设置对应 lang', async ({ page }) => {
+  await page.goto('/pt/');
+  await expect(page.locator('#stage .grid-item')).toHaveCount(81);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    'https://minesweeper.meathill.com/pt/',
+  );
+  await expect(page.locator('html')).toHaveAttribute('lang', 'pt-BR');
+  await expect(page.locator('header')).not.toContainText('产品网络');
+  await expect(page.locator('header')).toContainText('Produtos');
+
+  await page.goto('/fr/');
+  await expect(page.locator('#stage .grid-item')).toHaveCount(81);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    'https://minesweeper.meathill.com/fr/',
+  );
+  await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
+  await expect(page.locator('header')).not.toContainText('产品网络');
+  await expect(page.locator('header')).toContainText('Produits');
+});

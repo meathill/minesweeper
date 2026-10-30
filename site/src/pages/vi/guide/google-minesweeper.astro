@@ -4,100 +4,130 @@ import type { FaqItem, HowToData } from '../../../types';
 
 const faq: FaqItem[] = [
   {
-    question: 'Mở Dò Mìn trên Google thế nào?',
+    question:
+      'Cắm cờ trong Dò Mìn Google trên máy tính và điện thoại như thế nào?',
     answer:
-      'Gõ «dò mìn» hoặc «minesweeper» vào ô tìm kiếm Google, bàn chơi sẽ xuất hiện ngay trên kết quả, bấm vào là chơi. Không cần cài app, không cần tải về, không cần tài khoản.',
+      'Trên máy tính có chuột, bấm chuột phải vào ô chưa mở. Trên touchpad laptop không có chuột, chạm cùng lúc hai ngón tay (hoặc giữ Control + bấm trên MacBook / Alt + bấm trên Chromebook). Trên điện thoại hoặc máy tính bảng, nhấn giữ vào ô hoặc bấm biểu tượng cờ 🚩 ở thanh dưới.',
   },
   {
-    question: 'Cắm cờ trong Dò Mìn trên Google thế nào?',
+    question: 'Mở trò chơi Dò Mìn Google miễn phí ở đâu?',
     answer:
-      'Chuột phải vào ô trên máy tính; nhấn giữ ô trên điện thoại hoặc máy tính bảng. Cờ dùng để đánh dấu những ô bạn chắc chắn có mìn.',
+      'Mở Google Tìm kiếm, gõ «dò mìn», «dò mìn google» hoặc «minesweeper» rồi bấm nút màu xanh «Chơi» ngay phía trên kết quả tìm kiếm. Không cần tải ứng dụng hay đăng nhập.',
   },
   {
-    question: 'Dò Mìn trên Google có miễn phí không?',
+    question: 'Chơi Dò Mìn Google không có mạng (offline) được không?',
     answer:
-      'Có, hoàn toàn miễn phí. Đây là trò chơi easter egg tích hợp trong Google, không cần đăng nhập vào đâu cả.',
+      'Trò chơi tích hợp trong Google cần kết nối mạng lần đầu để tải trang tìm kiếm. Tuy nhiên khi bàn chơi đã hiển thị trong tab trình duyệt — hoặc khi chơi trên trang web chạy cục bộ như Meathill Minesweeper — bạn vẫn chơi hết ván hiện tại dù mất Wi-Fi.',
   },
   {
-    question: 'Khác gì Dò Mìn cổ điển?',
+    question: 'Dò Mìn Google có phím tắt Spacebar để cắm cờ không?',
     answer:
-      'Luật chơi giống hệt. Khác biệt nằm ở phụ kiện: không có gợi ý xác suất, không có xem lại ván đấu, và thành tích không lưu giữa các thiết bị.',
+      'Không. Khác với một số trang game chuyên biệt, bản Dò Mìn chính thức của Google không hỗ trợ phím cách (bấm Space sẽ làm cuộn trang tìm kiếm xuống). Hãy dùng chạm 2 ngón trên touchpad hoặc nút 🚩 trên bàn chơi.',
   },
   {
-    question: 'Chơi trên điện thoại được không?',
+    question: 'Các mức độ khó của Dò Mìn Google gồm những gì?',
     answer:
-      'Được — tìm «dò mìn» trên trình duyệt điện thoại và chơi ngay trong kết quả; nhấn giữ để cắm cờ. Nếu điều khiển cảm ứng khó chịu, bản không cần chuột phải như Meathill Minesweeper chơi trên điện thoại sẽ mượt hơn.',
+      'Có 3 mức: Dễ (10×8 · 10 mìn), Vừa (18×14 · 40 mìn) và Khó (24×20 · 99 mìn). Nếu muốn chơi bàn chuẩn quốc tế (9×9, 16×16 và 16×30) kèm thống kê và gợi ý xác suất, hãy mở Meathill Minesweeper.',
   },
 ];
 
 const howTo: HowToData = {
-  name: 'Cách mở và chơi Dò Mìn trên Google',
+  name: 'Cách mở và chơi Dò Mìn Google miễn phí',
   steps: [
-    'Gõ «dò mìn» vào ô tìm kiếm Google — bàn chơi xuất hiện ngay trên kết quả.',
-    'Chọn độ khó rồi bấm vào bất kỳ ô nào — lần bấm đầu luôn an toàn.',
-    'Đọc các con số: mỗi số đếm mìn trong 8 ô xung quanh.',
-    'Chuột phải hoặc nhấn giữ để cắm cờ; mở hết các ô an toàn để thắng.',
+    'Truy cập Google và gõ «dò mìn» hoặc «dò mìn google» vào thanh tìm kiếm.',
+    'Bấm nút «Chơi» màu xanh trong khung trò chơi hiện ngay đầu trang kết quả.',
+    'Chọn độ khó (Dễ, Vừa hoặc Khó) rồi bấm vào một ô bất kỳ — nước đi đầu tiên luôn an toàn.',
+    'Đọc con số để đếm mìn trong 8 ô kề bên, cắm cờ đánh dấu mìn và mở toàn bộ ô an toàn để chiến thắng.',
   ],
 };
 ---
 
 <GuideLayout
   lang="vi"
-  title="Dò Mìn trên Google: cách mở, cắm cờ và chơi - Meathill Minesweeper"
-  heading="Dò Mìn trên Google: cách chơi"
-  description="Tất cả về Dò Mìn trên Google: cách mở từ thanh tìm kiếm, cách cắm cờ bằng chuột phải hoặc nhấn giữ, ý nghĩa các con số, và phiên bản này thiếu gì với người muốn tiến bộ."
+  title="Dò Mìn Google: Cách Chơi Miễn Phí, Cắm Cờ Không Chuột & Mẹo (2026)"
+  heading="Dò Mìn Google: cách chơi miễn phí, cắm cờ và mẹo thắng nhanh"
+  description="Hướng dẫn chơi Dò Mìn Google (2026): cách mở nhanh trên thanh tìm kiếm, cắm cờ trên PC, laptop không chuột và điện thoại, các cấp độ và mẹo phá đảo."
   path="/guide/google-minesweeper/"
-  keywords="dò mìn google, trò chơi dò mìn trên google, cách cắm cờ dò mìn, dò mìn google chơi"
-  updated="2026-09-03"
-  lede="Dò Mìn trên Google là trò chơi easter egg nằm ngay trong thanh tìm kiếm: gõ «dò mìn» là có bàn chơi ngay trên kết quả, luật giống hệt Dò Mìn cổ điển. Bài này hướng dẫn cách mở, cách thao tác, và khi nào nên chuyển sang bản đầy đủ hơn."
+  keywords="dò mìn google, trò chơi dò mìn trên google, dò mìn online, cách cắm cờ dò mìn google, dò mìn không cần chuột"
+  updated="2026-10-30"
+  lede="Muốn vào ván ngay lập tức? Bấm ô bất kỳ trên bàn 9×9 ngay bên dưới để chơi liền tay (tích hợp sẵn nút chuyển 🚩 Cắm cờ), hoặc xem chi tiết cách mở và điều khiển Dò Mìn trên Google ở mọi thiết bị."
   faq={faq}
   howTo={howTo}
 >
-  <h2>Mở Dò Mìn trên Google thế nào?</h2>
   <p>
-    Nhanh nhất: <strong>gõ «dò mìn» trên Google</strong>. Một bàn chơi sẽ hiện ngay trên kết quả — bấm vào là chơi. Đây là
-    easter egg thuộc dòng Doodle của Google: không cần cài đặt, không cần đăng nhập.
+    <strong>Dò Mìn Google</strong> (Google Minesweeper) là trò chơi giải đố kinh điển miễn phí được tích hợp sẵn ngay trên trang kết quả Google Tìm kiếm: chỉ cần gõ «dò mìn» và bấm Chơi để mở bàn cờ trực tiếp trên máy tính hoặc điện thoại với ba cấp độ (Dễ, Vừa và Khó) mà không cần tải về.
   </p>
 
-  <h2>Luật chơi</h2>
-  <p>Giống hệt Dò Mìn cổ điển:</p>
-  <ul>
-    <li><strong>Con số</strong>: ô đã mở đếm số mìn trong 8 ô quanh nó.</li>
-    <li><strong>Cắm cờ</strong>: đánh dấu những quả mìn đã biết để tránh bấm nhầm.</li>
-    <li><strong>Lần bấm đầu an toàn</strong>: như hầu hết bản hiện đại, lần bấm đầu không bao giờ trúng mìn.</li>
-    <li><strong>Thắng thua</strong>: mở hết các ô không mìn; đồng hồ đo thời gian của bạn.</li>
-  </ul>
-
-  <h2>Cắm cờ thế nào?</h2>
-  <p>
-    <strong>Chuột phải trên máy tính</strong>; <strong>nhấn giữ trên điện thoại hoặc máy tính bảng</strong>. Cờ không chỉ để
-    tránh bấm nhầm: khi số cờ quanh một con số bằng chính nó, mọi ô kề còn lại đều chắc chắn an toàn.
-  </p>
-  <p>
-    Thao tác mở dây chuyền đó trong đa số phiên bản được kích hoạt bằng nháy đúp. Ở bản thiếu thao tác này, giữa ván bạn phải
-    mở từng ô một — một trong những lý do lớn khiến người chơi chuyển sang các chuyên trang Dò Mìn.
-  </p>
-
-  <h2>Chơi không có chuột (người dùng touchpad)</h2>
-  <p>
-    Trên laptop, «chuột phải» thường là chạm hai ngón, còn «giữ cả hai phím» là cực hình. Hai lựa chọn:
-  </p>
+  <h2>Cách mở và chơi Dò Mìn Google từng bước</h2>
   <ol>
-    <li>Cắn răng dùng cử chỉ hệ thống: chạm hai ngón thay chuột phải, đánh đổi bằng tốc độ.</li>
-    <li>Chuyển sang bản thiết kế cho touchpad: <a href="/vi/">Meathill Minesweeper</a> bỏ hẳn chuột phải — khi số cờ khớp con số,
-      nháy đúp là mở hết, tối ưu cho chuột một phím của Apple, touchpad Mac và điện thoại.</li>
+    <li>Mở trình duyệt, vào Google và nhập <strong>«dò mìn»</strong> hoặc <strong>«dò mìn google»</strong>.</li>
+    <li>Nhấn nút màu xanh <strong>«Chơi»</strong> trong thẻ Doodle tương tác phía trên cùng kết quả tìm kiếm.</li>
+    <li>Chọn cấp độ ở góc trên bên trái (<strong>Dễ</strong>, <strong>Vừa</strong> hoặc <strong>Khó</strong>) và bấm vào bất kỳ ô xanh nào — <strong>lượt bấm đầu tiên không bao giờ trúng mìn</strong>.</li>
+    <li>Dựa vào các con số (mỗi số chỉ tổng số mìn trong 8 ô xung quanh) để cắm cờ 🚩 và mở sạch các ô không có mìn.</li>
   </ol>
 
-  <h2>Điểm yếu: chơi vui, học thì chưa đủ</h2>
-  <p>Là trò giải trí thì rất ổn. Với người muốn tiến bộ, ba điều gây đau:</p>
+  <h2>Cách cắm cờ trên PC, laptop không có chuột và điện thoại</h2>
+  <p>
+    Lưu ý quan trọng cho người dùng laptop: <strong>Dò Mìn Google không hỗ trợ phím Spacebar để cắm cờ</strong> (nhấn phím cách sẽ cuộn trang tìm kiếm xuống). Dưới đây là thao tác chuẩn cho từng thiết bị:
+  </p>
+
+  <div
+    tabindex="0"
+    role="region"
+    aria-labelledby="vi-controls-caption"
+    class="guide-table-wrapper not-prose"
+    style="--col-2: 'Mở ô'; --col-3: 'Cắm / gỡ cờ 🚩';"
+  >
+    <table>
+      <caption id="vi-controls-caption">Bảng thao tác Dò Mìn Google trên từng thiết bị</caption>
+      <thead>
+        <tr>
+          <th>Thiết bị</th>
+          <th>Mở ô</th>
+          <th>Cắm / gỡ cờ 🚩</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>PC / Mac dùng chuột rời</th>
+          <td>Chuột trái</td>
+          <td>Chuột phải vào ô chưa mở</td>
+        </tr>
+        <tr>
+          <th>MacBook (Trackpad)</th>
+          <td>Chạm 1 ngón</td>
+          <td>Chạm 2 ngón cùng lúc hoặc <code>Control + bấm</code></td>
+        </tr>
+        <tr>
+          <th>Laptop Windows (Touchpad)</th>
+          <td>Chạm 1 ngón</td>
+          <td>Chạm 2 ngón hoặc nhấn góc dưới bên phải</td>
+        </tr>
+        <tr>
+          <th>Chromebook</th>
+          <td>Chạm 1 ngón</td>
+          <td>Chạm 2 ngón hoặc giữ <code>Alt + bấm</code></td>
+        </tr>
+        <tr>
+          <th>Điện thoại &amp; Máy tính bảng</th>
+          <td>Chạm nhẹ</td>
+          <td>Nhấn giữ ô hoặc bấm biểu tượng 🚩 / ⛏️ ở thanh dưới</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Thấy chạm hai ngón trên touchpad chậm tay? Chuyển sang <a href="/vi/">Meathill Minesweeper</a> hoặc trang <a href="/vi/unblocked/">chơi Dò Mìn online</a> của chúng tôi: khi số cờ quanh một con số đã đủ, <strong>nháy đúp vào con số đó sẽ mở toàn bộ các ô kề an toàn cùng lúc</strong> mà không cần chuột phải.
+  </p>
+
+  <h2>Điểm hạn chế của bản Google &amp; cách luyện lên cao thủ</h2>
   <ul>
-    <li>Không có <strong>gợi ý xác suất</strong>: thế «tung đồng xu» vẫn mãi là tung đồng xu, bạn không bao giờ biết lựa chọn của mình sát đến đâu.</li>
-    <li>Không có <strong>xem lại ván đấu</strong>: thua là hết — không thể quay lại bước ngoặt.</li>
-    <li>Không có <strong>thống kê</strong>: thời gian và tỉ lệ thắng không lưu giữa các thiết bị, tiến bộ không thấy được.</li>
+    <li><strong>Không có gợi ý xác suất</strong>: gặp thế cờ 50/50 cuối ván bạn chỉ biết đoán mò, dù thực tế có ô chỉ 20% rủi ro so với 70%.</li>
+    <li><strong>Không xem lại được ván thua</strong>: dẫm trúng mìn là kết thúc, không thể tua lại bước đi sai lầm.</li>
+    <li><strong>Kích thước bàn lệch chuẩn cổ điển</strong>: Google dùng lưới 10×8, 18×14 và 24×20 thay vì chuẩn 9×9, 16×16 và 16×30.</li>
   </ul>
   <p>
-    Nếu điều đó quan trọng với bạn, mở một ván <a href="/vi/">Meathill Minesweeper</a>: Chế độ học phủ bản đồ nhiệt xác suất theo
-    thời gian thực, chấm điểm từng quyết định, và bản xem lại vẽ hiệu suất cùng xác suất có mìn đúng thời điểm mỗi cú bấm — biến
-    đoán bừa thành tính toán.
+    Muốn biến đoán mò thành tính toán logic? Luyện ngay các mẫu cơ bản tại bài <a href="/vi/guide/how-to-play/">cách chơi Dò Mìn và mô hình 1-2-1</a>, dựng lại thế cờ khó bằng <a href="/vi/tools/probability-calculator/">Máy tính xác suất Dò Mìn</a>, hoặc bật <strong>Chế độ học</strong> trên <a href="/vi/">Meathill Minesweeper</a>!
   </p>
 </GuideLayout>

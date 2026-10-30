@@ -1,0 +1,210 @@
+---
+import '../styles/mini-board.css';
+import { gameHomePath } from '../i18n';
+import type { SiteLang } from '../i18n';
+
+interface Props {
+  lang: SiteLang;
+  path: string;
+}
+
+interface MiniBoardCopy {
+  badge: string;
+  hint: string;
+  digLabel: string;
+  flagLabel: string;
+  modeAria: string;
+  resetAria: string;
+  fullModeLabel: string;
+  winText: string;
+  loseText: string;
+  cellLabel: string;
+}
+
+const { lang, path } = Astro.props;
+const fullGameHref = gameHomePath(lang);
+
+const COPY: Record<SiteLang, MiniBoardCopy> = {
+  zh: {
+    badge: '9×9 初级热身盘 · 点击任意格立刻开局（首击必安全）',
+    hint: '左键翻开 · 右键/长按或点「🚩 插旗」标雷 · 旗数匹配后双击数字连开',
+    digLabel: '⛏️ 翻开',
+    flagLabel: '🚩 插旗',
+    modeAria: '切换翻开或插旗模式（免鼠标友好）',
+    resetAria: '重新开始 9×9 热身局',
+    fullModeLabel: '切换全屏 / 高级 & 概率热力图 →',
+    winText: '🎉 漂亮通关！想挑战中高级或开启实时地雷概率热力图？',
+    loseText: '💥 踩雷了！打开完整版开启「学习模式」，一眼看清每格是雷概率 →',
+    cellLabel: '第 {y} 行第 {x} 列',
+  },
+  en: {
+    badge:
+      'Play 9×9 Beginner Right Here · Click any cell to start (safe 1st click)',
+    hint: 'Click to dig · Right-click, long-press, or toggle 🚩 Flag (no mouse needed) · Double-click numbers to chord',
+    digLabel: '⛏️ Dig',
+    flagLabel: '🚩 Flag',
+    modeAria: 'Toggle Dig or Flag mode for trackpad and mobile',
+    resetAria: 'Restart 9×9 mini game',
+    fullModeLabel: 'Full Screen / Hard Mode & Live Odds →',
+    winText:
+      '🎉 Cleared! Ready for Medium/Hard boards with live probability hints?',
+    loseText:
+      '💥 Boom! Try Full Mode with the live probability heatmap & replay →',
+    cellLabel: 'Row {y}, Column {x}',
+  },
+  es: {
+    badge:
+      'Juega 9×9 Principiante Aquí · Haz clic en cualquier casilla (1.er clic seguro)',
+    hint: 'Clic para abrir · Clic derecho, pulsación larga o botón 🚩 Bandera (sin ratón) · Doble clic en números para encadenar',
+    digLabel: '⛏️ Abrir',
+    flagLabel: '🚩 Bandera',
+    modeAria: 'Alternar modo Abrir o Bandera para trackpad y celular',
+    resetAria: 'Reiniciar tablero rápido 9×9',
+    fullModeLabel: 'Pantalla completa / Niveles y Pistas →',
+    winText:
+      '🎉 ¡Victoria! ¿Listo para Medio/Difícil con mapa de probabilidad en vivo?',
+    loseText:
+      '💥 ¡Bum! Abre la versión completa con probabilidad en vivo y repetición →',
+    cellLabel: 'Fila {y}, Columna {x}',
+  },
+  ru: {
+    badge:
+      'Сыграйте 9×9 прямо здесь · Нажмите любую клетку (первый ход безопасен)',
+    hint: 'Клик — открыть · Правый клик, удержание или кнопка 🚩 Флаг · Двойной клик по цифре открывает соседей',
+    digLabel: '⛏️ Открыть',
+    flagLabel: '🚩 Флаг',
+    modeAria: 'Переключить режим открытия или флажка',
+    resetAria: 'Начать заново 9×9',
+    fullModeLabel: 'Полный экран / Сложные уровни и вероятности →',
+    winText:
+      '🎉 Победа! Готовы к среднему/сложному уровню с картой вероятностей?',
+    loseText:
+      '💥 Взрыв! Откройте полную версию с живой картой вероятностей и повтором →',
+    cellLabel: 'Строка {y}, Столбец {x}',
+  },
+  vi: {
+    badge:
+      'Chơi ngay bàn 9×9 Dễ tại đây · Bấm ô bất kỳ để bắt đầu (lần đầu luôn an toàn)',
+    hint: 'Bấm để mở · Chuột phải, nhấn giữ hoặc bật nút 🚩 Cắm cờ · Nháy đúp vào số đủ cờ để mở nhanh',
+    digLabel: '⛏️ Mở ô',
+    flagLabel: '🚩 Cắm cờ',
+    modeAria: 'Chuyển chế độ Mở ô hoặc Cắm cờ cho touchpad và điện thoại',
+    resetAria: 'Chơi lại bàn 9×9',
+    fullModeLabel: 'Toàn màn hình / Độ khó cao & Xác suất →',
+    winText:
+      '🎉 Thắng rồi! Thử ngay mức Vừa/Khó kèm bản đồ nhiệt xác suất trực tiếp?',
+    loseText:
+      '💥 Trúng mìn! Mở bản đầy đủ với Chế độ học hiển thị xác suất từng ô →',
+    cellLabel: 'Hàng {y}, Cột {x}',
+  },
+  de: {
+    badge:
+      '9×9 Anfänger direkt hier spielen · Beliebiges Feld klicken (1. Klick sicher)',
+    hint: 'Klick öffnet · Rechtsklick, langes Drücken oder 🚩 Flagge-Schalter (ohne Maus) · Doppelklick auf Zahlen öffnet Nachbarn',
+    digLabel: '⛏️ Öffnen',
+    flagLabel: '🚩 Flagge',
+    modeAria: 'Zwischen Öffnen und Flagge wechseln (für Trackpad & Handy)',
+    resetAria: '9×9-Runde neu starten',
+    fullModeLabel: 'Vollbild / Profi-Modus & Live-Heatmap →',
+    winText:
+      '🎉 Geschafft! Bereit für Mittel/Schwer mit Live-Wahrscheinlichkeiten?',
+    loseText:
+      '💥 Treffer! Im Vollmodus zeigt dir die Heatmap jede Minenchance →',
+    cellLabel: 'Zeile {y}, Spalte {x}',
+  },
+  pt: {
+    badge:
+      'Jogue 9×9 Fácil Aqui Mesmo · Clique em qualquer casa (1º clique seguro)',
+    hint: 'Clique para abrir · Botão direito, toque longo ou botão 🚩 Bandeira (sem mouse) · Duplo clique nos números abre vizinhas',
+    digLabel: '⛏️ Abrir',
+    flagLabel: '🚩 Bandeira',
+    modeAria: 'Alternar modo Abrir ou Bandeira para trackpad e celular',
+    resetAria: 'Reiniciar tabuleiro 9×9',
+    fullModeLabel: 'Tela cheia / Níveis e Probabilidades →',
+    winText:
+      '🎉 Vitória! Pronto para Médio/Difícil com mapa de probabilidade ao vivo?',
+    loseText:
+      '💥 Explodiu! Abra o modo completo com mapa de calor e replay da partida →',
+    cellLabel: 'Linha {y}, Coluna {x}',
+  },
+  fr: {
+    badge:
+      'Jouez en 9×9 Facile ici · Cliquez sur une case pour démarrer (1er clic sûr)',
+    hint: 'Clic pour ouvrir · Clic droit, appui long ou bouton 🚩 Drapeau (sans souris) · Double-clic sur un chiffre pour enchaîner',
+    digLabel: '⛏️ Ouvrir',
+    flagLabel: '🚩 Drapeau',
+    modeAria: 'Basculer entre Ouvrir et Drapeau pour trackpad et mobile',
+    resetAria: 'Recommencer la grille 9×9',
+    fullModeLabel: 'Plein écran / Niveaux & Probabilités →',
+    winText:
+      '🎉 Bravo ! Prêt pour Moyen/Difficile avec la carte thermique en direct ?',
+    loseText:
+      '💥 Boum ! Passez en mode complet pour voir les probabilités en direct →',
+    cellLabel: 'Ligne {y}, Colonne {x}',
+  },
+};
+
+const t = COPY[lang] ?? COPY.en;
+---
+
+<section
+  class="mini-board-card not-prose"
+  data-mini-board
+  data-lang={lang}
+  data-path={path}
+  data-cell-label={t.cellLabel}
+  data-dig-label={t.digLabel}
+  data-flag-label={t.flagLabel}
+  data-win-text={t.winText}
+  data-lose-text={t.loseText}
+  aria-label={t.badge}
+>
+  <div class="mb-header">
+    <p class="mb-badge">{t.badge}</p>
+    <a class="mb-full-cta" data-mb-slot="full-link" href={fullGameHref}>
+      {t.fullModeLabel}
+    </a>
+  </div>
+
+  <div class="mb-stage">
+    <div class="mb-toolbar">
+      <span class="mb-stat" aria-live="polite">
+        💣 <strong data-mb-slot="mines">10</strong>
+      </span>
+      <button
+        type="button"
+        class="mb-mode-btn"
+        data-mb-slot="mode"
+        aria-pressed="false"
+        aria-label={t.modeAria}
+      >
+        {t.digLabel}
+      </button>
+      <button
+        type="button"
+        class="mb-reset-btn"
+        data-mb-slot="reset"
+        aria-label={t.resetAria}
+        title={t.resetAria}
+      >
+        😊
+      </button>
+      <span class="mb-stat mb-timer" data-mb-slot="timer">0:00</span>
+    </div>
+
+    <div class="mb-grid" data-mb-slot="grid" role="grid"></div>
+  </div>
+
+  <div class="mb-banner" data-mb-slot="banner" hidden>
+    <span data-mb-slot="banner-text"></span>
+    <a class="mb-banner-link" data-mb-slot="full-link" href={fullGameHref}>
+      {t.fullModeLabel}
+    </a>
+  </div>
+
+  <p class="mb-hint">{t.hint}</p>
+</section>
+
+<script>
+  import '../scripts/mini-board';
+</script>

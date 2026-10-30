@@ -1,0 +1,130 @@
+---
+import GuideLayout from '../../../layouts/GuideLayout.astro';
+import type { FaqItem, HowToData } from '../../../types';
+
+const faq: FaqItem[] = [
+  {
+    question: 'Como abrir o Campo Minado do Google?',
+    answer:
+      'Digite "campo minado" ou "minesweeper" na busca do Google e clique em "Jogar" no tabuleiro que aparece no topo dos resultados. Não precisa baixar aplicativo nem criar conta.',
+  },
+  {
+    question: 'Como colocar bandeira no Campo Minado do Google (PC e celular)?',
+    answer:
+      'No PC com mouse, clique com o botão direito. No trackpad de notebook, toque com dois dedos (ou Control + clique no Mac / Alt + clique no Chromebook). No celular ou tablet, segure o dedo sobre a casa ou toque no ícone de bandeira 🚩 na barra inferior.',
+  },
+  {
+    question: 'Dá para jogar o Campo Minado do Google sem internet?',
+    answer:
+      'O minijogo da busca do Google precisa de conexão para carregar a página pela primeira vez. Porém, depois que o tabuleiro já estiver aberto na aba — ou em versões web locais como o Meathill Minesweeper — você consegue terminar a partida mesmo se a rede cair.',
+  },
+  {
+    question: 'Quais são os níveis do Campo Minado do Google?',
+    answer:
+      'O jogo traz três níveis: Fácil (10×8 com 10 minas), Médio (18×14 com 40 minas) e Difícil (24×20 com 99 minas). Se você prefere as medidas oficiais clássicas (9×9, 16×16 e 16×30) com estatísticas salvas, jogue no Meathill Minesweeper.',
+  },
+  {
+    question: 'Tem atalho de barra de espaço para bandeira no Google?',
+    answer:
+      'Não. Diferente de clones para desktop, o Campo Minado oficial do Google não aceita barra de espaço nem atalhos de teclado — apertar Espaço apenas rola a página de busca.',
+  },
+];
+
+const howTo: HowToData = {
+  name: 'Como abrir e jogar o Campo Minado do Google',
+  steps: [
+    'Pesquise "campo minado" no Google e clique em Jogar no cartão interativo acima dos resultados.',
+    'Escolha a dificuldade (Fácil, Médio ou Difícil) e clique em qualquer casa — o primeiro clique é sempre seguro.',
+    'Use os números revelados para contar quantas minas existem nas 8 casas vizinhas.',
+    'Marque as minas com clique direito, toque de dois dedos ou toque longo no celular e abra todas as casas seguras para vencer.',
+  ],
+};
+---
+
+<GuideLayout
+  lang="pt"
+  title="Campo Minado do Google: Como Jogar Grátis Online, Dicas e Controles (2026)"
+  heading="Campo Minado do Google: como jogar, bandeiras e controles"
+  description="Guia completo do Campo Minado do Google (2026): como abrir na busca, colocar bandeiras no PC, notebook sem mouse e celular, níveis e truques para vencer."
+  path="/guide/google-minesweeper/"
+  keywords="campo minado do google, google campo minado, como jogar campo minado no google, como colocar bandeira no campo minado, campo minado sem mouse"
+  updated="2026-10-30"
+  lede="O Campo Minado do Google é o jogo clássico escondido diretamente na página de busca: basta pesquisar «campo minado» para abrir um tabuleiro gratuito no navegador, sem instalar nada. Veja abaixo como jogar, marcar bandeiras sem mouse e evoluir além do básico."
+  faq={faq}
+  howTo={howTo}
+>
+  <p>
+    O <strong>Campo Minado do Google</strong> é um minijogo gratuito integrado aos resultados da Pesquisa Google que recria o quebra-cabeça clássico de lógica em três dificuldades (Fácil, Médio e Difícil), funcionando direto no navegador do computador ou celular sem download nem cadastro.
+  </p>
+
+  <h2>Como abrir e jogar o Campo Minado do Google passo a passo</h2>
+  <ol>
+    <li>Acesse o Google e digite <strong>«campo minado»</strong> ou <strong>«google minesweeper»</strong> na barra de pesquisa.</li>
+    <li>Clique no botão azul <strong>Jogar</strong> dentro do painel colorido que surge no topo dos resultados.</li>
+    <li>Selecione o nível no menu superior (<strong>Fácil</strong>, <strong>Médio</strong> ou <strong>Difícil</strong>) e clique em qualquer quadrado para abrir a primeira área segura.</li>
+    <li>Leia os números para deduzir as minas nas 8 casas ao redor, marque-as com bandeiras e revele todas as casas limpas.</li>
+  </ol>
+
+  <h2>Como colocar bandeiras (PC, Notebook sem mouse e Celular)</h2>
+  <p>
+    Ao contrário de alguns sites dedicados, <strong>o Campo Minado do Google não possui atalho na barra de espaço</strong> (apertar Espaço apenas rola a página). Confira o comando exato em cada aparelho:
+  </p>
+  <div
+    tabindex="0"
+    role="region"
+    aria-labelledby="pt-controls-caption"
+    class="guide-table-wrapper not-prose"
+    style="--col-2: 'Abrir casa'; --col-3: 'Colocar / tirar bandeira 🚩';"
+  >
+    <table>
+      <caption id="pt-controls-caption">Controles do Campo Minado do Google por dispositivo</caption>
+      <thead>
+        <tr>
+          <th>Dispositivo</th>
+          <th>Abrir casa</th>
+          <th>Colocar / tirar bandeira 🚩</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>PC / Mac com mouse</th>
+          <td>Clique esquerdo</td>
+          <td>Clique direito sobre a casa fechada</td>
+        </tr>
+        <tr>
+          <th>MacBook (Trackpad)</th>
+          <td>Toque com 1 dedo</td>
+          <td>Toque com 2 dedos ou <code>Control + clique</code></td>
+        </tr>
+        <tr>
+          <th>Notebook Windows (Touchpad)</th>
+          <td>Toque com 1 dedo</td>
+          <td>Toque com 2 dedos ou canto inferior direito</td>
+        </tr>
+        <tr>
+          <th>Chromebook</th>
+          <td>Toque com 1 dedo</td>
+          <td>Toque com 2 dedos ou <code>Alt + clique</code></td>
+        </tr>
+        <tr>
+          <th>Celular e Tablet</th>
+          <td>Toque rápido</td>
+          <td>Toque longo (segurar) ou botão 🚩 / ⛏️ no rodapé</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    Sofrendo no trackpad? No <a href="/pt/">Meathill Minesweeper</a> você nem precisa do botão direito no meio do jogo: quando as bandeiras ao redor de um número batem com o valor dele, <strong>um duplo clique abre todas as vizinhas seguras de uma vez</strong>.
+  </p>
+
+  <h2>O que falta na versão do Google para quem quer evoluir</h2>
+  <ul>
+    <li><strong>Sem dicas de probabilidade</strong>: em lances de 50/50 você chuta no escuro sem saber qual casa tinha menor risco real.</li>
+    <li><strong>Sem replay da partida</strong>: ao explodir uma mina, não dá para voltar ao lance exato do erro.</li>
+    <li><strong>Grade fora do padrão oficial</strong>: o Google usa 10×8, 18×14 e 24×20 em vez dos tabuleiros clássicos 9×9, 16×16 e 16×30.</li>
+  </ul>
+  <p>
+    Quer treinar a sério? Abra uma partida no <a href="/pt/">Meathill Minesweeper</a> com <strong>Modo Aprendizado</strong> em tempo real, ou analise qualquer posição na <a href="/pt/tools/probability-calculator/">Calculadora de Probabilidade do Campo Minado</a> e revise as regras completas no <a href="/pt/guide/how-to-play/">guia de como jogar Campo Minado</a>.
+  </p>
+</GuideLayout>

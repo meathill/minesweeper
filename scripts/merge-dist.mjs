@@ -33,7 +33,7 @@ function patchLocaleGameHtmlAssets() {
   const headInject = [...cssLinks, ...modulePreloads].join('\n    ');
   const bodyInject = moduleScripts.join('\n    ');
 
-  for (const lang of ['en', 'es', 'ru', 'vi', 'de']) {
+  for (const lang of ['en', 'es', 'ru', 'vi', 'de', 'pt', 'fr']) {
     const file = path.join(distDir, lang, 'index.html');
     if (!existsSync(file)) continue;
     let html = readFileSync(file, 'utf8');
@@ -67,6 +67,8 @@ for (const reserved of [
   'ru/index.html',
   'vi/index.html',
   'de/index.html',
+  'pt/index.html',
+  'fr/index.html',
 ]) {
   if (existsSync(path.join(contentDistDir, reserved))) {
     console.error(`site/dist/${reserved} 与游戏 SPA 页面冲突，请移除该页面`);
@@ -98,7 +100,7 @@ const lastmod = new Date().toISOString().slice(0, 10);
 const urls = [
   { loc: '/', priority: '1.0' },
   // 游戏多语言首页由 public/<lang>/index.html 提供静态文件，需手动列入 sitemap
-  ...['/en/', '/es/', '/ru/', '/vi/', '/de/'].map((loc) => ({
+  ...['/en/', '/es/', '/ru/', '/vi/', '/de/', '/pt/', '/fr/'].map((loc) => ({
     loc,
     priority: '0.8',
   })),

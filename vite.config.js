@@ -8,7 +8,7 @@ import {
   readGoogleAnalyticsId,
 } from './scripts/google-analytics.mjs';
 
-const GAME_LOCALES = ['en', 'es', 'ru', 'vi', 'de'];
+const GAME_LOCALES = ['en', 'es', 'ru', 'vi', 'de', 'pt', 'fr'];
 
 function googleAnalyticsPlugin() {
   let measurementId = '';
@@ -49,7 +49,9 @@ function googleAnalyticsPlugin() {
           return;
         }
         const url = req.url?.split('?')[0] ?? '';
-        const match = url.match(/^\/(en|es|ru|vi|de)(?:\/(?:index\.html)?)?$/);
+        const match = url.match(
+          /^\/(en|es|ru|vi|de|pt|fr)(?:\/(?:index\.html)?)?$/,
+        );
         if (!match) {
           next();
           return;

@@ -240,3 +240,107 @@ body {
     --tw-prose-invert-bullets: var(--meathill-rule-strong);
   }
 }
+
+/* 响应式对比表：桌面端固定表头，窄容器下自动切换为带字段标签的卡片流 */
+.guide-table-wrapper {
+  overflow-x: auto;
+  max-inline-size: 100%;
+  container-type: inline-size;
+  margin-block: 16px 24px;
+  border: 1px solid var(--meathill-rule-strong);
+  border-radius: var(--meathill-radius-large);
+  background: var(--meathill-paper);
+}
+
+.guide-table-wrapper:focus-visible {
+  outline: none;
+  box-shadow: var(--meathill-focus-ring);
+}
+
+.guide-table-wrapper table {
+  width: 100%;
+  margin: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 14px;
+}
+
+.guide-table-wrapper caption {
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 700;
+  color: var(--meathill-ink);
+  border-bottom: 1px solid var(--meathill-rule);
+}
+
+.guide-table-wrapper thead {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+  background: var(--meathill-fluff);
+}
+
+.guide-table-wrapper th,
+.guide-table-wrapper td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--meathill-rule);
+  vertical-align: top;
+}
+
+.guide-table-wrapper tbody tr:last-child th,
+.guide-table-wrapper tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.guide-table-wrapper tbody th {
+  position: sticky;
+  inset-inline-start: 0;
+  background: var(--meathill-paper);
+  color: var(--meathill-ink);
+  font-weight: 700;
+}
+
+@container (width < 540px) {
+  .guide-table-wrapper table,
+  .guide-table-wrapper caption,
+  .guide-table-wrapper tbody,
+  .guide-table-wrapper tr,
+  .guide-table-wrapper th,
+  .guide-table-wrapper td {
+    display: block;
+  }
+
+  .guide-table-wrapper thead {
+    display: none;
+  }
+
+  .guide-table-wrapper tbody tr {
+    border-bottom: 1px solid var(--meathill-rule-strong);
+    padding-bottom: 6px;
+  }
+
+  .guide-table-wrapper tbody th {
+    position: static;
+    background: var(--meathill-fluff);
+    border-bottom: 1px solid var(--meathill-rule);
+    padding: 8px 12px;
+  }
+
+  .guide-table-wrapper td {
+    border-bottom: none;
+    padding: 6px 12px;
+  }
+
+  .guide-table-wrapper td:nth-child(2)::before {
+    content: var(--col-2, "") ": ";
+    font-weight: 700;
+    color: var(--meathill-ink);
+  }
+
+  .guide-table-wrapper td:nth-child(3)::before {
+    content: var(--col-3, "") ": ";
+    font-weight: 700;
+    color: var(--meathill-ink);
+  }
+}

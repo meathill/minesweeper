@@ -1,0 +1,159 @@
+{
+  "brand": {
+    "studio": "Meathill Studio"
+  },
+  "header": {
+    "title": "Meathill Minesweeper",
+    "comment": "Comentários",
+    "level": "Nível",
+    "levels": {
+      "Easy": "Fácil",
+      "Medium": "Médio",
+      "Hard": "Difícil",
+      "Custom": "Personalizado"
+    }
+  },
+  "toolbar": {
+    "mines": "Minas: {count}",
+    "hint": "Dica",
+    "hintTitle": "Dica (H)",
+    "learningMode": "Modo Aprendizado",
+    "learnTitle": "Alternar Modo Aprendizado (L)",
+    "newGameTitle": "Novo jogo (F2 / N)",
+    "learningDropdown": {
+      "enableHeatmap": "Mapa de calor",
+      "showPercent": "Mostrar %",
+      "showFraction": "Mostrar fração",
+      "gradient": "0%→100%",
+      "disabledHint": "Mostra a probabilidade de mina em tempo real"
+    }
+  },
+  "game": {
+    "flag": "🚩",
+    "bomb": "💥",
+    "revealedBomb": "💣"
+  },
+  "chart": {
+    "title": "⭐ Desempenho e Eficiência de Decisão (clique para rever o tabuleiro)",
+    "download": "⬇ Baixar dados da partida (JSON)",
+    "openSafe": "Abrir seguro",
+    "openExact": "Abrir (exato)",
+    "flag": "Bandeira",
+    "flagExact": "Bandeiras (exato)",
+    "efficiency": "Eficiência",
+    "mineProb": "Prob. de mina",
+    "rpm": "RPM (ações/min)",
+    "efficiencyAxis": "Eficiência / Prob. de mina ×10",
+    "time": "Tempo",
+    "timeMinutes": "Tempo (min)",
+    "timeSeconds": "Tempo (seg)",
+    "selected": "Selecionado",
+    "cell": "Casa",
+    "clearSelection": "Limpar",
+    "clickHint": "Clique em qualquer ponto de ação e o tabuleiro volta exatamente àquele momento — casas abertas, bandeiras e interrogações",
+    "legendTitle": "Legenda · 2 áreas + 2 linhas",
+    "legendArea": "Legenda do replay: abrir seguro, bandeira, eficiência, prob. de mina",
+    "legendAria": "Legenda do replay: abrir seguro, bandeira, eficiência, prob. de mina",
+    "bucket": "bloco",
+    "legendExact": "tempo exato",
+    "legendLeftAxis": "Esq: velocidade (área RPM)",
+    "legendRightAxis": "Dir: qualidade (linhas 0-10)",
+    "legendClickHint": "Clique nos pontos para rever · vermelho<6 laranja<9 verde maior",
+    "replayed": "Tabuleiro restaurado para aquele momento",
+    "backToFinal": "Voltar ao final",
+    "resetWindow": "Redefinir",
+    "lowScoreList": "Replay de notas baixas · clique aqui",
+    "lowScoreHint": "Ordenado por nota <9 — clique em um botão para restaurar o tabuleiro logo após essa jogada"
+  },
+  "seo": {
+    "whatIsTitle": "O que é o Meathill Minesweeper?",
+    "whatIsDesc": "Um <strong>Campo Minado moderno para aprender jogando</strong>. Tabuleiros clássicos de 9×9 / 16×16 / 16×30 com bandeiras, além de um <strong>Modo Aprendizado</strong> que calcula em tempo real a probabilidade de mina de cada casa fechada, sobrepõe um mapa de calor verde-amarelo-vermelho a 75% e avalia cada jogada de 0 a 10 em relação à melhor opção. Sem precisar de botão direito — duplo clique para abrir em cadeia, perfeito para trackpad e celular.",
+    "howToPlayTitle": "Como jogar Campo Minado",
+    "howToPlay": [
+      "<strong>Clique esquerdo</strong> para abrir. O primeiro clique nunca acerta uma mina; os números contam as minas nas 8 casas vizinhas.",
+      "<strong>Clique direito em três estados</strong>: alterna entre <strong>nada → 🚩 → ❓ → nada</strong>. 🚩 marca minas confirmadas, ❓ marca casas duvidosas (não gasta bandeira e ainda pode ser aberta); o topo mostra as minas restantes. No celular, toque longo funciona como clique direito.",
+      "<strong>Duplo clique para abrir em cadeia (otimizado para Apple / trackpad)</strong>: o chording clássico exige pressionar esquerdo+direito juntos. Aqui, se as bandeiras ao redor de um número igualam o número, <strong>dê duplo clique no número</strong> para abrir o restante — sem botão direito. No PC esquerdo+direito continua funcionando, e abrir em cadeia vale nota 10.",
+      "Abra todas as casas sem mina para vencer; se acertar uma mina, o tabuleiro é revelado.",
+      "<strong>Atalhos</strong>: <kbd class=\"kbd kbd-xs\">F2</kbd>/<kbd class=\"kbd kbd-xs\">N</kbd> novo jogo, <kbd class=\"kbd kbd-xs\">H</kbd> dica, <kbd class=\"kbd kbd-xs\">L</kbd> Modo Aprendizado (F2 igual ao Campo Minado clássico do Windows; ignorados ao digitar)."
+    ],
+    "learningTitle": "O que é o Modo Aprendizado?",
+    "heatmapTitle": "Mapa de calor de probabilidade: enxergue o risco",
+    "heatmapDesc": "Com o Modo Aprendizado ativo, o solver monta restrições apenas a partir dos números abertos (<code>exatamente essa quantidade de minas entre as vizinhas fechadas</code>; bandeiras são apenas palpites seus e são ignoradas), separa as casas de fronteira em componentes e enumera com exatidão, enquanto casas isoladas dividem igualmente as minas restantes. Cada casa recebe <code>P(mina) 0-1</code>, exibido como <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#22c55e\"></span> verde (0%) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#eab308\"></span> amarelo (50%) → <span class=\"inline-block w-3 h-3 rounded align-middle\" style=\"background:#ef4444\"></span> vermelho (100%) com 75% de opacidade. Ative <code>%</code> e <code>fração</code> separadamente — só a cor já treina sua intuição.",
+    "efficiencyTitle": "Eficiência de decisão: quão boa foi a jogada?",
+    "efficiencyDesc": "Pontuação por diferença fixa: mede apenas o quão distante sua jogada ficou da <strong>melhor opção naquele instante</strong> — <code>nota = 10 × (1 − |prob. escolhida − prob. ótima| ÷ 0,5)</code>. Abrir é comparado à menor probabilidade <code>pMin</code>, bandeira à maior <code>pMax</code>, remover bandeira ao inverso. Uma diferença de 5 pontos custa só 1 ponto, então <strong>tabuleiros fáceis nunca punem você</strong>; 50 pontos de diferença zeram a nota. Duplo clique em cadeia vale sempre <strong>10</strong>.",
+    "chartTitle": "Como ler o gráfico de replay",
+    "chartDesc": "Aparece ao fim da partida, com <strong>controle deslizante de tempo</strong> (arraste as pontas para dar zoom em qualquer trecho) e <strong>download em JSON</strong>. Eixo X é o <strong>tempo</strong>, eixo Y esquerdo é velocidade (áreas), direito é qualidade (linhas) —",
+    "chartBullets": [
+      "<strong class=\"text-[#4bc0c0]\">Abrir seguro (área turquesa · esq)</strong>: área de RPM em blocos de 6s — quanto mais alta, mais rápidas as aberturas em cadeia.",
+      "<strong class=\"text-[#FF6B6B]\">Bandeira (área vermelha · esq)</strong>: área de RPM também em blocos de 6s — quando você estava marcando.",
+      "<strong class=\"text-[#f59e0b]\">Eficiência (pontos laranjas + linha · dir 0-10)</strong>: <strong>marcada no instante exato do clique</strong>. 10 = ótimo naquele momento; <6 vermelho, <9 laranja. <strong>Clique em qualquer ponto e todo o tabuleiro volta para logo após essa jogada</strong> (abertas, bandeiras, interrogações).",
+      "<strong class=\"text-[#a855f7]\">Prob. de mina (triângulos roxos, tracejado · dir 0-10 = prob×10)</strong>: apenas em abrir/duplo clique, a P(mina) daquela casa. Compare com o laranja: roxo alto + laranja baixo = chute arriscado."
+    ],
+    "chartHint": "<strong>Como usar:</strong> procure vales na linha laranja e veja se o roxo sobe junto — essa é a jogada para revisar. Clique no ponto para rever o tabuleiro; use o <strong>controle de tempo</strong> para ampliar trechos densos; baixe o JSON com todos os snapshots para análise profunda.",
+    "progressTitle": "Do iniciante ao especialista",
+    "progressSteps": [
+      "Comece com o mapa de calor ligado e crie a intuição verde=abrir, vermelho=bandeira;",
+      "Desligue %/fração, decida só pela cor e busque manter nota 10;",
+      "Desligue o Modo Aprendizado e encare o Difícil 16×30 — mantendo RPM estável e laranja ≥9."
+    ],
+    "guides": [
+      {
+        "label": "Como jogar Campo Minado: regras, dicas e guia",
+        "href": "/pt/guide/how-to-play/"
+      },
+      {
+        "label": "Campo Minado do Google: como abrir, bandeiras e jogar sem mouse",
+        "href": "/pt/guide/google-minesweeper/"
+      },
+      {
+        "label": "Calculadora de Probabilidade do Campo Minado",
+        "href": "/pt/tools/probability-calculator/"
+      },
+      {
+        "label": "Campo Minado Online — jogar grátis no navegador",
+        "href": "/pt/unblocked/"
+      }
+    ],
+    "guidesTitle": "Guias e ferramentas",
+    "keywords": "Palavras-chave: Meathill Minesweeper · Campo Minado · aprender jogando · probabilidade de mina · dicas campo minado · sem botão direito · trackpad · Modo Aprendizado · eficiência de decisão"
+  },
+  "faq": {
+    "title": "Perguntas frequentes",
+    "items": [
+      {
+        "q": "O que é o Meathill Minesweeper?",
+        "a": "Meathill Minesweeper (minesweeper.meathill.com) é um Campo Minado para aprender jogando com tabuleiros 9×9/16×16/16×30, marcação em três estados (bandeira/interrogação), abertura em cadeia com duplo clique e Modo Aprendizado: mapa de calor de probabilidade ao vivo + nota de eficiência e replay completo após a partida."
+      },
+      {
+        "q": "Como a probabilidade é calculada?",
+        "a": "As restrições vêm apenas dos números abertos (cada número exige exatamente N minas entre suas vizinhas fechadas — bandeiras são ignoradas por poderem estar erradas), divididas em componentes e enumeradas exatamente; casas isoladas dividem as minas restantes por igual, gerando P(mina) 0-1 como camada verde→amarela→vermelha a 75%."
+      },
+      {
+        "q": "O que significa eficiência de 0 a 10?",
+        "a": "Pontuação por diferença fixa em relação à melhor opção do momento. Abrir é comparado à menor probabilidade pMin, bandeira à maior pMax; nota = 10 × (1 − diferença ÷ 0,5). 5 pontos percentuais custam 1 ponto; 50 custam todos os 10. Duplo clique em cadeia vale sempre 10."
+      },
+      {
+        "q": "Como abrir em cadeia no Mac / trackpad?",
+        "a": "Otimizado: não precisa pressionar dois botões — dê duplo clique em qualquer número aberto cujas bandeiras igualem o número para abrir o resto. Funciona em trackpad, mouse Apple e celular."
+      },
+      {
+        "q": "Como ler o gráfico de replay?",
+        "a": "Eixo esquerdo = velocidade (áreas RPM de 6s), eixo direito = qualidade (linhas 0-10). Pontos laranjas são eficiência e triângulos roxos a prob. de mina ×10. <strong>Clique em qualquer ponto para restaurar o tabuleiro após aquela jogada</strong>; use o controle deslizante para dar zoom ou baixe o JSON completo."
+      },
+      {
+        "q": "Para quem é indicado?",
+        "a": "Iniciantes usam o mapa de calor para ganhar intuição, intermediários usam só as cores, veteranos desligam o Modo Aprendizado no Difícil.<br/>Site: <a class=\"link\" href=\"https://minesweeper.meathill.com/pt/\">https://minesweeper.meathill.com/pt/</a> · Estúdio: <a class=\"link\" href=\"https://meathill.com\">Meathill Studio</a>"
+      }
+    ]
+  },
+  "footer": {
+    "rights": "Aprenda jogando."
+  },
+  "meta": {
+    "title": "Meathill Minesweeper - Campo Minado para Aprender Jogando | Mapa de Calor e Eficiência",
+    "description": "Campo Minado moderno para aprender jogando: sem botão direito, abertura em cadeia com duplo clique (otimizado para Apple/trackpad), mapa de calor de probabilidade ao vivo e nota de eficiência 0-10. Fácil/Médio/Difícil + replay.",
+    "ogTitle": "Meathill Minesweeper - Campo Minado para Aprender Jogando",
+    "ogDescription": "O Modo Aprendizado mostra um mapa de calor 75% verde-amarelo-vermelho por casa e registra RPM e eficiência — sem botão direito, duplo clique no trackpad.",
+    "twitterDescription": "Veja a probabilidade de cada casa e avalie cada decisão — um Campo Minado para evoluir de verdade."
+  }
+}

@@ -74,7 +74,9 @@ A: Beginners use heatmap for intuition, intermediates use color only, experts tu
 - Русский：https://minesweeper.meathill.com/ru/
 - Tiếng Việt：https://minesweeper.meathill.com/vi/
 - Deutsch：https://minesweeper.meathill.com/de/
-- 教程 / 计算器 / Unblocked：各语言前缀下的 /guide/how-to-play/、/guide/google-minesweeper/、/tools/probability-calculator/、/unblocked/
+- Português (Brasil)：https://minesweeper.meathill.com/pt/
+- Français：https://minesweeper.meathill.com/fr/
+- 教程 / 计算器 / Unblocked：各语言前缀下的 /guide/how-to-play/、/guide/google-minesweeper/（首屏内嵌 9×9 可交互初级微缩棋盘与无鼠标插旗全设备键位表）、/tools/probability-calculator/、/unblocked/
 
 ## 链接
 - 游戏源码：https://github.com/meathill/minesweeper

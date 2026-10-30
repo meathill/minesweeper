@@ -4,100 +4,130 @@ import type { FaqItem, HowToData } from '../../../types';
 
 const faq: FaqItem[] = [
   {
-    question: 'Wie öffnet man Google Minesweeper?',
+    question: 'Wie öffnet man Google Minesweeper kostenlos?',
     answer:
-      'Tippe „Minesweeper“ in die Google-Suche — direkt über den Ergebnissen erscheint das spielbare Brett. Keine App, kein Download, kein Konto.',
+      'Tippe „Minesweeper“ oder „Minesweeper Google“ in die Google-Suche ein und klicke direkt über den Suchergebnissen auf den blauen Button „Spielen“. Kein Download und kein Konto nötig.',
   },
   {
-    question: 'Wie setzt man bei Google Minesweeper Flaggen?',
+    question:
+      'Wie setzt man bei Google Minesweeper Flaggen (PC, Trackpad & Handy)?',
     answer:
-      'Rechtsklick auf ein Feld am Computer; langes Drücken am Handy oder Tablet. Flaggen markieren Felder, bei denen du sicher bist, dass dort eine Mine liegt.',
+      'Mit Maus per Rechtsklick auf ein verdecktes Feld. Auf dem Laptop-Trackpad per Zweifinger-Tipp (oder Control + Klick am MacBook / Alt + Klick am Chromebook). Am Smartphone oder Tablet durch langes Drücken oder über das 🚩-Symbol am unteren Rand.',
   },
   {
-    question: 'Ist Google Minesweeper kostenlos?',
+    question: 'Gibt es bei Google Minesweeper eine Leertasten-Abkürzung?',
     answer:
-      'Ja, komplett kostenlos. Es ist ein eingebautes Google-Easter-Egg, eine Anmeldung ist nirgends nötig.',
+      'Nein. Anders als manche Desktop-Klone unterstützt das offizielle Google-Suchspiel weder Leertaste noch Tastaturkürzel — die Leertaste scrollt lediglich die Ergebnisseite nach unten.',
   },
   {
-    question: 'Was ist der Unterschied zum klassischen Minesweeper?',
+    question: 'Kann man Google Minesweeper offline spielen?',
     answer:
-      'Die Regeln sind identisch. Der Unterschied liegt drumherum: keine Wahrscheinlichkeits-Hinweise, keine Wiederholung der Partie, keine gespeicherten Statistiken über Geräte hinweg.',
+      'Zum ersten Laden der Suchseite wird Internet benötigt. Sobald das Spielfeld im Tab geöffnet ist — oder in einer lokal im Browser laufenden Version wie Meathill Minesweeper — läuft die aktuelle Runde auch ohne Verbindung weiter.',
   },
   {
-    question: 'Kann man am Handy spielen?',
+    question: 'Welche Schwierigkeitsgrade hat Google Minesweeper?',
     answer:
-      'Ja — suche „Minesweeper“ im mobilen Browser und spiele direkt in den Ergebnissen; langes Drücken setzt Flaggen. Wenn die Touch-Steuerung unbequem ist, spielt sich eine Version ohne rechte Maustaste wie Meathill Minesweeper am Handy angenehmer.',
+      'Drei Stufen: Leicht (10×8 · 10 Minen), Mittel (18×14 · 40 Minen) und Schwer (24×20 · 99 Minen). Für die klassischen Turniergrößen 9×9, 16×16 und 16×30 inklusive Live-Wahrscheinlichkeiten empfiehlt sich Meathill Minesweeper.',
   },
 ];
 
 const howTo: HowToData = {
   name: 'Google Minesweeper öffnen und spielen',
   steps: [
-    'Tippe „Minesweeper“ in die Google-Suche — das spielbare Brett erscheint über den Ergebnissen.',
-    'Wähle eine Schwierigkeit und klicke auf ein beliebiges Feld — der erste Klick ist sicher.',
-    'Lies die Zahlen: jede zählt die Minen in den 8 Nachbarfeldern.',
-    'Rechtsklick oder langes Drücken setzt Flaggen; öffne alle sicheren Felder, um zu gewinnen.',
+    'Suche bei Google nach „Minesweeper“ und klicke oben in der Infokarte auf „Spielen“.',
+    'Wähle links oben Leicht, Mittel oder Schwer und klicke auf ein beliebiges Feld — der erste Klick ist immer minenfrei.',
+    'Nutze die aufgedeckten Zahlen, um die Minen in den 8 Nachbarfeldern zu zählen.',
+    'Markiere Minen per Rechtsklick, Zweifinger-Tipp oder langem Drücken und decke alle sicheren Felder auf.',
   ],
 };
 ---
 
 <GuideLayout
   lang="de"
-  title="Google Minesweeper: öffnen, Flaggen setzen, spielen - Meathill Minesweeper"
-  heading="Google Minesweeper: so wird gespielt"
-  description="Alles über Google Minesweeper: wie man es aus der Suche öffnet, wie man mit Rechtsklick und langem Drücken Flaggen setzt, was die Zahlen bedeuten — und wo es für ambitionierte Spieler zu wenig ist."
+  title="Google Minesweeper: Kostenlos Spielen, Flaggen & Steuerung (2026)"
+  heading="Google Minesweeper: kostenlos spielen, Flaggen setzen & Tipps"
+  description="Alles zu Google Minesweeper (2026): schnell in der Suche starten, Flaggen setzen am PC, Laptop-Trackpad ohne Maus & Handy, Stufen und Profi-Tipps."
   path="/guide/google-minesweeper/"
-  keywords="google minesweeper, minesweeper google, minesweeper flagge setzen, minesweeper ohne maus spielen"
-  updated="2026-09-03"
-  lede="Google Minesweeper ist das Easter Egg in der Suche: Tippe „Minesweeper“ und ein spielbares Brett erscheint über den Ergebnissen, mit identischen Regeln zum klassischen Minesweeper. Hier steht, wie du es öffnest, wie die Gesten funktionieren — und wann sich eine vollständigere Version lohnt."
+  keywords="minesweeper google, google minesweeper, google minesweeper flagge setzen, minesweeper ohne maus spielen, google minesweeper kostenlos"
+  updated="2026-10-30"
+  lede="Direkt loslegen? Klicke auf ein beliebiges Feld im 9×9-Schnellbrett direkt unterhalb (mit eingebautem 🚩-Schalter ohne rechte Maustaste) oder lies hier alle Steuerungen, Trackpad-Gesten und Tricks für Google Minesweeper nach."
   faq={faq}
   howTo={howTo}
 >
-  <h2>Wie öffnet man Google Minesweeper?</h2>
   <p>
-    Der schnellste Weg: <strong>suche „Minesweeper“ bei Google</strong>. Ein spielbares Brett ist direkt über den Ergebnissen
-    eingebaut — klicken und losspielen. Es stammt aus der Doodle-/Easter-Egg-Reihe von Google: nichts zu installieren, nirgends anzumelden.
+    <strong>Google Minesweeper</strong> ist das kostenlose Logik-Easter-Egg direkt in der Google-Suche: Nach der Eingabe von „Minesweeper“ startet über den Suchergebnissen sofort ein spielbares Brett in drei Schwierigkeitsgraden (Leicht, Mittel und Schwer) auf PC, Laptop und Smartphone — ganz ohne Installation.
   </p>
 
-  <h2>Welche Regeln gelten?</h2>
-  <p>Identisch mit dem klassischen Minesweeper:</p>
-  <ul>
-    <li><strong>Die Zahlen</strong>: ein geöffnetes Feld zählt die Minen in den 8 Nachbarfeldern.</li>
-    <li><strong>Flaggen</strong>: markiere bekannte Minen, um Fehlklicks zu vermeiden.</li>
-    <li><strong>Sicherer erster Klick</strong>: wie fast überall modern, trifft der erste Klick nie eine Mine.</li>
-    <li><strong>Gewinnen</strong>: öffne alle Felder ohne Mine; die Uhr misst deine Zeit.</li>
-  </ul>
-
-  <h2>Wie setzt man Flaggen?</h2>
-  <p>
-    <strong>Rechtsklick am Computer</strong>; <strong>langes Drücken am Handy oder Tablet</strong>. Flaggen sind mehr als
-    Fehlklick-Schutz: Stimmen die Flaggen um eine Zahl mit der Zahl überein, sind alle restlichen Nachbarn garantiert sicher.
-  </p>
-  <p>
-    Dieses öffnen per Doppelklick fehlt in manchen Versionen — dann wird die Mitte des Spiels zum Feld-für-Feld-Debuttieren,
-    ein Hauptgrund, warum Spieler irgendwann zu spezialisierten Minesweeper-Seiten wechseln.
-  </p>
-
-  <h2>Spielen ohne Maus (Trackpad-Nutzer)</h2>
-  <p>
-    Am Laptop ist „Rechtsklick“ meist ein Zweifinger-Tipp, und „beide Tasten zusammen“ ist Qual. Zwei Wege:
-  </p>
+  <h2>Google Minesweeper Schritt für Schritt starten</h2>
   <ol>
-    <li>Mit den Systemgesten durchhalten: Zweifinger-Tipp statt Rechtsklick, bezahlt mit Tempo.</li>
-    <li>Wechsel zu einer Trackpad-orientierten Version: <a href="/de/">Meathill Minesweeper</a> kommt ganz ohne rechte Maustaste aus —
-      stimmen Flaggen mit einer Zahl überein, öffnet ein Doppelklick den Rest; abgestimmt auf die Ein-Knopf-Maus von Apple, das Mac-Trackpad und das Handy.</li>
+    <li>Öffne Google im Browser und gib <strong>„Minesweeper“</strong> oder <strong>„Minesweeper Google“</strong> ein.</li>
+    <li>Klicke im farbigen Spielkarten-Widget ganz oben auf den blauen Button <strong>„Spielen“</strong>.</li>
+    <li>Wähle oben links <strong>Leicht</strong>, <strong>Mittel</strong> oder <strong>Schwer</strong> und klicke auf eine beliebige grüne Kachel — <strong>der erste Zug ist garantiert sicher</strong>.</li>
+    <li>Kombiniere die Zahlenhinweise, markiere sichere Minen mit Flaggen 🚩 und öffne alle restlichen Felder.</li>
   </ol>
 
-  <h2>Wo es hakt: zum Spielen gut, zum Lernen zu wenig</h2>
-  <p>Als Zeitvertreib völlig in Ordnung. Wer besser werden will, spürt drei Dinge:</p>
+  <h2>Flaggen setzen am PC, Laptop ohne Maus &amp; Smartphone</h2>
+  <p>
+    Wichtig für Laptop-Spieler: <strong>Das Google-Original besitzt keinen Leertasten-Shortcut</strong> (die Leertaste scrollt nur die Suchseite). So klappt das Markieren auf jedem Gerät zuverlässig:
+  </p>
+
+  <div
+    tabindex="0"
+    role="region"
+    aria-labelledby="de-controls-caption"
+    class="guide-table-wrapper not-prose"
+    style="--col-2: 'Feld aufdecken'; --col-3: 'Flagge setzen / lösen 🚩';"
+  >
+    <table>
+      <caption id="de-controls-caption">Google Minesweeper Steuerung nach Gerät</caption>
+      <thead>
+        <tr>
+          <th>Gerät</th>
+          <th>Feld aufdecken</th>
+          <th>Flagge setzen / lösen 🚩</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>PC / Mac mit Maus</th>
+          <td>Linksklick</td>
+          <td>Rechtsklick auf ein verdecktes Feld</td>
+        </tr>
+        <tr>
+          <th>MacBook (Trackpad)</th>
+          <td>Einfinger-Tipp</td>
+          <td><strong>Zweifinger-Tipp</strong> oder <code>Control + Klick</code></td>
+        </tr>
+        <tr>
+          <th>Windows-Laptop (Touchpad)</th>
+          <td>Einfinger-Tipp</td>
+          <td><strong>Zweifinger-Tipp</strong> oder Ecke unten rechts drücken</td>
+        </tr>
+        <tr>
+          <th>Chromebook</th>
+          <td>Einfinger-Tipp</td>
+          <td><strong>Zweifinger-Tipp</strong> oder <code>Alt + Klick</code></td>
+        </tr>
+        <tr>
+          <th>Smartphone &amp; Tablet</th>
+          <td>Kurzes Tippen</td>
+          <td><strong>Langes Drücken</strong> oder 🚩-Umschalter unten</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Auf dem Trackpad zu langsam? Bei <a href="/de/">Meathill Minesweeper</a> (und im Minibrett oben) brauchst du fürs Tempo gar keinen Rechtsklick: Sobald die Flaggen rund um eine Zahl stimmen, <strong>öffnet ein Doppelklick auf die Zahl alle sicheren Nachbarn auf einmal</strong>.
+  </p>
+
+  <h2>Wo Google Minesweeper an Grenzen stößt</h2>
   <ul>
-    <li>Keine <strong>Wahrscheinlichkeits-Hinweise</strong>: 50/50-Momente bleiben Münzwürfe, und du erfährst nie, wie knapp die Entscheidung war.</li>
-    <li>Keine <strong>Wiederholung</strong>: eine Niederlage ist einfach vorbei — zum Wendepunkt geht es nicht zurück.</li>
-    <li>Keine <strong>Statistiken</strong>: Zeiten und Siege bleiben nicht über Geräte hinweg erhalten — Fortschritt bleibt unsichtbar.</li>
+    <li><strong>Keine Wahrscheinlichkeits-Hinweise</strong>: Knifflige Endspiele bleiben blindes Raten statt Mathematik.</li>
+    <li><strong>Keine Wiederholung</strong>: Nach einer Explosion lässt sich der entscheidende Zug nicht mehr analysieren.</li>
+    <li><strong>Abweichende Brettgrößen</strong>: Google nutzt 10×8, 18×14 und 24×20 statt der klassischen Standards 9×9, 16×16 und 16×30.</li>
   </ul>
   <p>
-    Wenn dir das wichtig ist, spiel eine Runde <a href="/de/">Meathill Minesweeper</a>: Der Lernmodus legt eine live
-    Wahrscheinlichkeits-Heatmap über das Brett, bewertet jede Entscheidung, und die Wiederholung zeichnet Effizienz und
-    Minenwahrscheinlichkeit zum echten Klickzeitpunkt — aus Raten wird Rechnen.
+    Wer gezielt besser werden möchte, findet in unserer <a href="/de/guide/how-to-play/">Minesweeper-Anleitung mit 1-2-1-Mustern</a>, im <a href="/de/tools/probability-calculator/">exakten Wahrscheinlichkeitsrechner</a> und im Live-Lernmodus von <a href="/de/">Meathill Minesweeper</a> das komplette Trainingspaket.
   </p>
 </GuideLayout>

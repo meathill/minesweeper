@@ -1,0 +1,55 @@
+---
+import GuideLayout from '../../../layouts/GuideLayout.astro';
+import Calculator from '../../../components/Calculator.astro';
+import type { FaqItem } from '../../../types';
+
+const faq: FaqItem[] = [
+  {
+    question: 'Quão precisa é a calculadora de probabilidade do Campo Minado?',
+    answer:
+      'As casas de fronteira (ao lado de números abertos) são calculadas por enumeração exata de todas as combinações válidas de minas. Casas isoladas dividem igualmente as minas restantes.',
+  },
+  {
+    question: 'Qual a diferença para o Modo Aprendizado do jogo?',
+    answer:
+      'O Modo Aprendizado roda ao vivo durante a partida e dá nota para cada jogada. Esta calculadora analisa qualquer posição estática — ótima para revisar derrotas ou tabuleiros do Campo Minado do Google.',
+  },
+  {
+    question: 'Quais tamanhos de tabuleiro são suportados?',
+    answer:
+      'Três predefinições clássicas (Fácil 9×9·10, Médio 16×16·40, Difícil 16×30·99) além de linhas, colunas e total de minas personalizados.',
+  },
+  {
+    question: 'As bandeiras mudam o cálculo de probabilidade?',
+    answer:
+      'Não. Como bandeiras do jogador podem estar erradas, o solver usa apenas os números abertos e o total de minas, garantindo que um palpite equivocado nunca contamine o resultado.',
+  },
+];
+---
+
+<GuideLayout
+  lang="pt"
+  title="Calculadora de Probabilidade do Campo Minado - Solver Online Exato - Meathill Minesweeper"
+  heading="Calculadora de probabilidade do Campo Minado"
+  description="Calculadora e solver gratuito de Campo Minado: monte qualquer posição e veja a probabilidade exata de mina em cada casa fechada com o motor do Meathill Minesweeper."
+  path="/tools/probability-calculator/"
+  keywords="calculadora campo minado, solver campo minado, probabilidade campo minado, resolvedor campo minado"
+  updated="2026-10-30"
+  lede="Monte qualquer posição clicando nas casas para inserir números e bandeiras: o solver calcula na hora a probabilidade exata (%) de mina em cada quadrado fechado."
+  faq={faq}
+>
+  <Calculator lang="pt" />
+
+  <h2>Como usar a calculadora</h2>
+  <ol>
+    <li>Escolha Fácil, Médio ou Difícil, ou defina linhas, colunas e minas manualmente.</li>
+    <li><strong>Clique nas casas para alternar</strong>: fechada → 🚩 → números 1–8 (clique direito volta um passo) até reproduzir seu tabuleiro.</li>
+    <li>Leia a porcentagem em cada casa fechada (verde = mais segura, vermelho = alta chance de mina) e escolha o menor risco.</li>
+  </ol>
+
+  <h2>Como o cálculo funciona</h2>
+  <p>
+    Cada número aberto gera uma equação exata sobre suas 8 vizinhas. Nosso solver separa a fronteira em componentes independentes e enumera todas as distribuições válidas com poda, exatamente como no <a href="/pt/">Modo Aprendizado do Meathill Minesweeper</a>. Está começando agora? Confira primeiro <a href="/pt/guide/how-to-play/">como jogar Campo Minado</a> ou o guia do <a href="/pt/guide/google-minesweeper/">Campo Minado do Google</a>.
+  </p>
+</GuideLayout>
+

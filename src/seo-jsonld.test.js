@@ -33,6 +33,16 @@ const PAGES = [
     url: 'https://minesweeper.meathill.com/de/',
     lang: 'de',
   },
+  {
+    file: '../public/pt/index.html',
+    url: 'https://minesweeper.meathill.com/pt/',
+    lang: 'pt-BR',
+  },
+  {
+    file: '../public/fr/index.html',
+    url: 'https://minesweeper.meathill.com/fr/',
+    lang: 'fr',
+  },
 ];
 
 const HREFLANGS = [
@@ -42,6 +52,8 @@ const HREFLANGS = [
   ['ru', 'https://minesweeper.meathill.com/ru/'],
   ['vi', 'https://minesweeper.meathill.com/vi/'],
   ['de', 'https://minesweeper.meathill.com/de/'],
+  ['pt', 'https://minesweeper.meathill.com/pt/'],
+  ['fr', 'https://minesweeper.meathill.com/fr/'],
   ['x-default', 'https://minesweeper.meathill.com/'],
 ];
 

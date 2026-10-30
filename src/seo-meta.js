@@ -6,6 +6,8 @@ export const LOCALES = [
   { code: 'ru', label: 'Русский', path: '/ru/' },
   { code: 'vi', label: 'Tiếng Việt', path: '/vi/' },
   { code: 'de', label: 'Deutsch', path: '/de/' },
+  { code: 'pt', label: 'Português', path: '/pt/' },
+  { code: 'fr', label: 'Français', path: '/fr/' },
 ];
 
 export const HTML_LANG = {
@@ -15,6 +17,8 @@ export const HTML_LANG = {
   ru: 'ru',
   vi: 'vi',
   de: 'de',
+  pt: 'pt-BR',
+  fr: 'fr',
 };
 
 /** 游戏壳的语言只看路径。浏览器语言和 localStorage 不能改 canonical。 */
