@@ -828,6 +828,16 @@ export function computeProbabilities(
     exactParts.push({ byK, cellCounts, total });
   }
 
+  // 近似分量（大分量 / 枚举超预算 / 无解兜底）没有条件化后验，概率只存在
+  // fallbackProbs 里。全局可行（zSum>0）时它们不会被下面的贝叶斯分支写进
+  // result——曾导致中残局大前沿整片格子从结果中缺失（UI 无数字、提示与
+  // pMin 也看不见它们，见 probability-global.test.js 的中残局复盘用例）。
+  // 精确分量的格子这里先落近似值，随后被逐格后验覆盖；孤立格不在
+  // fallbackProbs 中，不受影响。
+  for (const [v, p] of fallbackProbs) {
+    if (!result.has(v)) result.set(v, p);
+  }
+
   // 组合数表 C(isolated.length, x)：孤立格容纳 x 颗雷的方式数。
   // 递推一步一乘除，相对误差 ~1e-14，且 double 上限足够（I ≤ 数百）。
   const isoCount = isolated.length;

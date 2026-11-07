@@ -97,6 +97,112 @@ describe('computeProbabilities - 全局雷数约束(尾盘 0% 误报复盘)', ()
   });
 });
 
+// 2026-11-07 用户报告中残局截图:学习模式里环绕已开区的一整片前沿格没有任何
+// 概率显示(灰格),而远处孤立格显示 20%、两格显示 0%。逐格转录并校验后复现:
+// 前沿 34 变量(含 2 旗)连成一个 >28 的大分量走近似路径,概率只写入 fallbackProbs,
+// 而全局可行(zSum>0)的贝叶斯分支只落盘孤立格与精确分量,大分量的格子整体缺失。
+// 字符含义: 数字=已开格; F=旗(不参与约束,只是变量); .=未开格
+const MIDGAME_BOARD = [
+  '......10000001................',
+  '......21011101................',
+  '.....3F101F2123...............',
+  '......21012..3................',
+  '......21112...................',
+  '.....1........................',
+  '.....3........................',
+  '..............................',
+  '..............................',
+  '..............................',
+  '..............................',
+  '..............................',
+  '..............................',
+  '..............................',
+  '..............................',
+  '..............................',
+];
+
+// 截图转录校验记录:已开 0 格邻居全开(PASS);孤立格求解值 0.2028 → 显示 20%,
+// 与截图一致,交叉验证了转录与 Hard=99 的雷数假设。
+function buildMidgameGame() {
+  const grid = [];
+  for (let r = 0; r < ROW; r++) {
+    for (let c = 0; c < COLUMN; c++) {
+      const ch = MIDGAME_BOARD[r][c];
+      const isOpen = ch >= '0' && ch <= '8';
+      grid.push({
+        isOpen,
+        isFlag: ch === 'F',
+        count: isOpen ? +ch : 0,
+        isBomb: false,
+      });
+    }
+  }
+  return grid;
+}
+
+describe('computeProbabilities - 中残局大分量格子缺失(截图复盘)', () => {
+  it('任何未开格都必须有概率值(大分量近似路径不得漏格)', () => {
+    const grid = buildMidgameGame();
+    const { map, hasContradiction } = computeProbabilities(
+      grid,
+      ROW,
+      COLUMN,
+      BOMB_NUMBER,
+    );
+    assert.equal(hasContradiction, false, '真实对局截图不应有矛盾');
+    const missing = [];
+    for (let i = 0; i < grid.length; i++) {
+      if (grid[i].isOpen || grid[i].isFlag) continue;
+      if (!map.has(i)) missing.push(i);
+    }
+    assert.deepEqual(
+      missing,
+      [],
+      `以下未开格没有概率值,学习模式会显示成无数字的灰格: ${missing
+        .map((i) => `r${Math.floor(i / COLUMN)}c${i % COLUMN}`)
+        .join(', ')}`,
+    );
+  });
+
+  it('缺失带上恢复的值应落在 [0,1] 且反映约束(不再是空白)', () => {
+    const grid = buildMidgameGame();
+    const { map } = computeProbabilities(grid, ROW, COLUMN, BOMB_NUMBER);
+    // r0c5/r1c5 受 {r0c5,r1c5}=1 与 {r0c5,r1c5,旗r2c6}=2 夹逼,对半 50%
+    for (const [r, c] of [
+      [0, 5],
+      [1, 5],
+    ]) {
+      const p = map.get(r * COLUMN + c);
+      assert.ok(p != null && p > 0.1 && p < 0.9, `r${r}c${c} 概率=${p}`);
+    }
+    // r4c13 紧贴两个已开 3,概率应显著高于孤立格
+    const tight = map.get(4 * COLUMN + 13);
+    const iso = map.get(0);
+    assert.ok(
+      tight != null && tight > iso + 0.1,
+      `r4c13=${tight} 应明显高于孤立格 ${iso}`,
+    );
+  });
+
+  it('截图语义保持:孤立格 ≈ 20%,传播定真的安全格保持 0%', () => {
+    const grid = buildMidgameGame();
+    const { map } = computeProbabilities(grid, ROW, COLUMN, BOMB_NUMBER);
+    const iso = map.get(0);
+    assert.ok(
+      Math.abs(iso * 100 - 20) <= 0.5,
+      `孤立格 ${(iso * 100).toFixed(2)}% 应显示为 20%(与截图一致)`,
+    );
+    // r5c8/r5c11 截图显示 0%(青色安全格),由约束传播定真
+    for (const [r, c] of [
+      [5, 8],
+      [5, 11],
+    ]) {
+      const p = map.get(r * COLUMN + c);
+      assert.equal(p, 0, `r${r}c${c} 应为真 0% 安全格`);
+    }
+  });
+});
+
 // —— oracle 暴力枚举属性测试：随机小盘上求解器必须与精确条件概率一致 ——
 // 模型：未开格上所有满足已开数字约束、且雷数恰为 bombNumber 的摆法等可能。
 // 求解器（分量枚举 + 孤立格容量卷积 + 全局条件化）是该模型的精确计算，
