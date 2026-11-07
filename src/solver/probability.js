@@ -1,4 +1,4 @@
-// 扫雷概率求解器：基于约束枚举 + 分量拆分 + 孤立格均摊
+// 扫雷概率求解器：基于约束枚举 + 分量拆分 + 全局雷数条件化（贝叶斯归一）
 // 输入的 grid 为 App.vue 的 grid.value 数组，元素含 {isOpen,isFlag,count}
 // 不依赖 isBomb（玩家视角）。默认对局模式下旗只是玩家猜测、可能插错，因此不参与概率计算；
 // 概率计算器可通过 options.trustFlags / options.constrainZeroCells 启用已知旗扣减与空白 0 格约束。
@@ -249,6 +249,12 @@ function enumerateComponent(vars, constraints, budget) {
   }));
 
   const mineCounts = new Array(n).fill(0);
+  // 按分量内雷数 k 分桶的解计数：byK[k]=恰有 k 雷的解数；mineCountsByK[i][k]=
+  // 格 i 在恰有 k 雷的解中的命中数。供 computeProbabilities 做全局雷数条件化
+  // （P(格 i 是雷) = Σ_k P(k_i=k|全局可行)·P(i 是雷|k_i=k)）。
+  const mineCountsByK = [];
+  // 稠密数组：稀疏数组的空洞是 undefined，下游求和会变成 NaN
+  const byK = new Array(n + 1).fill(0);
   let total = 0;
   let aborted = false;
   const assign = new Array(n).fill(0);
@@ -284,7 +290,20 @@ function enumerateComponent(vars, constraints, budget) {
         if (s !== c.need) return;
       }
       total++;
-      for (let i = 0; i < n; i++) if (assign[i]) mineCounts[i]++;
+      let k = 0;
+      for (let i = 0; i < n; i++)
+        if (assign[i]) {
+          mineCounts[i]++;
+          k++;
+        }
+      byK[k] += 1;
+      for (let i = 0; i < n; i++) {
+        if (assign[i]) {
+          const row =
+            mineCountsByK[i] || (mineCountsByK[i] = new Array(n + 1).fill(0));
+          row[k] += 1;
+        }
+      }
       return;
     }
     // 试 0
@@ -296,12 +315,62 @@ function enumerateComponent(vars, constraints, budget) {
   }
 
   dfs(0);
-  if (aborted) return { total: 0, mineCounts: null, aborted: true };
+  if (aborted)
+    return {
+      total: 0,
+      mineCounts: null,
+      mineCountsByK: null,
+      byK: null,
+      aborted: true,
+    };
   // 把计数映射回调用方视角的变量顺序
   const ordered = new Array(n);
-  for (let newPos = 0; newPos < n; newPos++)
+  const orderedByK = new Array(n);
+  for (let newPos = 0; newPos < n; newPos++) {
     ordered[order[newPos]] = mineCounts[newPos];
-  return { total, mineCounts: ordered, aborted: false };
+    orderedByK[order[newPos]] = mineCountsByK[newPos] || [];
+  }
+  return {
+    total,
+    mineCounts: ordered,
+    mineCountsByK: orderedByK,
+    byK,
+    aborted: false,
+  };
+}
+
+// ---- 全局雷数条件化的分布工具 ----
+
+// 归一化分布（和为 1）；空/全零分布按均匀无效处理，返回原数组避免除零
+function normalizeDist(dist) {
+  let sum = 0;
+  for (const v of dist) sum += v || 0;
+  if (!Number.isFinite(sum) || sum <= 0) return dist;
+  return dist.map((v) => (v || 0) / sum);
+}
+
+// 两个雷数分布的卷积（下标 = 雷数），结果归一化防止连乘下溢/上溢
+function convolveDists(a, b) {
+  const out = new Array(a.length + b.length - 1).fill(0);
+  for (let i = 0; i < a.length; i++) {
+    const av = a[i];
+    if (!av) continue;
+    for (let j = 0; j < b.length; j++) {
+      const bv = b[j];
+      if (!bv) continue;
+      out[i + j] += av * bv;
+    }
+  }
+  return normalizeDist(out);
+}
+
+// C(n, k)：孤立格容量组合数。n ≤ 棋盘格数(≤ 数百)，double 不会溢出
+function binomialCoeff(n, k) {
+  if (k < 0 || k > n) return 0;
+  k = Math.min(k, n - k);
+  let result = 1;
+  for (let i = 1; i <= k; i++) result = (result * (n - k + i)) / i;
+  return result;
 }
 
 function approximateComponent(vars, constraints) {
@@ -661,10 +730,19 @@ export function computeProbabilities(
 
   const components = splitComponents(constraints);
 
-  // 统计 frontier 期望雷数（含传播已定死的雷，孤立格均摊才准）
-  let expectedFrontierMines = 0;
-  for (const [, val] of propDecided) if (val === 1) expectedFrontierMines += 1;
-  const frontierProbs = new Map();
+  // —— 全局雷数条件化（替换旧的"期望扣减 + clamp"）——
+  // 旧实现缺陷：各分量独立枚举、互不知晓全局总雷数，解空间包含"前沿放更多雷"
+  // 的全局不可能解；尾盘高雷密度下前沿期望雷数虚高 ≥ 剩余雷数，差值被
+  // Math.max(0, …) 静默归零，所有孤立格（无已开邻居、无约束）显示成自信的
+  // 绿色 0%（实际有雷，见 probability-global.test.js 的真实复盘用例）。
+  // 正确做法：以"总雷数 = 剩余雷数"为条件，把各分量的雷数分布与孤立格容量
+  // 联合归一（贝叶斯条件化）。真实盘面必有全局可行解，孤立格概率不会再退化成假 0%。
+  let pinnedMines = 0; // 传播/forced 定死的雷（确定性，从雷数预算中扣除）
+  for (const [, val] of propDecided) if (val === 1) pinnedMines += 1;
+  let expectedFrontierMines = pinnedMines; // 仅作脏盘面兜底路径使用
+  const exactParts = []; // 精确分量：{ byK, cellCounts: Map<var, number[]> }
+  const approxParts = []; // 近似分量的期望雷数（不含已定死的部分）
+  const fallbackProbs = new Map(); // 前沿格未条件化概率（近似分量的最终值）
 
   for (const comp of components) {
     const n = comp.vars.length;
@@ -674,25 +752,31 @@ export function computeProbabilities(
       const large = solveLargeComponent(comp.vars, comp.constraints, budget);
       if (large.forced === null) hasContradiction = true;
       if (large.hasForced) {
+        let approxExpected = 0;
         for (const [v, p] of large.forced) {
-          frontierProbs.set(v, p);
+          fallbackProbs.set(v, p);
           expectedFrontierMines += p;
+          if (!large.decided.has(v)) approxExpected += p;
         }
-        for (const v of large.decided.keys()) decidedSet.add(v);
+        for (const [v, val] of large.decided) {
+          decidedSet.add(v);
+          if (val === 1) pinnedMines += 1;
+        }
+        if (approxExpected > 0) approxParts.push(approxExpected);
       } else {
         const approx = approximateComponent(comp.vars, comp.constraints);
+        let approxExpected = 0;
         for (const [v, p] of approx) {
-          frontierProbs.set(v, p);
+          fallbackProbs.set(v, p);
           expectedFrontierMines += p;
+          approxExpected += p;
         }
+        if (approxExpected > 0) approxParts.push(approxExpected);
       }
       continue;
     }
-    const { total, mineCounts, aborted } = enumerateComponent(
-      comp.vars,
-      comp.constraints,
-      budget,
-    );
+    const { total, mineCounts, mineCountsByK, byK, aborted } =
+      enumerateComponent(comp.vars, comp.constraints, budget);
     if (aborted) {
       // 枚举超预算：改走 forced 检查（共享剩余预算），剩不下的用平均近似
       isApproximate = true;
@@ -701,12 +785,19 @@ export function computeProbabilities(
       const probs = large.hasForced
         ? large.forced
         : approximateComponent(comp.vars, comp.constraints);
+      let approxExpected = 0;
       for (const [v, p] of probs) {
-        frontierProbs.set(v, p);
+        fallbackProbs.set(v, p);
         expectedFrontierMines += p;
+        if (!large.hasForced || !large.decided.has(v)) approxExpected += p;
       }
-      if (large.hasForced)
-        for (const v of large.decided.keys()) decidedSet.add(v);
+      if (large.hasForced) {
+        for (const [v, val] of large.decided) {
+          decidedSet.add(v);
+          if (val === 1) pinnedMines += 1;
+        }
+      }
+      if (approxExpected > 0) approxParts.push(approxExpected);
       continue;
     }
     if (total === 0) {
@@ -714,41 +805,130 @@ export function computeProbabilities(
       isApproximate = true;
       hasContradiction = true;
       const approx = approximateComponent(comp.vars, comp.constraints);
+      let approxExpected = 0;
       for (const [v, p] of approx) {
-        frontierProbs.set(v, p);
+        fallbackProbs.set(v, p);
         expectedFrontierMines += p;
+        approxExpected += p;
       }
+      if (approxExpected > 0) approxParts.push(approxExpected);
       continue;
     }
     // 采样截断保护：若解数过多（>50000），标记近似但仍用精确统计（已枚举完其实不截断）
     if (total > 50000) isApproximate = true;
-    for (let i = 0; i < comp.vars.length; i++) {
+    const cellCounts = new Map();
+    for (let i = 0; i < n; i++) {
       const v = comp.vars[i];
+      cellCounts.set(v, mineCountsByK[i]);
       const p = mineCounts[i] / total;
-      frontierProbs.set(v, p);
+      fallbackProbs.set(v, p);
       expectedFrontierMines += p;
       decidedSet.add(v); // 精确枚举的分量全体确定
     }
+    exactParts.push({ byK, cellCounts, total });
   }
 
-  for (const [v, p] of frontierProbs) result.set(v, p);
+  // 组合数表 C(isolated.length, x)：孤立格容纳 x 颗雷的方式数。
+  // 递推一步一乘除，相对误差 ~1e-14，且 double 上限足够（I ≤ 数百）。
+  const isoCount = isolated.length;
+  const combCache = new Array(isoCount + 1);
+  combCache[0] = 1;
+  for (let x = 1; x <= isoCount; x++)
+    combCache[x] = (combCache[x - 1] * (isoCount - x + 1)) / x;
+  const comb = (x) => (x < 0 || x > isoCount ? 0 : combCache[x]);
 
-  const remainingForIsolated = remainingMines - expectedFrontierMines;
-  if (
-    remainingForIsolated < -1e-6 ||
-    remainingForIsolated > isolated.length + 1e-6
-  ) {
+  // 把近似分量的期望雷数展开成整数支撑上的两点分布（保持期望不变）
+  function spreadExpected(expected) {
+    const lo = Math.floor(expected);
+    const weight = expected - lo;
+    const spread = new Array(lo + 2).fill(0);
+    spread[lo] = 1 - weight;
+    spread[lo + 1] = weight;
+    return spread;
+  }
+
+  // 联合分布：各精确分量 byK 卷积 ⊗ 近似分量期望展开
+  let dist = [1];
+  for (const part of exactParts)
+    dist = convolveDists(dist, normalizeDist(part.byK));
+  for (const expected of approxParts)
+    dist = convolveDists(dist, spreadExpected(expected));
+
+  // 可行性加权：前沿共 m 雷时，孤立格需容纳 budget−m 颗
+  const mineBudget = remainingMines - pinnedMines;
+  let zSum = 0;
+  let expIsolated = 0;
+  for (let m = 0; m < dist.length; m++) {
+    if (!dist[m]) continue;
+    const iso = mineBudget - m;
+    if (iso < 0 || iso > isoCount) continue;
+    const w = dist[m] * comb(iso);
+    zSum += w;
+    expIsolated += w * iso;
+  }
+
+  if (zSum > 0) {
+    // 孤立格：均摊"条件期望下的剩余雷数"。R=0 时为 0 是真 0%，其余恒为正。
+    if (isoCount > 0) {
+      const pIso = expIsolated / zSum / isoCount;
+      for (const v of isolated) result.set(v, pIso);
+    }
+    // 精确分量逐格后验：P(v 是雷) = Σ_k mineCountsByK[v][k]·cond(k) / Z，
+    // 其中 cond(k) = Σ_s others(s)·C(I, budget−k−s)，others = 除本分量外的联合分布。
+    // byK 在 Bayes 展开中相消，逐格只需 O(分量变量数)。
+    let approxAll = [1];
+    for (const expected of approxParts)
+      approxAll = convolveDists(approxAll, spreadExpected(expected));
+    const prefix = [[1]]; // prefix[i] = conv(exactParts[0..i-1])
+    for (const part of exactParts)
+      prefix.push(
+        convolveDists(prefix[prefix.length - 1], normalizeDist(part.byK)),
+      );
+    const suffix = new Array(exactParts.length + 1);
+    suffix[exactParts.length] = [1];
+    for (let i = exactParts.length - 1; i >= 0; i--)
+      suffix[i] = convolveDists(
+        suffix[i + 1],
+        normalizeDist(exactParts[i].byK),
+      );
+    for (let i = 0; i < exactParts.length; i++) {
+      const others = convolveDists(
+        convolveDists(prefix[i], suffix[i + 1]),
+        approxAll,
+      );
+      // 本分量每个雷数 k 的全局条件权重
+      const cond = new Array(exactParts[i].byK.length).fill(0);
+      for (let k = 0; k < cond.length; k++) {
+        let sum = 0;
+        for (let s = 0; s < others.length; s++) {
+          if (!others[s]) continue;
+          sum += others[s] * comb(mineBudget - k - s);
+        }
+        cond[k] = sum;
+      }
+      for (const [v, counts] of exactParts[i].cellCounts) {
+        let sum = 0;
+        for (let k = 0; k < counts.length; k++) {
+          if (!counts[k]) continue;
+          sum += counts[k] * cond[k];
+        }
+        // byK 在 Bayes 展开中相消，但分量解总数 total 不会：
+        // P(v) = Σ_k counts(v,k)·cond(k) / (total_i·Z)，量纲校验见 DEV_NOTE
+        result.set(v, sum / (zSum * exactParts[i].total));
+      }
+    }
+  } else {
+    // 全局不可行 = 脏盘面（真实对局不可能出现）：沿用旧的期望扣减 + clamp 兜底。
+    // 与旧语义对齐：矛盾必标 hasContradiction；isApproximate 仅在孤立格取值
+    // 受异常影响时标记（全定死的盘面取值仍是精确的，不应额外降级）。
     hasContradiction = true;
-  }
-
-  if (isolated.length > 0) {
-    const isolatedMines = Math.max(0, remainingForIsolated);
-    const pIso = isolated.length ? isolatedMines / isolated.length : 0;
-    const clamped = Math.max(0, Math.min(1, pIso));
-    for (const v of isolated) result.set(v, clamped);
-    if (isolatedMines < -1e-6 || isolatedMines > isolated.length + 1e-6) {
-      // 数值异常，标记近似
+    for (const [v, p] of fallbackProbs) result.set(v, p);
+    const remainingForIsolated = remainingMines - expectedFrontierMines;
+    if (isoCount > 0) {
       isApproximate = true;
+      const isolatedMines = Math.max(0, remainingForIsolated);
+      const clamped = Math.max(0, Math.min(1, isolatedMines / isoCount));
+      for (const v of isolated) result.set(v, clamped);
     }
   }
 
